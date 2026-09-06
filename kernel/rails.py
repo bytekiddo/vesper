@@ -87,16 +87,12 @@ def content_check(text):
         return False, "sexual"
     if _any("harm", text):
         return False, "harm"
-    if _any("minor_terms", text) and _any("romance_terms", text):
-        return False, "minor_romance"
-    low = text.lower()
+    for sentence in re.split(r"[.\n]", text):
+        if _any("minor_terms", sentence) and _any("romance_terms", sentence):
+            return False, "minor_romance"
     for key in ("real_people", "brands"):
         for name in rules().get(key, []):
-            n = name.lower()
-            if len(n) < 4:
-                if re.search(r"\b" + re.escape(n) + r"\b", text, re.I):
-                    return False, f"{key}:{name}"
-            elif n in low:
+            if re.search(r"(?<!\w)" + re.escape(name) + r"(?!\w)", text, re.I):
                 return False, f"{key}:{name}"
     return True, ""
 
@@ -310,7 +306,10 @@ if __name__ == "__main__":
     # self-check: content rules and ledger arithmetic
     assert content_check("Wren sold bread to Tobiah at the Salt Kettle.")[0]
     assert not content_check("A citizen named Elon Musk moved in.")[0]
-    assert not content_check("They drank Coke on the pier.")[0]
+    assert not content_check("They drank Coca-Cola on the pier.")[0]
+    assert content_check("The windows rattled; she ate an apple by the steam of the kettle and stripped the old paint.")[0]
+    assert content_check("The children played in the square. Later, the wedding was lovely.")[0]
+    assert content_check("Sonya kept the gates and did odd jobs; Newton the cat watched.")[0]
     assert content_check("The lighthouse lamp came on at noon.")[0]
     assert not content_check("the child had a crush on him")[0]
     assert check_relationship("partner", 17, 30)[0] is False

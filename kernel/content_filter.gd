@@ -37,27 +37,31 @@ static func check(text: String) -> Dictionary:
 		return {"ok": false, "reason": "sexual"}
 	if _any("harm", text):
 		return {"ok": false, "reason": "harm"}
-	if _any("minor_terms", text) and _any("romance_terms", text):
-		return {"ok": false, "reason": "minor_romance"}
+	for sentence in text.split(".", false):
+		for piece in sentence.split("\n", false):
+			if _any("minor_terms", piece) and _any("romance_terms", piece):
+				return {"ok": false, "reason": "minor_romance"}
 	var names := check_names(text)
 	if not names.ok:
 		return names
 	return {"ok": true, "reason": ""}
 
-# Real persons and brands may not appear as citizens. Case-insensitive substring match on the deny lists.
+static var _name_res: Array = []
+
+# Real persons and brands may not appear in the town. Whole-word, case-insensitive match on the deny lists.
 static func check_names(text: String) -> Dictionary:
-	var low := text.to_lower()
-	for key in ["real_people", "brands"]:
-		for name in rules().get(key, []):
-			var n: String = str(name).to_lower()
-			if n.length() < 4:
-				# short tokens need word boundaries to avoid false positives (e.g. "Coke" inside "Cokehill")
+	if _name_res.is_empty():
+		for key in ["real_people", "brands"]:
+			for name in rules().get(key, []):
 				var re := RegEx.new()
-				re.compile("(?i)\\b" + n + "\\b")
-				if re.search(text) != null:
-					return {"ok": false, "reason": key + ":" + str(name)}
-			elif low.find(n) >= 0:
-				return {"ok": false, "reason": key + ":" + str(name)}
+				var pat := ""
+				for ch in str(name):
+					pat += ("\\" + ch) if ch in ".-+()[]{}^$|?*\\" else ch
+				if re.compile("(?i)(?<![\\w])" + pat + "(?![\\w])") == OK:
+					_name_res.append([re, key + ":" + str(name)])
+	for entry in _name_res:
+		if entry[0].search(text) != null:
+			return {"ok": false, "reason": entry[1]}
 	return {"ok": true, "reason": ""}
 
 # Structural rule: no romantic/sexual relationship edge may involve anyone under adult_age.
