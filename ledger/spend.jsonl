@@ -6,3 +6,10 @@
 {"ts": 1788715150, "month": "2026-09", "source": "overseer", "role": "judge", "model": "google/gemini-2.5-flash-lite", "prompt_tokens": 2188, "completion_tokens": 288, "cost": 0.000334}
 {"ts": 1788715267, "month": "2026-09", "source": "overseer", "role": "lawgiver", "model": "deepseek/deepseek-v4-flash-0731", "prompt_tokens": 3732, "completion_tokens": 15184, "cost": 0.0041692}
 {"ts": 1788715290, "month": "2026-09", "source": "overseer", "role": "chronicler", "model": "openai/gpt-oss-120b", "prompt_tokens": 1153, "completion_tokens": 1016, "cost": 0.000215381}
+{"ts": 1788718160, "month": "2026-09", "source": "overseer", "role": "steward", "model": "deepseek/deepseek-v4-flash-0731", "prompt_tokens": 4016, "completion_tokens": 400, "cost": 0.0002648}
+{"ts": 1788718215, "month": "2026-09", "source": "overseer", "role": "worldsmith", "model": "deepseek/deepseek-v4-flash-0731", "prompt_tokens": 1359, "completion_tokens": 2818, "cost": 0.000595575}
+{"ts": 1788718830, "month": "2026-09", "source": "overseer", "role": "judge", "model": "google/gemini-2.5-flash-lite", "prompt_tokens": 2012, "completion_tokens": 263, "cost": 0.0003064}
+{"ts": 1788718837, "month": "2026-09", "source": "overseer", "role": "weaver", "model": "deepseek/deepseek-v4-flash-0731", "prompt_tokens": 1330, "completion_tokens": 265, "cost": 0.0001275}
+{"ts": 1788718841, "month": "2026-09", "source": "overseer", "role": "weaver", "model": "deepseek/deepseek-v4-flash-0731", "prompt_tokens": 7649, "completion_tokens": 402, "cost": 0.00042248094}
+{"ts": 1788718910, "month": "2026-09", "source": "overseer", "role": "lawgiver", "model": "deepseek/deepseek-v4-flash-0731", "prompt_tokens": 2932, "completion_tokens": 3537, "cost": 0.0}
+{"ts": 1788718935, "month": "2026-09", "source": "overseer", "role": "chronicler", "model": "openai/gpt-oss-120b", "prompt_tokens": 1276, "completion_tokens": 1238, "cost": 0.00024874}
