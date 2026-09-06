@@ -13,3 +13,6 @@
 {"ts": 1788718841, "month": "2026-09", "source": "overseer", "role": "weaver", "model": "deepseek/deepseek-v4-flash-0731", "prompt_tokens": 7649, "completion_tokens": 402, "cost": 0.00042248094}
 {"ts": 1788718910, "month": "2026-09", "source": "overseer", "role": "lawgiver", "model": "deepseek/deepseek-v4-flash-0731", "prompt_tokens": 2932, "completion_tokens": 3537, "cost": 0.0}
 {"ts": 1788718935, "month": "2026-09", "source": "overseer", "role": "chronicler", "model": "openai/gpt-oss-120b", "prompt_tokens": 1276, "completion_tokens": 1238, "cost": 0.00024874}
+{"ts": 1788719031, "month": "2026-09", "source": "overseer", "role": "lawgiver", "model": "deepseek/deepseek-v4-flash-0731", "prompt_tokens": 3789, "completion_tokens": 1783, "cost": 0.00047473}
+{"ts": 1788719118, "month": "2026-09", "source": "overseer", "role": "lawgiver", "model": "deepseek/deepseek-v4-flash-0731", "prompt_tokens": 9394, "completion_tokens": 4000, "cost": 0.001759482424}
+{"ts": 1788719136, "month": "2026-09", "source": "overseer", "role": "chronicler", "model": "openai/gpt-oss-120b", "prompt_tokens": 1276, "completion_tokens": 1136, "cost": 0.0002314}

@@ -47,9 +47,9 @@ Anything that degrades stability within 24 hours is rolled back automatically an
 | Chronicler | writes the newspaper in `journal/` |
 
 <!-- ledger:start -->
-*Updated 2026-09-06 18:22 UTC by the overseer runner.*
+*Updated 2026-09-06 18:25 UTC by the overseer runner.*
 
-**Spend this month (2026-09):** $0.01 of $75 across 15 calls (54,316 prompt / 34,430 completion tokens).
+**Spend this month (2026-09):** $0.01 of $75 across 18 calls (68,775 prompt / 41,349 completion tokens).
 
 | Role | Model | Spent |
 |---|---|---|
@@ -57,7 +57,7 @@ Anything that degrades stability within 24 hours is rolled back automatically an
 | steward | `deepseek/deepseek-v4-flash-0731` | $0.00 |
 | worldsmith | `deepseek/deepseek-v4-flash-0731` | $0.00 |
 | weaver | `deepseek/deepseek-v4-flash-0731` | $0.00 |
-| lawgiver | `deepseek/deepseek-v4-flash-0731` | $0.00 |
+| lawgiver | `deepseek/deepseek-v4-flash-0731` | $0.01 |
 | judge | `google/gemini-2.5-flash-lite` | $0.00 |
 | chronicler | `openai/gpt-oss-120b` | $0.00 |
 <!-- ledger:end -->
