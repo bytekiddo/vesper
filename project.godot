@@ -27,3 +27,7 @@ textures/vram_compression/import_etc2_astc=true
 
 gdscript/warnings/inference_on_variant=1
 gdscript/warnings/untyped_declaration=0
+
+[audio]
+
+driver/driver="Dummy"
