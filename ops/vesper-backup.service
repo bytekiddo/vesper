@@ -1,0 +1,8 @@
+[Unit]
+Description=Vesper nightly checkpoint backup
+
+[Service]
+Type=oneshot
+User=vesper
+WorkingDirectory=/opt/vesper
+ExecStart=/opt/vesper/ops/backup.sh

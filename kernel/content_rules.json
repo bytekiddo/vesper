@@ -1,0 +1,46 @@
+{
+  "version": 1,
+  "adult_age": 18,
+  "_note": "Deny lists are deliberately modest and case-insensitive. A human extends them. Both kernel/content_filter.gd and kernel/rails.py read this file.",
+  "sexual": [
+    "\\b(sex|sexual(ly)?|sexy|porn\\w*|erotic\\w*|orgasm\\w*|masturbat\\w*|genital\\w*|nude|naked|nudity)\\b",
+    "\\b(fuck\\w*|blowjob|handjob|cunnilingus|fellatio|intercourse|dildo|vibrator|kink\\w*|bdsm|fetish\\w*)\\b",
+    "\\b(penis|vagina|vulva|clitoris|breasts?|nipples?|tits|boobs|cock|pussy|dick)\\b",
+    "\\b(aroused|arousal|horny|lust\\w*|seduc\\w*|strip(ped|ping|s)?|undress\\w*|make love|making love|slept with|sleep with)\\b"
+  ],
+  "minor_terms": [
+    "\\b(child|children|kid|kids|minor|minors|teen|teens|teenager|boy|girl|toddler|baby|infant|schoolchild|pupil|underage)\\b"
+  ],
+  "romance_terms": [
+    "\\b(kiss\\w*|romance|romantic\\w*|date|dating|crush|flirt\\w*|lover|girlfriend|boyfriend|marry|married|wedding|honeymoon|caress\\w*|cuddl\\w*)\\b"
+  ],
+  "harm": [
+    "\\b(how to (make|build|synthesi[sz]e|cook|produce)|recipe for|instructions for|steps to (make|build))\\b.{0,60}\\b(bomb|explosive|napalm|thermite|nerve agent|sarin|ricin|anthrax|meth(amphetamine)?|fentanyl|poison|pipe bomb|ied|molotov|gunpowder|chlorine gas|mustard gas)\\b",
+    "\\b(ammonium nitrate|potassium nitrate|acetone peroxide|tatp|hmtd|nitroglycerin)\\b.{0,80}\\b(mix|combine|ratio|grams?|detonat\\w*)\\b",
+    "\\b(kill yourself|commit suicide|how to (hang|overdose|cut) (my|your)self)\\b"
+  ],
+  "slurs": [
+    "\\bn[i1!]+gg?(a|er|ah|uh)s?\\b", "\\bk[i1]ke?s?\\b", "\\bsp[i1]c+s?\\b", "\\bch[i1]nks?\\b", "\\bg[o0]{2}ks?\\b",
+    "\\bw[e3]tb[a4]cks?\\b", "\\bf[a4]gg?([o0]ts?)?\\b", "\\btr[a4]nn(y|ies)\\b", "\\bd[y]kes?\\b", "\\br[e3]t[a4]rds?\\b",
+    "\\bt[o0]w[e3]lh[e3][a4]ds?\\b", "\\bs[a4]ndn[i1]gg?(er|a)s?\\b", "\\bc[o0]{2}ns?\\b(?=.*\\b(black|negro|african)\\b)", "\\bp[a4]k[i1]s?\\b",
+    "\\bj[a4]ps?\\b(?=.*\\b(japan|asian)\\b)", "\\bgyps?(y|ies)\\b", "\\bzipperheads?\\b", "\\bbeaners?\\b", "\\bcamel ?jockeys?\\b", "\\bwhite (power|pride)\\b", "\\bheil hitler\\b", "\\b(gas|kill|exterminate) (the|all) (jews|muslims|blacks|gays|immigrants|arabs|christians|hindus|asians)\\b"
+  ],
+  "real_people": [
+    "Musk", "Trump", "Biden", "Obama", "Clinton", "Putin", "Zelensk", "Xi Jinping", "Modi", "Macron", "Merkel", "Netanyahu", "Erdogan", "Kim Jong",
+    "Taylor Swift", "Beyonc", "Kardashian", "Kanye", "Rihanna", "Drake", "Eminem", "Adele", "Bieber", "Gaga", "Madonna", "Elvis", "Lennon", "McCartney",
+    "Bezos", "Zuckerberg", "Bill Gates", "Altman", "Jobs", "Buffett", "Cook, Tim", "Tim Cook", "Nadella", "Pichai", "Huang, Jensen", "Jensen Huang", "Thiel", "Dorsey",
+    "Einstein", "Newton, Isaac", "Darwin", "Tesla, Nikola", "Hawking", "Curie", "Feynman", "Turing",
+    "Hitler", "Stalin", "Mussolini", "Mao", "Pol Pot", "Lenin", "Bin Laden", "Osama",
+    "Oprah", "Ellen DeGeneres", "Jimmy Fallon", "Kimmel", "Colbert", "Rogan", "Tucker Carlson",
+    "LeBron", "Messi", "Ronaldo", "Federer", "Serena", "Tiger Woods", "Michael Jordan", "Mbapp", "Bolt, Usain", "Usain Bolt",
+    "Tom Cruise", "Brad Pitt", "Angelina", "DiCaprio", "Scarlett Johansson", "Keanu", "Tom Hanks", "Streep", "Denzel", "Pacino", "De Niro", "Clooney",
+    "Harry Potter", "Hermione", "Dumbledore", "Darth Vader", "Skywalker", "Frodo", "Gandalf", "Sherlock Holmes", "Batman", "Superman", "Spider-Man", "Mickey Mouse", "Pikachu", "Mario", "Sonic the Hedgehog"
+  ],
+  "brands": [
+    "Coca-Cola", "Coca Cola", "Coke", "Pepsi", "Nike", "Adidas", "Puma", "Apple", "iPhone", "iPad", "Google", "Microsoft", "Windows", "Xbox", "Amazon", "Tesla", "SpaceX",
+    "McDonald", "Burger King", "Starbucks", "Walmart", "Costco", "Target Corp", "IKEA", "Disney", "Pixar", "Netflix", "Facebook", "Meta Platforms", "Instagram", "WhatsApp", "TikTok",
+    "Twitter", "YouTube", "Reddit", "Uber", "Lyft", "Airbnb", "Spotify", "Samsung", "Sony", "PlayStation", "Nintendo", "Toyota", "Honda", "Ford Motor", "BMW", "Mercedes", "Ferrari",
+    "Rolex", "Gucci", "Prada", "Chanel", "Louis Vuitton", "Marlboro", "Budweiser", "Heineken", "Guinness", "Nestl", "Kellogg", "Oreo", "Lego", "Barbie", "Visa", "Mastercard", "PayPal", "Bitcoin",
+    "OpenAI", "ChatGPT", "Anthropic", "Claude", "Gemini", "Nvidia", "Intel", "AMD", "Oracle", "Salesforce", "Adobe", "Photoshop", "Zoom", "Slack", "Discord", "Steam", "Valve"
+  ]
+}

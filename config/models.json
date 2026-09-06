@@ -1,0 +1,11 @@
+{
+  "_written_by": "the Steward, every cycle; prices are USD per token from the OpenRouter marketplace",
+  "updated": "2026-09-06T00:00:00Z",
+  "citizen":    {"model": "openai/gpt-oss-120b",           "prompt": 3.7e-08, "completion": 1.7e-07},
+  "steward":    {"model": "deepseek/deepseek-v4-flash-0731", "prompt": 5.0e-08, "completion": 1.0e-07},
+  "worldsmith": {"model": "deepseek/deepseek-v4-flash-0731", "prompt": 5.0e-08, "completion": 1.0e-07},
+  "weaver":     {"model": "deepseek/deepseek-v4-flash-0731", "prompt": 5.0e-08, "completion": 1.0e-07},
+  "lawgiver":   {"model": "deepseek/deepseek-v4-flash-0731", "prompt": 5.0e-08, "completion": 1.0e-07},
+  "judge":      {"model": "google/gemini-2.5-flash-lite",    "prompt": 1.0e-07, "completion": 4.0e-07},
+  "chronicler": {"model": "openai/gpt-oss-120b",           "prompt": 3.7e-08, "completion": 1.7e-07}
+}

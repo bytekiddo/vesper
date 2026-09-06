@@ -1,0 +1,26 @@
+[Unit]
+Description=Vesper world server (canonical, headless)
+After=network-online.target
+Wants=network-online.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+User=vesper
+Group=vesper
+WorkingDirectory=/opt/vesper
+EnvironmentFile=/opt/vesper/.env
+Environment=HOME=/home/vesper
+ExecStartPre=/opt/vesper/kernel/guard.sh
+ExecStart=/usr/local/bin/godot --headless --path /opt/vesper -- --server
+Restart=always
+RestartSec=5
+TimeoutStopSec=30
+KillSignal=SIGINT
+MemoryMax=1200M
+Nice=5
+StandardOutput=append:/var/log/vesper/server.log
+StandardError=append:/var/log/vesper/server.log
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,29 @@
+; Engine configuration file.
+; Vesper — one project, two modes: `--headless` server / web viewer.
+
+config_version=5
+
+[application]
+
+config/name="Vesper"
+run/main_scene="res://world/main.tscn"
+config/features=PackedStringArray("4.7", "GL Compatibility")
+run/low_processor_mode=false
+
+[display]
+
+window/size/viewport_width=1280
+window/size/viewport_height=800
+window/stretch/mode="canvas_items"
+window/stretch/aspect="expand"
+
+[rendering]
+
+renderer/rendering_method="gl_compatibility"
+renderer/rendering_method.mobile="gl_compatibility"
+textures/vram_compression/import_etc2_astc=true
+
+[debug]
+
+gdscript/warnings/inference_on_variant=1
+gdscript/warnings/untyped_declaration=0

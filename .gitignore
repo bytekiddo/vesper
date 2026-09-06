@@ -1,0 +1,12 @@
+.env
+.godot/
+build/
+state/
+quarantine/
+checkpoints/hourly/
+checkpoints/latest.json.tmp
+world/inbox/applied/
+overseers/__pycache__/
+kernel/__pycache__/
+*.pyc
+.DS_Store

@@ -1,0 +1,35 @@
+# Decisions
+
+One line per decision. Append; never rewrite history. Format: `YYYY-MM-DD — decision — why / trade-off`.
+
+## Version pins (verified 2026-09-06)
+- 2026-09-06 — Godot **4.7.2-stable** (released 2026-08-18; assets `Godot_v4.7.2-stable_linux.x86_64.zip`, `Godot_v4.7.2-stable_export_templates.tpz`, `Godot_v4.7.2-stable_macos.universal.zip`) — current stable on github.com/godotengine/godot/releases; 4.7.x is the last line before any 5.x churn, GDScript is stable.
+- 2026-09-06 — Ubuntu 24.04 LTS packages: `python3` (3.12), `nginx`, `ufw`, `git`, `unzip`, `curl`, `logrotate` — all in main/universe; no PPAs, no pip packages (runner is stdlib-only).
+- 2026-09-06 — OpenRouter: `POST https://openrouter.ai/api/v1/chat/completions` (OpenAI-shaped), `GET https://openrouter.ai/api/v1/models` (pricing per token as strings). `usage.cost` is always returned now (`usage.include` is deprecated) — ledger records it verbatim, falling back to prompt×price when absent.
+- 2026-09-06 — Default model roster (Steward overwrites each cycle): citizens `openai/gpt-oss-120b` ($0.037/$0.17 per M), proposers `deepseek/deepseek-v4-flash-0731` ($0.05/$0.10), judge `google/gemini-2.5-flash-lite` (different family), chronicler `openai/gpt-oss-120b` — cheapest models with `response_format` support; quality is the Steward's problem, not the seed's.
+
+## Architecture trade-offs
+- 2026-09-06 — Tick = 1 real second = **10 simulated seconds** (sim day = 2.4 real hours, 10 sim days per real day) — watchable pace (a commute takes real minutes), few enough sim days that "a few conscious moments per citizen per sim day" fits $75/month.
+- 2026-09-06 — Genesis fixed at **2026-09-07T00:00:00Z** in `kernel/clock.gd` — a round number; the server waits if started early and catches up if started late.
+- 2026-09-06 — Catch-up (server more than 60 ticks behind wall clock) runs Tier 1 only and skips Tier 2 — keeps restarts fast and deterministic; lore: the town dreamed through the outage.
+- 2026-09-06 — Determinism: every Tier 1 decision draws from an RNG seeded by `hash(world_seed, tick, citizen_id)`; Tier 2 outputs are applied at a recorded tick and stored in the checkpoint — replay from any checkpoint reproduces the state without a model.
+- 2026-09-06 — Checkpoint = one JSON file (`checkpoints/latest.json`, atomic rename), hourly copies in `checkpoints/hourly/` (48 kept), daily in `checkpoints/daily/` (kept forever, committed by the overseer runner every cycle and by the nightly backup timer) — JSON is greppable and the migration contract is "merge DEFAULTS on load".
+- 2026-09-06 — Ledger = append-only `ledger/spend.jsonl`, one line per call, written by both the Godot server and the Python runner; month total is a sum — no database, O_APPEND is atomic for one-line writes.
+- 2026-09-06 — Kernel integrity: `kernel/KERNEL.sha256` manifest checked by `kernel/guard.sh` (systemd ExecStartPre and overseer rails) and by `kernel/watchdog.gd` at boot; mismatch → `git checkout last-known-good -- kernel/` and exit.
+- 2026-09-06 — Content limits live in one data file `kernel/content_rules.json` read by both `kernel/content_filter.gd` and `kernel/rails.py` — one source of truth, two languages. Deny lists are deliberately modest; a human extends them.
+- 2026-09-06 — Memory retrieval relevance = keyword overlap (Jaccard), not embeddings — no vector store, no extra API, good enough for a town of dozens; upgrade path is an embeddings cache in the checkpoint.
+- 2026-09-06 — Importance scoring is a Tier 1 table (`world/rules.json`), not an LLM call per memory as in the paper — the paper's per-memory scoring would dominate spend; the Lawgiver may change the table.
+- 2026-09-06 — Rules that the Lawgiver edits are data (`world/rules.json`), not code, where possible — data diffs cannot break the boot; code diffs can.
+- 2026-09-06 — Overseer proposals are JSON (`files: {path: full content}` for code, plus data ops for map/citizens applied via `world/inbox/`) — whole-file writes are robust against LLM diff formatting failures; the world ingests inbox ops at the next tick so growth is in the fossil record.
+- 2026-09-06 — Pathfinding is BFS on the tile grid per plan step, cached until the map changes — fine for a map under ~200×200; `ponytail:` comment marks the ceiling.
+- 2026-09-06 — Web export is single-threaded (Godot ≥4.3 default); nginx still sends COOP/COEP as requested, harmless and future-proof.
+- 2026-09-06 — Viewer art is procedural `_draw` (rects, circles) — no asset pipeline in the seed; the Worldsmith owns art later.
+- 2026-09-06 — Smoke test phases: boot → 20 000 fast ticks with a stubbed LLM → replay determinism (two runs, equal state hash) → checkpoint round-trip → `SMOKE_SECONDS` (600 in prod) real-time run measuring drift and memory — all in `kernel/smoke.gd`; `SMOKE_SECONDS=15` for local iteration.
+- 2026-09-06 — Budget split: citizens 70 %, overseers 30 % of `BUDGET_USD_PER_MONTH`; the server's token bucket derives calls/day from remaining budget ÷ days left ÷ estimated cost per call.
+- 2026-09-06 — World state is plain Dictionaries; the checkpoint IS the state (no serialization layer). Behaviour lives in static functions over dicts — one fewer thing to keep in sync with the migration contract.
+- 2026-09-06 — Tier 1 has its own growth engine (houses when beds run out, one arrival every ~10 quiet days, births to partners, deaths past 78, departures of the lonely) so the town grows even if every overseer is broke or broken; the Worldsmith and Weaver add character on top.
+- 2026-09-06 — Overseer proposals are smoke-tested one at a time (full `make smoke`, 10 min each): a cycle takes ~40 min, which is nothing at a 6-hour cadence, and a failing proposal never hides behind a passing one.
+- 2026-09-06 — The Judge's model call is advisory; the veto is computed mechanically from hard-limit breaches (smoke, budget, quarantine, drift, memory, content in diff). A taste veto is logged and overruled.
+- 2026-09-06 — Kernel `guard.sh` restores from `last-known-good` after 3 boots that never reached 10 healthy minutes; the server itself resets the counter. No systemd sd_notify watchdog: Godot cannot easily speak it, and Restart=always plus the memory-ceiling self-exit cover the same ground.
+- 2026-09-06 — `--dev` runs a throwaway world (fresh seed, genesis = now, port 9002, stubbed model) and the viewer accepts `--screenshot=<png>` / `--select=<id>`; both are dev aids, not modes of the canonical world.
+- 2026-09-06 — Memory streams are capped at 240 entries per citizen (oldest low-importance first); with 8640 ticks a day this keeps checkpoints under ~100 KB per citizen and catch-up under 5 s per lost day.

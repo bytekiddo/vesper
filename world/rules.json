@@ -1,0 +1,96 @@
+{
+  "version": 1,
+  "_who_edits": "The Lawgiver. Every value here is a hypothesis about how minds and the town should work. Keep it JSON.",
+
+  "importance": {"routine": 1, "observe": 2, "meet": 3, "chat": 4, "plan": 4, "event": 6, "reflect": 7, "arrival": 7, "departure": 8, "birth": 9, "death": 10},
+  "reflection_threshold": 45,
+  "retrieval": {"recency_decay_per_sim_hour": 0.97, "w_recency": 1.0, "w_importance": 1.0, "w_relevance": 1.2, "top_k": 10},
+  "memory_cap": 240,
+  "memory_prune_keep_importance_over": 6,
+
+  "conversation": {"radius": 2, "base_chance": 0.06, "friend_bonus": 0.10, "cooldown_ticks": 720, "duration_ticks": 10, "max_lines": 6},
+  "consciousness": {"min_ticks_between": 1440, "plan_hour": 6, "max_calls_per_tick": 2, "catchup_threshold_ticks": 60},
+
+  "population": {"birth_daily_chance": 0.02, "death_age": 78, "death_daily_chance_per_year_over": 0.004, "departure_daily_chance": 0.0015, "adult_age": 18, "arrival_quiet_days": 10, "arrival_daily_chance": 0.08},
+  "growth": {"housing_slack": 1, "house_w": 3, "house_h": 2, "expand_by": 8, "max_side": 200},
+
+  "happenings": [
+    {"text": "the lighthouse lamp came on by itself in broad daylight", "imp": 6, "chance": 0.010},
+    {"text": "a fog rolled in so thick the pier vanished", "imp": 4, "chance": 0.030},
+    {"text": "gulls stole a whole tray of buns from the Salt Kettle", "imp": 3, "chance": 0.030},
+    {"text": "the ferry bell rang though there is no ferry", "imp": 5, "chance": 0.012},
+    {"text": "someone left a jar of sea glass on the town hall steps", "imp": 4, "chance": 0.020},
+    {"text": "the tide came in higher than anyone remembers", "imp": 5, "chance": 0.015},
+    {"text": "the clock in the square stopped at a quarter past", "imp": 4, "chance": 0.020},
+    {"text": "a letter arrived addressed to nobody in particular", "imp": 5, "chance": 0.012},
+    {"text": "a fine warm evening; half the town ended up on the pier", "imp": 3, "chance": 0.040},
+    {"text": "rain all day; the streets ran like rivers", "imp": 3, "chance": 0.040}
+  ],
+
+  "small_talk": [
+    ["Morning.", "Morning. Wind's up.", "It is."],
+    ["Have you eaten?", "Not yet. The Kettle?", "The Kettle."],
+    ["Did you see the lamp last night?", "I try not to look at it.", "That's fair."],
+    ["Any word on the ferry?", "There's never word on the ferry.", "No. There isn't."],
+    ["Fine day for it.", "For what?", "Whatever you're doing."],
+    ["You look tired.", "I am tired.", "Same."],
+    ["Tide's turning.", "It does that.", "Every time."],
+    ["Bread's good today.", "Tobiah got up early.", "He always does."]
+  ],
+
+  "thoughts": {
+    "walking": ["The air smells of salt again.", "I should have brought a coat.", "Same street, different light.", "Someone has moved the bench.", "I keep counting the lamp posts."],
+    "working": ["Hands busy, head quiet.", "This is the part I like.", "One more, then a break.", "Nobody will notice, but I will.", "It is enough to be useful."],
+    "resting": ["The house creaks when the tide turns.", "I could sleep for a week.", "Tomorrow, maybe, the ferry.", "The lamp is on again. Or I imagine it.", "What was I going to do?"],
+    "eating": ["Warm bread fixes most things.", "Too much salt. Perfect.", "I always sit facing the door.", "Wren makes the tea too strong.", "Eat first, worry later."],
+    "idle": ["Nothing is happening and I like it.", "The gulls are arguing again.", "Someone is watching the lighthouse.", "I wonder who built it.", "The day is long in the middle."]
+  },
+  "moods": ["calm", "restless", "cheerful", "wistful", "tired", "curious", "grumpy", "content"],
+
+  "routines": {
+    "default": [
+      {"at": "07:00", "place": "home", "action": "waking up and making tea"},
+      {"at": "08:30", "place": "work", "action": "working"},
+      {"at": "12:30", "place": "cafe", "action": "eating lunch"},
+      {"at": "13:30", "place": "work", "action": "working"},
+      {"at": "18:00", "place": "square", "action": "taking the evening air"},
+      {"at": "19:30", "place": "home", "action": "having supper"},
+      {"at": "22:00", "place": "home", "action": "sleeping"}
+    ],
+    "baker": [
+      {"at": "04:30", "place": "work", "action": "firing the oven"},
+      {"at": "11:30", "place": "square", "action": "stretching legs"},
+      {"at": "12:30", "place": "work", "action": "serving lunch"},
+      {"at": "15:00", "place": "home", "action": "napping"},
+      {"at": "18:00", "place": "pier", "action": "watching the water"},
+      {"at": "20:00", "place": "home", "action": "having supper"},
+      {"at": "21:00", "place": "home", "action": "sleeping"}
+    ],
+    "keeper": [
+      {"at": "06:00", "place": "work", "action": "checking the lamp"},
+      {"at": "09:00", "place": "cafe", "action": "having breakfast"},
+      {"at": "10:30", "place": "store", "action": "buying oil and matches"},
+      {"at": "12:00", "place": "work", "action": "polishing the lens"},
+      {"at": "17:00", "place": "pier", "action": "watching for boats"},
+      {"at": "19:00", "place": "home", "action": "having supper"},
+      {"at": "20:30", "place": "work", "action": "lighting the lamp"},
+      {"at": "23:00", "place": "home", "action": "sleeping"}
+    ],
+    "retired": [
+      {"at": "08:00", "place": "home", "action": "waking slowly"},
+      {"at": "09:30", "place": "cafe", "action": "holding court over tea"},
+      {"at": "11:30", "place": "pier", "action": "mending nets that need no mending"},
+      {"at": "14:00", "place": "home", "action": "napping"},
+      {"at": "16:30", "place": "square", "action": "sitting on the bench"},
+      {"at": "19:00", "place": "home", "action": "having supper"},
+      {"at": "21:30", "place": "home", "action": "sleeping"}
+    ]
+  },
+
+  "names": {
+    "first": ["Ada", "Bram", "Cora", "Dev", "Elowen", "Fenn", "Greta", "Hollis", "Ida", "Jory", "Kit", "Lark", "Mabel", "Nico", "Orla", "Pim", "Quill", "Rooney", "Sable", "Teo", "Una", "Vesna", "Wilf", "Yara", "Zeph", "Anouk", "Basil", "Clemmie", "Dorian", "Effie", "Florian", "Gwen", "Hal", "Isolde", "Jem", "Kes", "Lior", "Marit", "Nell", "Osk", "Perrin", "Rune", "Siv", "Tamsin", "Ulla", "Vito", "Wren", "Yann"],
+    "last": ["Abernathy", "Blackwood", "Cale", "Dunmore", "Ellery", "Fairweather", "Gale", "Hartigan", "Ironside", "Juniper", "Kestrel", "Lowe", "Mercer", "Nightingale", "Oakes", "Pellam", "Quarrie", "Rusk", "Salt", "Thorne", "Underhill", "Vance", "Whitlock", "Yardley", "Ashby", "Brine", "Coppersmith", "Dray", "Ebb", "Fenwick", "Gull", "Hollow", "Ives", "Kelp", "Lantern", "Moss", "Nettle", "Orrin", "Pike", "Reed", "Sorrel", "Tallow", "Wick"]
+  },
+  "occupations": ["fisher", "carpenter", "clerk", "teacher", "gardener", "cook", "net-mender", "painter", "letter-carrier", "apprentice", "musician", "tailor", "harbormaster's assistant", "birdwatcher", "tide-reader"],
+  "innate_traits": ["patient", "sharp-tongued", "quietly stubborn", "easily delighted", "wary of strangers", "generous to a fault", "restless", "methodical", "superstitious", "dry-humoured", "sentimental", "blunt", "curious about everything", "slow to trust, loyal after", "tidy-minded", "prone to wandering off"]
+}

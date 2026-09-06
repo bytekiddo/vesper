@@ -1,0 +1,16 @@
+[Unit]
+Description=Vesper overseer cycle (propose, smoke, merge, chronicle)
+After=network-online.target
+
+[Service]
+Type=oneshot
+User=vesper
+Group=vesper
+WorkingDirectory=/opt/vesper
+EnvironmentFile=/opt/vesper/.env
+Environment=HOME=/home/vesper
+ExecStart=/usr/bin/python3 /opt/vesper/overseers/run.py
+TimeoutStartSec=3h
+Nice=10
+StandardOutput=append:/var/log/vesper/overseer.log
+StandardError=append:/var/log/vesper/overseer.log
