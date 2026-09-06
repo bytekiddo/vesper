@@ -47,7 +47,19 @@ Anything that degrades stability within 24 hours is rolled back automatically an
 | Chronicler | writes the newspaper in `journal/` |
 
 <!-- ledger:start -->
-*No cycle has run yet. This block is rewritten by the overseer runner with the current lineup and spend.*
+*Updated 2026-09-06 17:21 UTC by the overseer runner.*
+
+**Spend this month (2026-09):** $0.01 of $75 across 8 calls (33,742 prompt / 25,507 completion tokens).
+
+| Role | Model | Spent |
+|---|---|---|
+| citizen | `openai/gpt-oss-120b` | $0.00 |
+| steward | `deepseek/deepseek-v4-flash-0731` | $0.00 |
+| worldsmith | `deepseek/deepseek-v4-flash-0731` | $0.00 |
+| weaver | `deepseek/deepseek-v4-flash-0731` | $0.00 |
+| lawgiver | `deepseek/deepseek-v4-flash-0731` | $0.00 |
+| judge | `google/gemini-2.5-flash-lite` | $0.00 |
+| chronicler | `openai/gpt-oss-120b` | $0.00 |
 <!-- ledger:end -->
 
 The newspaper: [`journal/`](journal/) (also served at `/journal/` next to the viewer, and readable inside it).

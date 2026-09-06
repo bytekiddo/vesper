@@ -33,3 +33,4 @@ One line per decision. Append; never rewrite history. Format: `YYYY-MM-DD — de
 - 2026-09-06 — Kernel `guard.sh` restores from `last-known-good` after 3 boots that never reached 10 healthy minutes; the server itself resets the counter. No systemd sd_notify watchdog: Godot cannot easily speak it, and Restart=always plus the memory-ceiling self-exit cover the same ground.
 - 2026-09-06 — `--dev` runs a throwaway world (fresh seed, genesis = now, port 9002, stubbed model) and the viewer accepts `--screenshot=<png>` / `--select=<id>`; both are dev aids, not modes of the canonical world.
 - 2026-09-06 — Memory streams are capped at 240 entries per citizen (oldest low-importance first); with 8640 ticks a day this keeps checkpoints under ~100 KB per citizen and catch-up under 5 s per lost day.
+- 2026-09-06 — Adding a new resident gives the town a fresh perspective but risks unsettling the quiet balance; I'll keep her arrival gentle.

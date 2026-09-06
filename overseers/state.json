@@ -1,7 +1,34 @@
 {
-  "cycle": 0,
-  "merges": [],
-  "issues": 0,
-  "history": [],
-  "last_hibernation_note": ""
+  "cycle": 1,
+  "merges": [
+    {
+      "sha": "bb32521",
+      "ts": 1788715150.092651,
+      "role": "weaver",
+      "hypothesis": "A new tide-reader arrives, drawn by the lighthouse that answers itself; her questions might stir the town into noticing the strange events together.",
+      "baseline": {},
+      "files": [
+        "world/inbox/1788714534-weaver.json"
+      ]
+    }
+  ],
+  "issues": 1,
+  "history": [
+    {
+      "ts": 1788715150.0926988,
+      "role": "weaver",
+      "hypothesis": "A new tide-reader arrives, drawn by the lighthouse that answers itself; her questions might stir the town into noticing the strange events together.",
+      "result": "merged",
+      "sha": "bb32521",
+      "advice": ""
+    }
+  ],
+  "last_hibernation_note": "",
+  "breaches": [
+    {
+      "ts": 1788715267.2407887,
+      "role": "lawgiver",
+      "reason": "brands:Slack"
+    }
+  ]
 }

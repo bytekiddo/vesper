@@ -1,0 +1,8 @@
+{"ts": 1788714304, "month": "2026-09", "source": "overseer", "role": "steward", "model": "deepseek/deepseek-v4-flash-0731", "prompt_tokens": 3883, "completion_tokens": 400, "cost": 0.00042747}
+{"ts": 1788714337, "month": "2026-09", "source": "overseer", "role": "worldsmith", "model": "deepseek/deepseek-v4-flash-0731", "prompt_tokens": 1336, "completion_tokens": 1176, "cost": 0.00025496}
+{"ts": 1788714458, "month": "2026-09", "source": "overseer", "role": "worldsmith", "model": "deepseek/deepseek-v4-flash-0731", "prompt_tokens": 13298, "completion_tokens": 4000, "cost": 0.0013049}
+{"ts": 1788714467, "month": "2026-09", "source": "overseer", "role": "weaver", "model": "deepseek/deepseek-v4-flash-0731", "prompt_tokens": 1251, "completion_tokens": 458, "cost": 0.0002019}
+{"ts": 1788714534, "month": "2026-09", "source": "overseer", "role": "weaver", "model": "deepseek/deepseek-v4-flash-0731", "prompt_tokens": 6901, "completion_tokens": 2985, "cost": 0.000985865}
+{"ts": 1788715150, "month": "2026-09", "source": "overseer", "role": "judge", "model": "google/gemini-2.5-flash-lite", "prompt_tokens": 2188, "completion_tokens": 288, "cost": 0.000334}
+{"ts": 1788715267, "month": "2026-09", "source": "overseer", "role": "lawgiver", "model": "deepseek/deepseek-v4-flash-0731", "prompt_tokens": 3732, "completion_tokens": 15184, "cost": 0.0041692}
+{"ts": 1788715290, "month": "2026-09", "source": "overseer", "role": "chronicler", "model": "openai/gpt-oss-120b", "prompt_tokens": 1153, "completion_tokens": 1016, "cost": 0.000215381}
