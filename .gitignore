@@ -10,3 +10,4 @@ overseers/__pycache__/
 kernel/__pycache__/
 *.pyc
 .DS_Store
+world/inbox/*.json

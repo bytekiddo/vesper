@@ -29,6 +29,7 @@ var last_checkpoint_tick := -1
 var last_map_version := -1
 var journal_cache := {"name": "", "issues": []}
 var last_journal_scan := 0.0
+var last_flag_check := 0.0
 var start_error := ""
 
 func root() -> String:
@@ -125,6 +126,23 @@ func brain(kind: String, st: Dictionary, c: Dictionary, ctx: Dictionary) -> bool
 
 func _process(_delta: float) -> void:
 	var now := Time.get_unix_time_from_system()
+	if not smoke_mode:
+		# healthy after 10 minutes up, ticking or not (before genesis there are no ticks yet)
+		if not healthy and now - boot_unix >= Watchdog.HEALTHY_AFTER_SEC:
+			healthy = true
+			Watchdog.mark_healthy()
+		# graceful stop/restart: Godot has no signal handler, so systemd's ExecStop and the overseer runner drop a flag
+		if now - last_flag_check >= 1.0:
+			last_flag_check = now
+			for flag in ["stop", "restart.flag"]:
+				var fp: String = root() + "state/" + flag
+				if FileAccess.file_exists(fp):
+					DirAccess.remove_absolute(fp)
+					print("server: %s requested — checkpointing and exiting" % flag)
+					if int(state.tick) > 0:
+						_checkpoint(int(state.tick))
+					get_tree().quit(0)
+					return
 	var target := Clock.tick_for(now, genesis)
 	var behind := target - int(state.tick)
 	var threshold := int(Sim.R().get("consciousness", {}).get("catchup_threshold_ticks", 60))
@@ -172,18 +190,12 @@ func _housekeeping(tick: int, now: float) -> void:
 		metrics.llm = llm.status()
 		if not smoke_mode:
 			Watchdog.write_metrics(metrics.duplicate(true))
-		if not healthy and now - boot_unix >= Watchdog.HEALTHY_AFTER_SEC:
-			healthy = true
-			if not smoke_mode:
-				Watchdog.mark_healthy()
 		if not Watchdog.memory_ok():
 			push_error("server: memory ceiling hit (%.0f MB) — checkpointing and exiting for restart" % Watchdog.memory_mb())
 			_checkpoint(tick)
 			get_tree().quit(3)
-	if tick % 3600 == 0 and tick != last_checkpoint_tick and not catching_up:
+	if (tick % 300 == 0 or tick % Clock.TICKS_PER_DAY == 0) and tick != last_checkpoint_tick and not catching_up:
 		_checkpoint(tick)
-	if tick % Clock.TICKS_PER_DAY == 0 and not catching_up:
-		_checkpoint(tick, true)
 	if int(state.map_version) != last_map_version:
 		last_map_version = int(state.map_version)
 		net.broadcast({"type": "map", "map": _public_map()})
@@ -191,15 +203,16 @@ func _housekeeping(tick: int, now: float) -> void:
 		if _scan_journal():
 			net.broadcast(_journal_msg())
 
-func _checkpoint(tick: int, daily: bool = false) -> void:
+# latest.json every 5 minutes (and after inbox ops / on stop); hourly copies (48 kept); one per sim day kept forever.
+func _checkpoint(tick: int) -> void:
 	last_checkpoint_tick = tick
 	var base := data_dir() + "checkpoints/"
 	Checkpoint.save(state, base + "latest.json")
-	var sim := Clock.sim(tick)
-	Checkpoint.save(state, base + "hourly/tick-%09d.json" % tick)
-	_trim_dir(base + "hourly", 48)
-	if daily:
-		Checkpoint.save(state, base + "daily/day-%05d.json" % int(sim.day))
+	if tick % 3600 == 0:
+		Checkpoint.save(state, base + "hourly/tick-%09d.json" % tick)
+		_trim_dir(base + "hourly", 48)
+	if tick % Clock.TICKS_PER_DAY == 0:
+		Checkpoint.save(state, base + "daily/day-%05d.json" % int(Clock.sim(tick).day))
 
 func _trim_dir(dir: String, keep: int) -> void:
 	var d := DirAccess.open(dir)
@@ -220,6 +233,8 @@ func _ingest_inbox(tick: int) -> void:
 		return
 	var files := Array(d.get_files()).filter(func(f): return f.ends_with(".json"))
 	files.sort()
+	if files.is_empty():
+		return
 	for f in files:
 		var text := FileAccess.get_file_as_string(dir + "/" + f)
 		var parsed = JSON.parse_string(text)
@@ -241,6 +256,7 @@ func _ingest_inbox(tick: int) -> void:
 		state.inbox_applied.append(f)
 		while state.inbox_applied.size() > 200:
 			state.inbox_applied.remove_at(0)
+	_checkpoint(tick)   # applied ops must survive a restart
 
 # ---------------------------------------------------------------- viewer feed
 func _on_message(peer_id: int, msg: Dictionary) -> void:

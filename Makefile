@@ -31,10 +31,10 @@ export-web:
 	$(GODOT) --headless --path . --export-release Web build/web/index.html
 	@test -f build/web/index.wasm && echo "web export ok: build/web" || (echo "web export failed (are the export templates installed?)" && exit 1)
 
-## pull, re-export the viewer, restart the world (run on the VPS)
+## pull, re-export the viewer, restart the world (run on the VPS as any sudoer; git runs as the vesper user)
 deploy:
-	git pull --ff-only
-	$(MAKE) -s export-web
+	sudo -u vesper -H git -C /opt/vesper pull --rebase --autostash -X ours origin main
+	sudo -u vesper -H $(MAKE) -s -C /opt/vesper export-web
 	sudo systemctl restart vesper
 	sudo systemctl --no-pager --lines=3 status vesper
 

@@ -66,7 +66,7 @@ The newspaper: [`journal/`](journal/) (also served at `/journal/` next to the vi
 
 ## Run it yourself
 
-On a fresh Ubuntu 24.04 VPS:
+On a fresh Ubuntu 24.04 VPS (1 vCPU, 2 GB RAM is plenty; 1 GB works):
 
 ```bash
 git clone https://github.com/bytekiddo/vesper.git && cd vesper && sudo ./setup.sh
@@ -75,6 +75,10 @@ git clone https://github.com/bytekiddo/vesper.git && cd vesper && sudo ./setup.s
 `setup.sh` is interactive and idempotent. It installs Godot 4.7.2 (headless + web templates), Python, nginx with the COOP/COEP headers,
 git with a deploy key, UFW, systemd units (world server with auto-restart, overseer timer, nightly backup) and log rotation; asks for
 your OpenRouter key, budget and domain; writes `.env` (never committed).
+
+Then do the one thing the script cannot do for you: it prints an ed25519 **deploy key** at the end. Add it to the GitHub repo
+(Settings → Deploy keys → *Allow write access*). No GitHub token is needed anywhere; the overseers pull and push with that key.
+Until it is added, cycles still run but cannot pull your commits or push theirs.
 
 Locally (macOS/Linux with Godot 4.7.2 on the PATH):
 
@@ -85,6 +89,18 @@ make viewer-dev      # the desktop viewer against it
 ```
 
 `make smoke` (the 10-minute version) is the definition of done for any change. See [`AGENTS.md`](AGENTS.md) for the rules every AI session follows and [`docs/DECISIONS.md`](docs/DECISIONS.md) for the pins and trade-offs.
+
+## Operating it
+
+- **Where things are.** Code and world at `/opt/vesper` (owned by user `vesper`); logs in `/var/log/vesper/`; nightly tarballs in `/var/backups/vesper/`; `checkpoints/latest.json` is the live world (also served at `/checkpoint.json`), `checkpoints/daily/` the eras, `ledger/spend.jsonl` every token.
+- **Genesis** is `2026-09-07T00:00:00Z`. Started earlier, the server waits; started later, it catches up at roughly 20 000 ticks a second (a day of downtime is seconds).
+- **The overseers** run at 00:17, 06:17, 12:17, 18:17 UTC (plus up to 15 min jitter). Run one now with `sudo systemctl start vesper-overseer.service` and follow `/var/log/vesper/overseer.log`. A cycle takes 30–45 minutes because every proposal gets the full 10-minute smoke test.
+- **Restarts** are graceful: `systemctl stop|restart vesper` and the overseers both drop `state/stop` / `state/restart.flag`; the server checkpoints and exits, systemd restarts it. Restarts count toward the automatic rollback only when nobody asked for them.
+- **You may commit too.** Push to `main` from anywhere; the next cycle rebases the server's commits on top of yours (your version wins a conflict). To ship a code change immediately: `make deploy` on the VPS.
+- **Kernel edits** (`kernel/`) are yours alone: edit, `make kernel-hash`, `make smoke`, commit, `git tag -f last-known-good && git push -f origin last-known-good`. Anything else that touches the kernel is reverted at the next boot.
+- **Budget.** `BUDGET_USD_PER_MONTH` in `.env` (50–100). Citizens get 70 %, overseers 30 %; the server derives a daily allowance from what is left in the month. Change it, then `sudo systemctl restart vesper`. An empty key means the town runs on habit alone.
+- **TLS** is not configured by `setup.sh` (nginx listens on 80). Plain: `apt install certbot python3-certbot-nginx && certbot --nginx -d <domain>`. Behind Cloudflare (orange cloud): WebSockets are proxied on every plan; use SSL mode *Full (strict)* with a Cloudflare Origin CA certificate (or certbot), keep Rocket Loader and Email Address Obfuscation **off** for this zone (they inject scripts into the viewer's page), and optionally add a Cache Rule making `*.wasm` and `*.pck` cacheable (they are not by default). *Flexible* mode also works with the port-80-only nginx, but the edge-to-origin hop is then plaintext.
+- **If it breaks.** `journalctl -u vesper -n 50`, then `make smoke` in `/opt/vesper` as the `vesper` user. Three boots in a row that never reach ten healthy minutes restore the code from `last-known-good` automatically (`state/guard.log`). The world itself is never restored by that; it lives in the checkpoints.
 
 ## Layout
 

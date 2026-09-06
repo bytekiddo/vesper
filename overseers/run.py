@@ -15,7 +15,27 @@ PROPOSERS = ["worldsmith", "weaver", "lawgiver"]
 EDITABLE = ("world/", "viewer/", "overseers/", "ops/", "docs/", "README.md", "journal/", "config/", "Makefile", "setup.sh", "export_presets.cfg", "project.godot")
 FAMILY = lambda mid: mid.split("/")[0]  # noqa: E731
 ARGS = None
+TOUCHED = set()   # every repo path this cycle wrote
+BACKUP = {}       # dry-run: original content (or None) of every path before this cycle first wrote it
 log = rails.log
+
+
+def will_write(rel):
+    """Call before writing a repo path so a dry-run can put back exactly what was there."""
+    TOUCHED.add(rel)
+    if rel not in BACKUP:
+        full = os.path.join(ROOT, rel)
+        BACKUP[rel] = open(full, encoding="utf-8").read() if os.path.isfile(full) else None
+
+
+def restore_backup():
+    for rel, content in BACKUP.items():
+        full = os.path.join(ROOT, rel)
+        if content is None:
+            if os.path.exists(full):
+                os.remove(full)
+        else:
+            open(full, "w", encoding="utf-8").write(content)
 
 
 # ---------------------------------------------------------------- plumbing
@@ -30,6 +50,16 @@ def git(*args, check=True):
     return sh(["git", *args], check=check)
 
 
+def sync_upstream():
+    """Rebase the server's local commits onto origin/main. On a conflict the human's version wins (-X ours = upstream)."""
+    r = subprocess.run(["git", "pull", "-q", "--rebase", "--autostash", "-X", "ours", "origin", "main"], cwd=ROOT, capture_output=True, text=True, timeout=300)
+    if r.returncode == 0:
+        return True
+    subprocess.run(["git", "rebase", "--abort"], cwd=ROOT, capture_output=True)
+    log(f"pull from origin failed; continuing on local history: {(r.stderr or r.stdout).strip()[-300:]}")
+    return False
+
+
 def load_state():
     try:
         return json.load(open(STATE_FILE, encoding="utf-8"))
@@ -38,6 +68,7 @@ def load_state():
 
 
 def save_state(st):
+    will_write("overseers/state.json")
     json.dump(st, open(STATE_FILE, "w", encoding="utf-8"), indent=2)
 
 
@@ -183,6 +214,7 @@ def steward(st):
     new = {"_written_by": "the Steward", "updated": datetime.now(timezone.utc).isoformat(), "reason": str(ans.get("reason", ""))[:300]}
     for r in roles:
         new[r] = {"model": pick[r], "prompt": market[pick[r]]["prompt"], "completion": market[pick[r]]["completion"]}
+    will_write("config/models.json")
     json.dump(new, open(MODELS_FILE, "w", encoding="utf-8"), indent=2)
     log(f"steward: {json.dumps({r: pick[r] for r in roles})}")
 
@@ -247,16 +279,31 @@ def apply_proposal(role, prop):
                 continue
         full = os.path.join(ROOT, rel)
         os.makedirs(os.path.dirname(full), exist_ok=True)
+        will_write(rel)
         open(full, "w", encoding="utf-8").write(content if content.endswith("\n") else content + "\n")
         touched.append(rel)
     inbox = None
     good, bad = validate_ops(prop.get("inbox") or [])
     notes += bad
     if good:
-        inbox = f"world/inbox/{int(time.time())}-{role}.json"
+        inbox = f"overseers/proposals/{int(time.time())}-{role}.json"
+        os.makedirs(os.path.join(ROOT, "overseers", "proposals"), exist_ok=True)
+        will_write(inbox)
         json.dump(good, open(os.path.join(ROOT, inbox), "w", encoding="utf-8"), indent=1)
         touched.append(inbox)
     return touched, inbox, notes
+
+
+def deliver(proposal_rel):
+    """Copies a merged proposal's ops into world/inbox/, where the live server picks them up within 30 ticks."""
+    if ARGS.dry_run or not proposal_rel:
+        return
+    shutil.copy(os.path.join(ROOT, proposal_rel), os.path.join(ROOT, "world", "inbox", os.path.basename(proposal_rel)))
+
+
+def export_web():
+    r = subprocess.run(["make", "-s", "export-web"], cwd=ROOT, capture_output=True, text=True, timeout=900)
+    log("web viewer re-exported" if r.returncode == 0 else f"web export failed (viewer unchanged): {(r.stderr or r.stdout).strip()[-200:]}")
 
 
 def revert(touched):
@@ -271,12 +318,16 @@ def revert(touched):
 
 
 def judge(role, touched, smoke_ok, report, breaches):
-    diff = git("diff", "--", *[t for t in touched if not t.startswith("world/inbox/")], check=False)[:40000]
-    new_files = "\n".join(f"=== {t} ===\n{read_file(t)[:20000]}" for t in touched if t.startswith("world/inbox/"))
-    ok, why = rails.content_check(diff + "\n" + new_files)
+    code = [t for t in touched if not t.startswith("overseers/proposals/")]
+    diff = git("diff", "HEAD", "--", *code, check=False)[:40000] if code else ""   # never an empty pathspec: that would diff the whole tree
+    new_files = "\n".join(f"=== {t} ===\n{read_file(t)[:20000]}" for t in touched if t.startswith("overseers/proposals/"))
+    # the mechanical content check skips files whose job is to *describe* the limits (role prompts, the runner itself)
+    checkable = [t for t in code if not t.startswith(("overseers/roles/", "overseers/run.py"))]
+    checked_diff = git("diff", "HEAD", "--", *checkable, check=False)[:40000] if checkable else ""
+    ok, why = rails.content_check(checked_diff + "\n" + new_files)
     if not ok:
         breaches = breaches + [f"content limit in diff: {why}"]
-        rails.quarantine(diff[:4000], why, f"overseer:{role}-diff")
+        rails.quarantine((checked_diff + new_files)[:4000], why, f"overseer:{role}-diff")
     user = (f"Proposal by {role}. Mechanical checks: smoke={'PASS' if smoke_ok else 'FAIL'}; hard-limit breaches={breaches or 'none'}.\n\n"
             f"Smoke report tail:\n{report[-2500:]}\n\nDIFF:\n{diff}\n\nNEW FILES:\n{new_files[:8000]}")
     verdict = {"veto": False, "reason": "no judge call", "notes": ""}
@@ -302,7 +353,7 @@ def commit(message, role, model, paths):
     git("add", "-A", "--", *paths)
     if not git("diff", "--cached", "--name-only", check=False):
         return ""
-    git("commit", "-q", "-m", message, "-m", f"Overseer: {role}/{model}")
+    git("commit", "-q", "-m", message, "-m", f"Overseer: {role}/{model}", "--", *paths)   # only these paths, whatever else is staged
     return git("rev-parse", "--short", "HEAD")
 
 
@@ -313,7 +364,8 @@ def record_decision(line):
         f.write(f"- {datetime.now(timezone.utc).date()} — {line.strip()}\n")
 
 
-def run_proposer(role, st, summary, quarantine_before):
+def run_proposer(role, st, summary):
+    quarantine_before = rails.quarantine_count_today()   # per proposal: one quarantine must not veto the rest of the cycle
     try:
         prop = propose(role, summary)
     except rails.BudgetExhausted as e:
@@ -344,7 +396,11 @@ def run_proposer(role, st, summary, quarantine_before):
         return
     sha = commit(f"{role}: {hyp}", role, model_for(role), touched)
     record_decision(prop.get("decision", ""))
-    st["merges"].append({"sha": sha, "ts": time.time(), "role": role, "hypothesis": hyp, "baseline": rails.metrics(), "files": touched})
+    deliver(inbox)
+    if any(t.startswith("viewer/") for t in touched) and not ARGS.dry_run:
+        export_web()
+    st["merges"].append({"sha": sha, "ts": time.time(), "role": role, "hypothesis": hyp, "baseline": rails.metrics(), "files": touched,
+                         "needs_restart": any(not t.startswith("overseers/proposals/") for t in touched)})
     st["history"].append({"ts": time.time(), "role": role, "hypothesis": hyp, "result": "merged", "sha": sha, "advice": advice})
     log(f"{role}: merged {sha} ({reason or 'ok'})")
 
@@ -369,21 +425,28 @@ def chronicle(st, summary_full, world):
         return
     if not masthead:
         masthead = {"name": str(ans.get("name", "The Vesper Lamp"))[:80], "tone": str(ans.get("tone", ""))[:300], "founded": datetime.now(timezone.utc).isoformat()}
+        will_write("journal/MASTHEAD.json")
         json.dump(masthead, open(mast_path, "w", encoding="utf-8"), indent=2)
-        json.dump([{"op": "set_journal", "name": masthead["name"], "tone": masthead["tone"]}], open(os.path.join(ROOT, f"world/inbox/{int(time.time())}-masthead.json"), "w"), indent=1)
+        os.makedirs(os.path.join(ROOT, "overseers", "proposals"), exist_ok=True)
+        mast_op = f"overseers/proposals/{int(time.time())}-masthead.json"
+        will_write(mast_op)
+        json.dump([{"op": "set_journal", "name": masthead["name"], "tone": masthead["tone"]}], open(os.path.join(ROOT, mast_op), "w"), indent=1)
+        deliver(mast_op)
         log(f"chronicler named the paper: {masthead['name']}")
     st["issues"] = st.get("issues", 0) + 1
     title = str(ans.get("title", "")).strip() or md.splitlines()[0].lstrip("# ")
     if not md.startswith("# "):
         md = f"# {title}\n\n{md}"
     fname = f"journal/{datetime.now(timezone.utc).strftime('%Y-%m-%d')}-{st['issues']:04d}.md"
+    will_write(fname)
     open(os.path.join(ROOT, fname), "w", encoding="utf-8").write(f"{md}\n\n---\n*{masthead['name']} · issue {st['issues']} · {datetime.now(timezone.utc).strftime('%Y-%m-%d')}*\n")
-    commit(f"chronicler: {title[:70]}", "chronicler", model_for("chronicler"), [fname, "journal/MASTHEAD.json", "world/inbox"])
+    commit(f"chronicler: {title[:70]}", "chronicler", model_for("chronicler"), [fname, "journal/MASTHEAD.json", "overseers/proposals"])
     log(f"chronicler: {fname}")
 
 
 def note_in_journal(name, text):
     p = os.path.join(ROOT, "journal", name)
+    will_write(f"journal/{name}")
     open(p, "w", encoding="utf-8").write(text)
     commit(f"journal: {name}", "runner", "none", [f"journal/{name}"])
 
@@ -402,7 +465,7 @@ def rollback_watch(st):
             r = subprocess.run(["git", "revert", "--no-edit", m["sha"]], cwd=ROOT, capture_output=True, text=True)
             if r.returncode != 0:
                 subprocess.run(["git", "revert", "--abort"], cwd=ROOT, capture_output=True)
-                git("checkout", f"{m['sha']}^", "--", *[f for f in m.get("files", []) if not f.startswith("world/inbox/")], check=False)
+                git("checkout", f"{m['sha']}^", "--", *[f for f in m.get("files", []) if not f.startswith("overseers/proposals/")], check=False)
                 git("commit", "-q", "-am", f"rollback of {m['sha']} ({m['role']}): {', '.join(why)}", "-m", "Overseer: runner/rollback", check=False)
             note_in_journal(f"rollback-{datetime.now(timezone.utc).strftime('%Y-%m-%d-%H%M')}.md",
                             f"# Rolled back: {m['hypothesis']}\n\nThe {m['role']}'s change {m['sha']} was undone {age/3600:.0f} hours after merging because stability degraded: {', '.join(why)}.\n")
@@ -429,16 +492,21 @@ def update_readme():
     s = open(p, encoding="utf-8").read()
     s2 = re.sub(r"<!-- ledger:start -->.*?<!-- ledger:end -->", f"<!-- ledger:start -->\n{block}\n<!-- ledger:end -->", s, flags=re.S)
     if s2 != s:
+        will_write("README.md")
         open(p, "w", encoding="utf-8").write(s2)
 
 
-def restart_service():
-    if ARGS.no_restart or ARGS.dry_run or not shutil.which("systemctl"):
+def restart_service(st):
+    """Asks the world server to checkpoint and exit (state/restart.flag); systemd's Restart=always brings it back.
+    Needs no privileges. A planned restart must not count toward the 'restarted 3+ times' rollback trigger."""
+    if ARGS.no_restart or ARGS.dry_run:
         return
-    r = subprocess.run(["sudo", "-n", "systemctl", "restart", "vesper"], capture_output=True, text=True)
-    if r.returncode != 0:
-        r = subprocess.run(["systemctl", "restart", "vesper"], capture_output=True, text=True)
-    log("restarted vesper.service" if r.returncode == 0 else f"could not restart vesper.service: {r.stderr.strip()[:200]}")
+    os.makedirs(os.path.join(ROOT, "state"), exist_ok=True)
+    open(os.path.join(ROOT, "state", "restart.flag"), "w").close()
+    for m in st.get("merges", []):
+        b = m.setdefault("baseline", {})
+        b["boot_count"] = int(b.get("boot_count", 0) or 0) + 1
+    log("asked vesper.service to restart (state/restart.flag)")
 
 
 def push():
@@ -477,6 +545,7 @@ def main():
     ap.add_argument("--smoke-seconds", type=int, default=int(os.environ.get("OVERSEER_SMOKE_SECONDS", "600")))
     ARGS = ap.parse_args()
     if ARGS.check:
+        rails.quarantine = lambda *a, **k: None   # the self-check must not write to quarantine/
         assert offline_answer("judge", "")["veto"] is False
         good, bad = validate_ops([{"op": "event", "text": "hello", "imp": 3}, {"op": "add_citizen", "citizen": {"name": "Tim Cook"}}, {"op": "nope"}])
         assert len(good) == 1 and len(bad) == 2, (good, bad)
@@ -486,13 +555,14 @@ def main():
     for k, v in (line.split("=", 1) for line in open(os.path.join(ROOT, ".env"), encoding="utf-8") if "=" in line and not line.startswith("#")) if os.path.exists(os.path.join(ROOT, ".env")) else []:
         os.environ.setdefault(k.strip(), v.strip().strip('"'))
     log(f"cycle start (offline={ARGS.offline}, dry_run={ARGS.dry_run})")
-    if not rails.guard():
-        log("kernel guard failed; aborting cycle")
+    ok, why = rails.verify_kernel()   # read-only; guard.sh's boot counter belongs to ExecStartPre alone
+    if not ok:
+        log(f"kernel manifest check failed ({why}); aborting cycle")
         sys.exit(4)
     st = load_state()
     st["cycle"] = st.get("cycle", 0) + 1
     if git("remote", check=False) and not ARGS.dry_run:
-        subprocess.run(["git", "pull", "-q", "--ff-only"], cwd=ROOT, capture_output=True, timeout=300)
+        sync_upstream()
     rollback_watch(st)
     quarantine_before = rails.quarantine_count_today()
     broke = rails.overseer_remaining() < 0.02 and not ARGS.offline
@@ -509,22 +579,19 @@ def main():
         for role in PROPOSERS:
             if ARGS.only and ARGS.only != role:
                 continue
-            run_proposer(role, st, summary, quarantine_before)
+            run_proposer(role, st, summary)
         if not ARGS.only or ARGS.only == "chronicler":
             full, world = world_summary(full=True)
             chronicle(st, full, world)
     update_readme()
+    if any(m.get("needs_restart") and time.time() - m["ts"] < 3 * 3600 for m in st.get("merges", [])):
+        restart_service(st)
     save_state(st)
     commit(f"overseers: cycle {st['cycle']} bookkeeping", "runner", "none",
-           ["overseers/state.json", "config/models.json", "ledger", "checkpoints/daily", "docs/DECISIONS.md", "README.md", "journal"])
+           ["overseers/state.json", "config/models.json", "ledger", "checkpoints/daily", "docs/DECISIONS.md", "README.md", "journal", "world/inbox"])   # world/inbox: records the deletion of the two genesis-era tracked ops once the server has eaten them
     push()
-    if not ARGS.dry_run and any(h.get("result") == "merged" and time.time() - h["ts"] < 3 * 3600 for h in st.get("history", [])):
-        restart_service()
     if ARGS.dry_run:
-        git("checkout", "--", ".", check=False)
-        for f in glob.glob(os.path.join(ROOT, "world/inbox/*.json")) + glob.glob(os.path.join(ROOT, "journal/*.md")) + [mast for mast in [os.path.join(ROOT, "journal/MASTHEAD.json")] if os.path.exists(mast)]:
-            if git("ls-files", "--error-unmatch", os.path.relpath(f, ROOT), check=False) != os.path.relpath(f, ROOT):
-                os.remove(f)
+        restore_backup()   # exactly what this cycle wrote goes back to how it was; uncommitted developer work is untouched
     log("cycle end")
 
 

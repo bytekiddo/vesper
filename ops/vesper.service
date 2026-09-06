@@ -13,10 +13,11 @@ EnvironmentFile=/opt/vesper/.env
 Environment=HOME=/home/vesper
 ExecStartPre=/opt/vesper/kernel/guard.sh
 ExecStart=/usr/local/bin/godot --headless --path /opt/vesper -- --server
+# Godot installs no signal handler: ExecStop drops a flag, the server checkpoints and exits 0, then Restart=always brings it back.
+ExecStop=/bin/sh -c 'touch /opt/vesper/state/stop; n=0; while kill -0 "$MAINPID" 2>/dev/null && [ "$n" -lt 100 ]; do sleep 0.2; n=$((n+1)); done'
 Restart=always
 RestartSec=5
-TimeoutStopSec=30
-KillSignal=SIGINT
+TimeoutStopSec=40
 MemoryMax=1200M
 Nice=5
 StandardOutput=append:/var/log/vesper/server.log
