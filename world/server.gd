@@ -137,7 +137,10 @@ func _process(_delta: float) -> void:
 			for flag in ["stop", "restart.flag"]:
 				var fp: String = root() + "state/" + flag
 				if FileAccess.file_exists(fp):
+					var stale: bool = float(FileAccess.get_modified_time(fp)) < boot_unix - 2.0   # left over from before this boot
 					DirAccess.remove_absolute(fp)
+					if stale:
+						continue
 					print("server: %s requested — checkpointing and exiting" % flag)
 					if int(state.tick) > 0:
 						_checkpoint(int(state.tick))
