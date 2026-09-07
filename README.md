@@ -47,9 +47,9 @@ Anything that degrades stability within 24 hours is rolled back automatically an
 | Chronicler | writes the newspaper in `journal/` |
 
 <!-- ledger:start -->
-*Updated 2026-09-06 18:25 UTC by the overseer runner.*
+*Updated 2026-09-07 00:50 UTC by the overseer runner.*
 
-**Spend this month (2026-09):** $0.01 of $75 across 18 calls (68,775 prompt / 41,349 completion tokens).
+**Spend this month (2026-09):** $0.02 of $75 across 31 calls (95,742 prompt / 53,717 completion tokens).
 
 | Role | Model | Spent |
 |---|---|---|

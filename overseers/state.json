@@ -1,12 +1,14 @@
 {
-  "cycle": 3,
+  "cycle": 4,
   "merges": [
     {
       "sha": "bb32521",
       "ts": 1788715150.092651,
       "role": "weaver",
       "hypothesis": "A new tide-reader arrives, drawn by the lighthouse that answers itself; her questions might stir the town into noticing the strange events together.",
-      "baseline": {},
+      "baseline": {
+        "boot_count": 1
+      },
       "files": [
         "world/inbox/1788714534-weaver.json"
       ]
@@ -16,14 +18,124 @@
       "ts": 1788718830.5774467,
       "role": "worldsmith",
       "hypothesis": "Add a lighthouse to Vesper's harbor to improve navigation and create a distinctive coastal landmark.",
-      "baseline": {},
+      "baseline": {
+        "boot_count": 1
+      },
       "files": [
         "overseers/proposals/1788718215-worldsmith.json"
       ],
       "needs_restart": false
+    },
+    {
+      "sha": "eb94968",
+      "ts": 1788740942.4147255,
+      "role": "worldsmith",
+      "hypothesis": "A brass tide-mark at the pier-end gives Sable Tide a place to set her readings and gives the town a small new landmark to talk about.",
+      "baseline": {
+        "boot_count": 150,
+        "catching_up": false,
+        "caught_up": true,
+        "drift_ms_max": 25.9499549865723,
+        "drift_ms_max_window": 0.0,
+        "llm": {
+          "allowance_today": 2.1893,
+          "budget": 75.0,
+          "citizen_spent_month": 0.0,
+          "errors": 0,
+          "est_cost_per_call": 0.00013,
+          "model": "openai/gpt-oss-120b",
+          "pending": 0,
+          "spent_today": 0.0,
+          "stub": false
+        },
+        "memory_mb": 25.7,
+        "month_total": 0.0123,
+        "population": 9,
+        "quarantine_today": 0,
+        "tick": 1740,
+        "ticks": 1740,
+        "ts": 1788740940,
+        "viewers": 0
+      },
+      "files": [
+        "overseers/proposals/1788740329-worldsmith.json"
+      ],
+      "needs_restart": false
+    },
+    {
+      "sha": "4ba061f",
+      "ts": 1788741565.4530754,
+      "role": "weaver",
+      "hypothesis": "A quiet arrival with a practical trade and a connection to the sea will give the town a new steadying presence and give Juno a reason to stay a little longer.",
+      "baseline": {
+        "boot_count": 150,
+        "catching_up": false,
+        "caught_up": true,
+        "drift_ms_max": 22.878885269165,
+        "drift_ms_max_window": 0.0,
+        "llm": {
+          "allowance_today": 2.1899,
+          "budget": 75.0,
+          "citizen_spent_month": 0.0007,
+          "errors": 0,
+          "est_cost_per_call": 0.00013,
+          "model": "openai/gpt-oss-120b",
+          "pending": 0,
+          "spent_today": 0.0007,
+          "stub": false
+        },
+        "memory_mb": 25.7,
+        "month_total": 0.0123,
+        "population": 9,
+        "quarantine_today": 0,
+        "tick": 2340,
+        "ticks": 2340,
+        "ts": 1788741540,
+        "viewers": 0
+      },
+      "files": [
+        "overseers/proposals/1788740952-weaver.json"
+      ],
+      "needs_restart": false
+    },
+    {
+      "sha": "aac776f",
+      "ts": 1788742193.8476388,
+      "role": "lawgiver",
+      "hypothesis": "Increase base conversation chance from 0.06 to 0.10 so townsfolk talk more often, filling memory streams with social texture and reducing isolation.",
+      "baseline": {
+        "boot_count": 150,
+        "catching_up": false,
+        "caught_up": true,
+        "drift_ms_max": 28.3479690551758,
+        "drift_ms_max_window": 0.0,
+        "llm": {
+          "allowance_today": 2.1906,
+          "budget": 75.0,
+          "citizen_spent_month": 0.0008,
+          "errors": 0,
+          "est_cost_per_call": 0.00013,
+          "model": "openai/gpt-oss-120b",
+          "pending": 0,
+          "spent_today": 0.0008,
+          "stub": false
+        },
+        "memory_mb": 25.8,
+        "month_total": 0.0123,
+        "population": 10,
+        "quarantine_today": 0,
+        "tick": 2940,
+        "ticks": 2940,
+        "ts": 1788742140,
+        "viewers": 0
+      },
+      "files": [
+        "world/rules.json"
+      ],
+      "needs_restart": true
     }
   ],
-  "issues": 2,
+  "issues": 3,
   "history": [
     {
       "ts": 1788715150.0926988,
@@ -39,6 +151,30 @@
       "hypothesis": "Add a lighthouse to Vesper's harbor to improve navigation and create a distinctive coastal landmark.",
       "result": "merged",
       "sha": "e3d2cb9",
+      "advice": ""
+    },
+    {
+      "ts": 1788740942.4149244,
+      "role": "worldsmith",
+      "hypothesis": "A brass tide-mark at the pier-end gives Sable Tide a place to set her readings and gives the town a small new landmark to talk about.",
+      "result": "merged",
+      "sha": "eb94968",
+      "advice": ""
+    },
+    {
+      "ts": 1788741565.4532201,
+      "role": "weaver",
+      "hypothesis": "A quiet arrival with a practical trade and a connection to the sea will give the town a new steadying presence and give Juno a reason to stay a little longer.",
+      "result": "merged",
+      "sha": "4ba061f",
+      "advice": ""
+    },
+    {
+      "ts": 1788742193.8477724,
+      "role": "lawgiver",
+      "hypothesis": "Increase base conversation chance from 0.06 to 0.10 so townsfolk talk more often, filling memory streams with social texture and reducing isolation.",
+      "result": "merged",
+      "sha": "aac776f",
       "advice": ""
     }
   ],
