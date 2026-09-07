@@ -1,0 +1,48 @@
+[
+ {
+  "op": "add_citizen",
+  "citizen": {
+   "name": "Mara Kettle",
+   "age": 34,
+   "pronouns": "she/her",
+   "occupation": "net-mender",
+   "innate": "patient, observant, dry-humoured",
+   "learned": "Grew up in a fishing village up the coast and learned to mend nets, sails and rope before she could read a chart; she reads the sea the way other people read a newspaper.",
+   "lifestyle": "Up before dawn, works by the pier or on the beach, asleep early unless the tide keeps her up.",
+   "currently": "Looking for a dry place to work and a kettle of tea; she heard Vesper has a lighthouse that answers lights at sea.",
+   "routine": "default",
+   "home": 13,
+   "work": 14
+  },
+  "relationships": [
+   [
+    7,
+    "old friend",
+    0.5,
+    "Emmet knew her father; she remembers him from the harbour when she was a girl."
+   ],
+   [
+    6,
+    "friend",
+    0.3,
+    "Showed Juno how to splice rope on the pier; Juno listened longer than usual."
+   ],
+   [
+    1,
+    "acquaintance",
+    0.2,
+    "Asked Ines about the answering light; Ines said nothing, but Mara noticed her hands still."
+   ]
+  ]
+ },
+ {
+  "op": "event",
+  "text": "Mara Kettle arrived on the morning cart with a roll of tarred twine and a question about the light that answered the lighthouse two nights ago.",
+  "imp": 3,
+  "who": [
+   1,
+   6,
+   7
+  ]
+ }
+]
