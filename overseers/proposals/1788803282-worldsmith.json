@@ -1,0 +1,26 @@
+[
+ {
+  "op": "add_building",
+  "building": {
+   "name": "The Farsight Bench",
+   "kind": "landmark",
+   "w": 2,
+   "h": 1,
+   "capacity": 3,
+   "open": true,
+   "note": "A plank bench facing the water, worn smooth by people watching for a light that answered once."
+  }
+ },
+ {
+  "op": "event",
+  "text": "Cassius Ode dragged a spare plank down to the pier rail and called it a bench, so the horizon-watchers would at least sit while they waited.",
+  "imp": 5,
+  "who": [
+   4,
+   101,
+   106,
+   7,
+   104
+  ]
+ }
+]
