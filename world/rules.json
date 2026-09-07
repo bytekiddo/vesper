@@ -47,6 +47,7 @@
     "idle": ["Nothing is happening and I like it.", "The gulls are arguing again.", "Someone is watching the lighthouse.", "I wonder who built it.", "The day is long in the middle."]
   },
   "moods": ["calm", "restless", "cheerful", "wistful", "tired", "curious", "grumpy", "content"],
+  "mood_valence": {"calm": 0.2, "restless": -0.2, "cheerful": 0.8, "wistful": -0.1, "tired": -0.4, "curious": 0.4, "grumpy": -0.7, "content": 0.6},
 
   "routines": {
     "default": [

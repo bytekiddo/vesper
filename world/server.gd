@@ -11,6 +11,7 @@ const Sim = preload("res://world/sim.gd")
 const Map = preload("res://world/map.gd")
 const Memory = preload("res://world/memory.gd")
 const Cognition = preload("res://world/cognition.gd")
+const Metrics = preload("res://world/metrics.gd")
 const LlmScript = preload("res://world/llm.gd")
 const NetScript = preload("res://world/net.gd")
 
@@ -191,6 +192,7 @@ func _housekeeping(tick: int, now: float) -> void:
 		metrics.viewers = net.count()
 		metrics.catching_up = catching_up
 		metrics.llm = llm.status()
+		metrics.merge(Metrics.compute(state, Sim.R()), true)   # sim-derived: conversations/day, visits, mood, diversity, jobs, feature echo
 		if not smoke_mode:
 			Watchdog.write_metrics(metrics.duplicate(true))
 		if not Watchdog.memory_ok():

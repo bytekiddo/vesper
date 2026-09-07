@@ -408,6 +408,8 @@ static func step(state: Dictionary, tick: int, brain: Callable) -> Array:
 				var blk2: Dictionary = blocks[int(c.block)] if int(c.block) >= 0 and int(c.block) < blocks.size() else {}
 				c.action = str(blk2.get("action", "idle"))
 				c.place = int(_building_here(state, c).get("id", 0))
+				if int(c.place) != 0 and int(c.place) != int(c.home):
+					state.stats.visits = int(state.stats.get("visits", 0)) + 1   # metrics: building visits per day
 				c.thought = pick(rl.get("thoughts", {}).get(category(c.action), ["..."]), rng)
 		# perception: who is near? (every other tick, offset by id, to halve the cost during catch-up)
 		if c.action != "sleeping" and (tick + cid) % 2 == 0 and tick - int(c.last_conv_tick) > int(conv_rules.get("cooldown_ticks", 720)):
@@ -580,7 +582,8 @@ static func _new_day(state: Dictionary, tick: int, sim: Dictionary, brain: Calla
 	if living_n > 24 and not kinds.has("workshop"):
 		needs.append("workplaces: a workshop, a boatyard, something to do")
 	state.stats.needs = needs
-	state.history.append({"day": int(sim.day), "pop": living_n, "buildings": state.map.buildings.size(), "w": int(state.map.w), "h": int(state.map.h), "streets": state.map.streets.size()})
+	state.history.append({"day": int(sim.day), "pop": living_n, "buildings": state.map.buildings.size(), "w": int(state.map.w), "h": int(state.map.h), "streets": state.map.streets.size(),
+		"conversations": int(state.stats.conversations), "visits": int(state.stats.get("visits", 0))})
 	while state.history.size() > 2000:
 		state.history.remove_at(0)
 

@@ -6,7 +6,7 @@ const STATE := {
 	"version": 1, "seed": 7, "tick": 0, "next_id": 100,
 	"map": {}, "citizens": [], "events": [], "history": [],
 	"journal": {"name": "", "tone": ""},
-	"stats": {"births": 0, "deaths": 0, "arrivals": 0, "departures": 0, "conversations": 0, "tier2_calls": 0, "tier2_applied": 0, "needs": []},
+	"stats": {"births": 0, "deaths": 0, "arrivals": 0, "departures": 0, "conversations": 0, "tier2_calls": 0, "tier2_applied": 0, "needs": [], "visits": 0},
 	"inbox_applied": [], "map_version": 0, "last_daily_sample": -1, "rules_hash": "",
 }
 
@@ -36,6 +36,6 @@ const MEMORY := {"t": 0, "kind": "obs", "text": "", "imp": 1, "last": 0, "cites"
 # Path spec consumed by kernel/checkpoint.gd
 static func defaults() -> Dictionary:
 	return {
-		"": STATE, "map": MAP, "map.buildings[]": BUILDING, "map.streets[]": STREET,
+		"": STATE, "stats": STATE.stats, "map": MAP, "map.buildings[]": BUILDING, "map.streets[]": STREET,
 		"citizens[]": CITIZEN, "citizens[].memories[]": MEMORY,
 	}

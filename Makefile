@@ -8,7 +8,7 @@ XVFB := $(shell command -v xvfb-run >/dev/null 2>&1 && echo "xvfb-run -a")
 WS ?= ws://127.0.0.1:9002
 OUT ?= state/screenshot.png
 
-.PHONY: smoke smoke-quick run dev viewer viewer-dev screenshot export-web deploy overseer kernel-hash import check
+.PHONY: smoke smoke-quick run dev viewer viewer-dev screenshot export-web deploy overseer kernel-hash import check verify
 
 ## headless boot + fast run + determinism replay + checkpoint round-trip + $(SMOKE_SECONDS)s real-time run
 smoke:
@@ -49,6 +49,10 @@ deploy:
 
 overseer:
 	python3 overseers/run.py $(ARGS)
+
+## give every due hypothesis (24-72 h after its merge) a verdict: journal/verdicts.md + state/verdicts.json
+verify:
+	python3 overseers/run.py --verify
 
 ## HUMAN ONLY. Regenerates the kernel manifest after a deliberate kernel edit; then tag last-known-good.
 kernel-hash:

@@ -232,6 +232,13 @@ def steward(st):
 
 
 # ---------------------------------------------------------------- director
+def recent_verdicts(n=10):
+    try:
+        return json.load(open(os.path.join(ROOT, "state", "verdicts.json"), encoding="utf-8"))[-n:]
+    except (OSError, json.JSONDecodeError):
+        return []
+
+
 def director(st):
     """Runs first (after the Steward has assigned its model): owns docs/ROADMAP.md, picks one focus, assigns work.
     A failed call keeps the previous focus rather than idling the cycle."""
@@ -246,7 +253,8 @@ def director(st):
     user = (f"VISION (docs/VISION.md)\n{read_file('docs/VISION.md')}\n\nCURRENT ROADMAP (docs/ROADMAP.md)\n{roadmap}\n\n"
             f"GIT LOG (recent)\n{git('log', '--oneline', '-25', check=False)}\n\n"
             f"OVERSEER HISTORY (last 7 days: hypothesis -> result)\n{json.dumps(recent)[:3000]}\n\n"
-            f"METRICS (state/metrics.json)\n{json.dumps(rails.metrics())[:2000]}\n\nVISITOR FEEDBACK (state/feedback/)\n{feedback}\n\n"
+            f"METRICS (state/metrics.json + judge scores)\n{json.dumps(metrics_view())[:2500]}\n\n"
+            f"HYPOTHESIS VERDICTS (latest)\n{json.dumps(recent_verdicts())[:3000]}\n\nVISITOR FEEDBACK (state/feedback/)\n{feedback}\n\n"
             f"NEWSPAPER (latest issues)\n{news[:6000]}\n\nWORLD\n{summary[:8000]}\n\n"
             + ("This is the WEEKLY RETROSPECTIVE cycle: include `retrospective`.\n" if weekly else "")
             + "Pick this cycle's focus, assign work, and return the full new ROADMAP.md.")
@@ -393,14 +401,17 @@ def tool_screenshot(wt, tag):
     return out if os.path.exists(out) else f"screenshot failed (exit {code}): {log_[-1500:]}"
 
 
+def image_part(path):
+    """An OpenAI-shaped image content part; rails passes messages through untouched, so multimodal needs no kernel change."""
+    return {"type": "image_url", "image_url": {"url": "data:image/png;base64," + base64.b64encode(open(path, "rb").read()).decode()}}
+
+
 def image_message(path, wt):
-    """A user message carrying one PNG from the worktree as an OpenAI-shaped image part (rails passes messages through untouched)."""
+    """A user message carrying one PNG from the worktree."""
     full = os.path.realpath(path if os.path.isabs(path) else os.path.join(wt, path))
     if not full.startswith(os.path.realpath(wt) + os.sep) or not full.endswith(".png") or not os.path.isfile(full):
         return None
-    b64 = base64.b64encode(open(full, "rb").read()).decode()
-    return {"role": "user", "content": [{"type": "text", "text": f"image: {os.path.relpath(full, wt)}"},
-                                        {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b64}"}}]}
+    return {"role": "user", "content": [{"type": "text", "text": f"image: {os.path.relpath(full, wt)}"}, image_part(full)]}
 
 
 def compact(messages, keep=8):
@@ -512,7 +523,35 @@ def revert(touched):
                 pass
 
 
-def judge(role, touched, smoke_ok, report, breaches):
+def record_judge_score(role, score, better, reason):
+    """The pairwise score lands in state/judge.json; metrics_view() folds it into the metrics the Director and verifier see."""
+    p = os.path.join(ROOT, "state", "judge.json")
+    try:
+        d = json.load(open(p, encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        d = {"history": []}
+    d["history"] = (d.get("history", []) + [{"ts": int(time.time()), "role": role, "score": score, "better": better, "reason": reason}])[-100:]
+    d["last_score"] = score
+    recent = [h["score"] for h in d["history"][-30:]]
+    d["mean_score_30"] = round(sum(recent) / len(recent), 3)
+    os.makedirs(os.path.dirname(p), exist_ok=True)
+    json.dump(d, open(p, "w", encoding="utf-8"), indent=1)
+
+
+def metrics_view():
+    """state/metrics.json (written by the server) plus the runner's own signals (Judge scores)."""
+    m = dict(rails.metrics())
+    try:
+        j = json.load(open(os.path.join(ROOT, "state", "judge.json"), encoding="utf-8"))
+        m["judge_score"], m["judge_score_mean_30"] = j.get("last_score"), j.get("mean_score_30")
+    except (OSError, json.JSONDecodeError):
+        pass
+    return m
+
+
+def judge(role, touched, smoke_ok, report, breaches, shots=None):
+    """Mechanical veto on hard limits; the model's call is advisory. With `shots` (before, after PNGs) the Judge also scores the change pairwise.
+    Returns (veto, reason, notes, score)."""
     code = [t for t in touched if not t.startswith("overseers/proposals/")]
     diff = git("diff", "HEAD", "--", *code, check=False)[:40000] if code else ""   # never an empty pathspec: that would diff the whole tree
     new_files = "\n".join(f"=== {t} ===\n{read_file(t)[:20000]}" for t in touched if os.path.isfile(os.path.join(ROOT, t)) and git("ls-files", "--error-unmatch", t, check=False) != t)   # untracked = new in this branch
@@ -523,14 +562,21 @@ def judge(role, touched, smoke_ok, report, breaches):
     if not ok:
         breaches = breaches + [f"content limit in diff: {why}"]
         rails.quarantine((checked_diff + new_files)[:4000], why, f"overseer:{role}-diff")
-    user = (f"Proposal by {role}. Mechanical checks: smoke={'PASS' if smoke_ok else 'FAIL'}; hard-limit breaches={breaches or 'none'}.\n\n"
+    text = (f"Proposal by {role}. Mechanical checks: smoke={'PASS' if smoke_ok else 'FAIL'}; hard-limit breaches={breaches or 'none'}.\n\n"
             f"Smoke report tail:\n{report[-2500:]}\n\nDIFF:\n{diff}\n\nNEW FILES:\n{new_files[:8000]}")
     verdict = {"veto": False, "reason": "no judge call", "notes": ""}
     try:
-        verdict = ask("judge", user, max_tokens=300, temperature=0.2)
+        if shots:
+            content = [{"type": "text", "text": text + "\n\nPAIRWISE: the first image is the viewer BEFORE this change, the second AFTER. Score the change against the rubric."},
+                       {"type": "text", "text": "[before]"}, image_part(shots[0]), {"type": "text", "text": "[after]"}, image_part(shots[1])]
+            verdict = offline_answer("judge", "") if ARGS.offline else rails.parse_json(
+                chat_messages("judge", [{"role": "system", "content": role_prompt("judge")}, {"role": "user", "content": content}], max_tokens=400, temperature=0.2))
+        else:
+            verdict = ask("judge", text, max_tokens=300, temperature=0.2)
     except Exception as e:  # noqa: BLE001
         log(f"judge unavailable ({e}); mechanical checks decide")
     veto = bool(breaches)
+    reason = breaches[0] if breaches else str(verdict.get("reason", ""))
     if verdict.get("veto") and not breaches:
         why = str(verdict.get("reason", ""))
         ok2, _ = rails.content_check(diff + new_files)
@@ -538,7 +584,17 @@ def judge(role, touched, smoke_ok, report, breaches):
             veto = True
         else:
             log(f"judge tried to veto on taste ('{why}'); overruled — merge by default")
-    return veto, (breaches[0] if breaches else str(verdict.get("reason", ""))), str(verdict.get("notes", ""))[:300]
+    score = None
+    if shots:
+        try:
+            score = max(-2, min(2, int(verdict.get("score", 0) or 0)))
+        except (TypeError, ValueError):
+            score = 0
+        record_judge_score(role, score, str(verdict.get("better", "same"))[:10], str(verdict.get("reason", ""))[:200])
+        log(f"judge: pairwise score {score:+d} ({verdict.get('better', 'same')})")
+        if role == "artisan" and score < 0 and not veto:
+            veto, reason = True, f"artisan branch judged worse than before (score {score}); Artisan merges only when not worse"
+    return veto, reason, str(verdict.get("notes", ""))[:300], score
 
 
 def commit(message, role, model, paths, milestone=None):
@@ -614,7 +670,8 @@ def gate(role, st, branch, hyp, milestone, decision):
     breaches = rails.hard_limit_breaches(smoke_ok, quarantine_before)
     if "overseers/run.py" in touched and subprocess.run([sys.executable, "overseers/run.py", "--check"], cwd=ROOT, capture_output=True).returncode != 0:
         breaches.append("overseers/run.py self-check failed")
-    veto, reason, advice = judge(role, touched, smoke_ok, report, breaches)
+    shots = pairwise_shots(branch.rsplit("/", 1)[-1]) if any(t.startswith("viewer/") for t in touched) else None
+    veto, reason, advice, score = judge(role, touched, smoke_ok, report, breaches, shots)
     if veto:
         log(f"{role}: VETOED — {reason} (branch {branch} kept as evidence)")
         revert(touched)
@@ -629,8 +686,98 @@ def gate(role, st, branch, hyp, milestone, decision):
     git("branch", "-D", branch, check=False)
     st["merges"].append({"sha": sha, "ts": time.time(), "role": role, "hypothesis": hyp, "milestone": milestone, "baseline": rails.metrics(), "files": touched,
                          "needs_restart": any(not t.startswith("overseers/proposals/") for t in touched)})
-    st["history"].append({"ts": time.time(), "role": role, "hypothesis": hyp, "milestone": milestone, "result": "merged", "sha": sha, "advice": advice})
+    st["history"].append({"ts": time.time(), "role": role, "hypothesis": hyp, "milestone": milestone, "result": "merged", "sha": sha, "advice": advice, "score": score})
+    st.setdefault("hypotheses", []).append({"ts": time.time(), "sha": sha, "role": role, "milestone": milestone, "hypothesis": hyp, "baseline": metrics_view()})
     log(f"{role}: merged {sha} ({reason or 'ok'})")
+
+
+def pairwise_shots(tag):
+    """Before = a throwaway worktree of HEAD, after = the merged working tree. Without a display (no xvfb) either fails and the Judge gets text only."""
+    before_wt = os.path.join(WT_DIR, f"before-{tag}")
+    before = os.path.join(ROOT, "state", f"shot-before-{tag}.png")
+    git("worktree", "add", "-q", "--detach", before_wt, "HEAD")
+    try:
+        shot = tool_screenshot(before_wt, "before")
+        if os.path.isfile(shot):
+            shutil.copy(shot, before)
+    finally:
+        drop_worktree(before_wt)
+    after = tool_screenshot(ROOT, f"after-{tag}")
+    if os.path.isfile(before) and os.path.isfile(after):
+        return before, after
+    log(f"pairwise screenshots unavailable ({shot if not os.path.isfile(before) else after}); judge gets text only")
+    return None
+
+
+# ---------------------------------------------------------------- hypothesis verifier
+HYP_RE = re.compile(r"^\s*(?P<metric>[A-Za-z][\w /.\-]*?)\s+will\s+(?P<dir>rise|fall)\s+to\s+(?P<value>-?\d+(?:\.\d+)?)\s*%?\s+within\s+(?P<hours>\d+)\s*(?:h|hours?)\s*\.?\s*$", re.I)
+
+
+def parse_hypothesis(text):
+    """'<metric> will <rise|fall> to <value> within <N> hours' -> {metric, dir, value, hours}; None when not in that form."""
+    m = HYP_RE.match(text or "")
+    if not m:
+        return None
+    return {"metric": re.sub(r"[ /\-]+", "_", m["metric"].strip().lower()), "dir": m["dir"].lower(), "value": float(m["value"]), "hours": int(m["hours"])}
+
+
+def metric_value(metrics, key):
+    cur = metrics
+    for part in key.split("."):
+        if not isinstance(cur, dict) or part not in cur:
+            return None
+        cur = cur[part]
+    return float(cur) if isinstance(cur, (int, float)) and not isinstance(cur, bool) else None
+
+
+def verdict(h, metrics, now=None):
+    """(confirmed | refuted | inconclusive | pending, why). Checked 24-72 h after merge against the live metrics."""
+    now = now or time.time()
+    p = parse_hypothesis(h.get("hypothesis", ""))
+    if not p:
+        return "inconclusive", "not in the form '<metric> will <rise|fall> to <value> within <N> hours'"
+    due = float(h["ts"]) + min(72, max(24, p["hours"])) * 3600
+    if now < due:
+        return "pending", f"due in {(due - now) / 3600:.0f} h"
+    if not metrics or now - float(metrics.get("ts", 0) or 0) > 6 * 3600:
+        return "inconclusive", "state/metrics.json stale or missing"
+    v = metric_value(metrics, p["metric"])
+    if v is None:
+        return "inconclusive", f"metric '{p['metric']}' is not in state/metrics.json"
+    ok = v >= p["value"] if p["dir"] == "rise" else v <= p["value"]
+    return ("confirmed" if ok else "refuted"), f"{p['metric']} = {v:g}, target {'>=' if p['dir'] == 'rise' else '<='} {p['value']:g}"
+
+
+def verify(st):
+    """Gives every due hypothesis a verdict: journal/verdicts.md (committed) + state/verdicts.json (for the Director). Refuted is information, never a rollback."""
+    m = metrics_view()
+    keep, out = [], []
+    for h in st.get("hypotheses", []):
+        v, why = verdict(h, m)
+        if v == "pending":
+            keep.append(h)
+            continue
+        out.append({"ts": int(time.time()), "sha": h.get("sha"), "role": h.get("role"), "milestone": h.get("milestone"), "hypothesis": h.get("hypothesis"), "verdict": v, "why": why})
+        log(f"verify: {v} — {h.get('role')}: {h.get('hypothesis')} ({why})")
+    st["hypotheses"] = keep
+    if not out:
+        return out
+    sp = os.path.join(ROOT, "state", "verdicts.json")
+    try:
+        old = json.load(open(sp, encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        old = []
+    os.makedirs(os.path.dirname(sp), exist_ok=True)
+    json.dump((old + out)[-100:], open(sp, "w", encoding="utf-8"), indent=1)
+    jp = os.path.join(ROOT, "journal", "verdicts.md")
+    will_write("journal/verdicts.md")
+    with open(jp, "a", encoding="utf-8") as f:
+        if f.tell() == 0:
+            f.write("# Hypothesis verdicts\n\nOne line per verdict, written by the verifier 24–72 h after a merge. Refuted is information, not a rollback.\n\n")
+        for r in out:
+            f.write(f"- {datetime.now(timezone.utc).date()} — **{r['verdict']}** — {r['role']} ({r['milestone']}, {r['sha']}): {r['hypothesis']} — {r['why']}\n")
+    commit(f"verifier: {len(out)} verdict(s)", "verifier", "none", ["journal/verdicts.md"])
+    return out
 
 
 # ---------------------------------------------------------------- chronicler
@@ -785,6 +932,8 @@ def main():
     ap.add_argument("--no-restart", action="store_true")
     ap.add_argument("--no-push", action="store_true")
     ap.add_argument("--check", action="store_true", help="self-check and exit")
+    ap.add_argument("--verify", action="store_true", help="run the hypothesis verifier once and exit (make verify)")
+    ap.add_argument("--judge-pair", nargs=2, metavar=("BEFORE_PNG", "AFTER_PNG"), help="score two viewer screenshots pairwise and exit")
     ap.add_argument("--smoke-seconds", type=int, default=int(os.environ.get("OVERSEER_SMOKE_SECONDS", "600")))
     ARGS = ap.parse_args()
     if ARGS.check:
@@ -799,10 +948,29 @@ def main():
         assert tool_write("kernel/clock.gd", "x", ROOT).startswith("refused") and tool_write("config/budget.json", "{}", ROOT).startswith("refused")
         assert tool_write("world/x.json", "{bad", ROOT).startswith("refused") and tool_read("../.env", ROOT).startswith("refused")
         assert "_tools" in role_prompt("engineer").lower() or "tool call" in role_prompt("engineer")
+        hp = parse_hypothesis("Conversations per day will rise to 30 within 72 hours")
+        assert hp == {"metric": "conversations_per_day", "dir": "rise", "value": 30.0, "hours": 72}, hp
+        assert parse_hypothesis("make it nicer") is None
+        h = {"ts": time.time() - 30 * 3600, "hypothesis": "population will rise to 10 within 24 hours"}
+        assert verdict(h, {"ts": time.time(), "population": 12})[0] == "confirmed" and verdict(h, {"ts": time.time(), "population": 3})[0] == "refuted"
+        assert verdict({"ts": time.time(), "hypothesis": h["hypothesis"]}, {"ts": time.time(), "population": 12})[0] == "pending" and verdict(h, {})[0] == "inconclusive"
+        assert verdict({"ts": h["ts"], "hypothesis": "mean mood will fall to -0.5 within 24 hours"}, {"ts": time.time(), "mean_mood": -0.6})[0] == "confirmed"
+        assert verdict({"ts": h["ts"], "hypothesis": "mean mood will fall to -0.5 within 48 hours"}, {"ts": time.time(), "mean_mood": -0.6})[0] == "pending"   # 30 h < 48 h
         print("overseer self-check ok")
         return
     for k, v in (line.split("=", 1) for line in open(os.path.join(ROOT, ".env"), encoding="utf-8") if "=" in line and not line.startswith("#")) if os.path.exists(os.path.join(ROOT, ".env")) else []:
         os.environ.setdefault(k.strip(), v.strip().strip('"'))
+    if ARGS.judge_pair:
+        rails.begin_cycle()
+        veto, reason, notes, score = judge("check", [], True, "(pairwise check: no diff)", [], shots=tuple(os.path.abspath(p) for p in ARGS.judge_pair))
+        log(f"judge-pair: score={score} veto={veto} reason={reason!r} -> state/judge.json")
+        return
+    if ARGS.verify:
+        st = load_state()
+        out = verify(st)
+        save_state(st)
+        log(f"verify: {len(out)} verdict(s), {len(st.get('hypotheses', []))} pending")
+        return
     log(f"cycle start (offline={ARGS.offline}, dry_run={ARGS.dry_run})")
     ok, why = rails.verify_kernel()   # read-only; guard.sh's boot counter belongs to ExecStartPre alone
     if not ok:
@@ -814,6 +982,7 @@ def main():
     if git("remote", check=False) and not ARGS.dry_run:
         sync_upstream()
     rollback_watch(st)
+    verify(st)
     prune_branches()
     quarantine_before = rails.quarantine_count_today()
     broke = rails.overseer_remaining() < 0.02 and not ARGS.offline
