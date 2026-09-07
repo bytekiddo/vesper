@@ -1,0 +1,50 @@
+[
+ {
+  "op": "add_citizen",
+  "citizen": {
+   "name": "Perrin Ashgrove",
+   "age": 38,
+   "pronouns": "he/him",
+   "occupation": "lamp-fitter",
+   "innate": "meticulous, quiet, watchful",
+   "learned": "Tended coastal signal lamps for eleven years until his station was decommissioned; came looking for the one lighthouse rumored to still get an answer from the sea.",
+   "lifestyle": "Wakes before dawn to check lens and wick, spends afternoons repairing gear, walks the pier at dusk watching the horizon.",
+   "currently": "Trying to work out whether the light Emmet saw two nights ago was a real ship's lamp or fog-trick, and hoping Ines will let him help keep the lighthouse.",
+   "routine": "keeper",
+   "home": 1,
+   "work": 1
+  },
+  "relationships": [
+   [
+    1,
+    "colleague",
+    0.3,
+    "newly arrived, eager to help tend the lamp"
+   ],
+   [
+    7,
+    "acquaintance",
+    0.2,
+    "listened closely to Emmet's account of the answering light"
+   ],
+   [
+    101,
+    "acquaintance",
+    0.2,
+    "compared notes on tides and signal lights"
+   ]
+  ]
+ },
+ {
+  "op": "event",
+  "text": "A stranger stepped off a fishing boat at first light, saying he'd seen the same light Emmet described, three nights running, and had rowed a long way to find out what it meant.",
+  "imp": 6,
+  "who": [
+   1,
+   7,
+   101,
+   104,
+   4
+  ]
+ }
+]
