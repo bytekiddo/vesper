@@ -1,31 +1,6 @@
 {
-  "cycle": 3,
+  "cycle": 4,
   "merges": [
-    {
-      "sha": "bb32521",
-      "ts": 1788715150.092651,
-      "role": "weaver",
-      "hypothesis": "A new tide-reader arrives, drawn by the lighthouse that answers itself; her questions might stir the town into noticing the strange events together.",
-      "baseline": {
-        "boot_count": 1
-      },
-      "files": [
-        "world/inbox/1788714534-weaver.json"
-      ]
-    },
-    {
-      "sha": "e3d2cb9",
-      "ts": 1788718830.5774467,
-      "role": "worldsmith",
-      "hypothesis": "Add a lighthouse to Vesper's harbor to improve navigation and create a distinctive coastal landmark.",
-      "baseline": {
-        "boot_count": 1
-      },
-      "files": [
-        "overseers/proposals/1788718215-worldsmith.json"
-      ],
-      "needs_restart": false
-    },
     {
       "sha": "d4819a4",
       "ts": 1788763383.6981263,
@@ -62,7 +37,7 @@
       "needs_restart": true
     }
   ],
-  "issues": 2,
+  "issues": 3,
   "history": [
     {
       "ts": 1788715150.0926988,
