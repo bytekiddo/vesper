@@ -116,5 +116,110 @@
       "reason": "brands:Slack"
     }
   ],
-  "hypotheses": []
+  "hypotheses": [
+    {
+      "ts": 1788803887.173105,
+      "sha": "49cd96c",
+      "role": "worldsmith",
+      "milestone": "Horizon-watch gathering spot",
+      "hypothesis": "conversations mentioning 'the light' or occurring near the pier/bench will rise to 15 within 24 hours",
+      "baseline": {
+        "activity_diversity": 0.364,
+        "boot_count": 4,
+        "building_visits_per_day": 58,
+        "catching_up": false,
+        "caught_up": true,
+        "conversations_per_day": 134,
+        "drift_ms_max": 0.0,
+        "drift_ms_max_window": 29.4411182403564,
+        "feature_echo": 11,
+        "jobs": {
+          "apprentice": 1,
+          "baker": 1,
+          "doctor": 1,
+          "ferry clerk": 1,
+          "lighthouse keeper": 1,
+          "net-mender": 1,
+          "retired fisher": 1,
+          "shopkeeper": 1,
+          "tide-reader": 2,
+          "town clerk": 1
+        },
+        "llm": {
+          "allowance_today": 5.1383,
+          "budget": 400.0,
+          "citizen_spent_month": 0.021,
+          "errors": 0,
+          "est_cost_per_call": 0.00013,
+          "model": "openai/gpt-oss-120b",
+          "pending": 1,
+          "spent_today": 0.0001,
+          "stub": false
+        },
+        "mean_mood": 0.064,
+        "memory_mb": 26.8,
+        "population": 11,
+        "quarantine_today": 0,
+        "recent_features": 21,
+        "tick": 56160,
+        "ticks": 12960,
+        "ts": 1788795360,
+        "viewers": 0,
+        "judge_score": 0,
+        "judge_score_mean_30": 0.0
+      }
+    },
+    {
+      "ts": 1788804553.312427,
+      "sha": "f3b3e02",
+      "role": "weaver",
+      "milestone": "Population growth & lighthouse mystery thread",
+      "hypothesis": "conversations will rise to 130 within 24 hours",
+      "baseline": {
+        "activity_diversity": 0.364,
+        "boot_count": 4,
+        "building_visits_per_day": 58,
+        "catching_up": false,
+        "caught_up": true,
+        "conversations_per_day": 134,
+        "drift_ms_max": 0.0,
+        "drift_ms_max_window": 29.4411182403564,
+        "feature_echo": 11,
+        "jobs": {
+          "apprentice": 1,
+          "baker": 1,
+          "doctor": 1,
+          "ferry clerk": 1,
+          "lighthouse keeper": 1,
+          "net-mender": 1,
+          "retired fisher": 1,
+          "shopkeeper": 1,
+          "tide-reader": 2,
+          "town clerk": 1
+        },
+        "llm": {
+          "allowance_today": 5.1383,
+          "budget": 400.0,
+          "citizen_spent_month": 0.021,
+          "errors": 0,
+          "est_cost_per_call": 0.00013,
+          "model": "openai/gpt-oss-120b",
+          "pending": 1,
+          "spent_today": 0.0001,
+          "stub": false
+        },
+        "mean_mood": 0.064,
+        "memory_mb": 26.8,
+        "population": 11,
+        "quarantine_today": 0,
+        "recent_features": 21,
+        "tick": 56160,
+        "ticks": 12960,
+        "ts": 1788795360,
+        "viewers": 0,
+        "judge_score": 0,
+        "judge_score_mean_30": 0.0
+      }
+    }
+  ]
 }
