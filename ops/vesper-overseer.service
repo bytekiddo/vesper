@@ -10,7 +10,7 @@ WorkingDirectory=/opt/vesper
 EnvironmentFile=/opt/vesper/.env
 Environment=HOME=/home/vesper
 ExecStart=/usr/bin/python3 /opt/vesper/overseers/run.py
-TimeoutStartSec=3h
+TimeoutStartSec=4h
 Nice=10
 StandardOutput=append:/var/log/vesper/overseer.log
 StandardError=append:/var/log/vesper/overseer.log

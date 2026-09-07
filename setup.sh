@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 # Vesper — one-shot, idempotent setup for Ubuntu 24.04. Re-run freely.
 # Installs Godot 4.7.2 (headless binary + web export templates), Python, nginx (COOP/COEP), git deploy key,
-# UFW, systemd units (world server with auto-restart, overseer timer, nightly backup), log rotation. Writes .env.
+# UFW, systemd units (world server with auto-restart, overseer timer, nightly backup), log rotation, Xvfb + Mesa
+# (screenshots for the Artisan and the Judge on a server with no display). Writes .env.
+# Env knobs for unattended runs: OPENROUTER_API_KEY, PIXELLAB_API_KEY, BUDGET_USD_PER_MONTH, VESPER_DOMAIN, REPO_URL,
+# SKIP_WEB_TEMPLATES=1 (skip the large export-template download; the viewer is then not exported).
 set -euo pipefail
 
 GODOT_VERSION="4.7.2"
@@ -21,6 +24,8 @@ REPO_URL="${REPO_URL:-https://github.com/bytekiddo/vesper.git}"
 say() { printf '\n\033[1;36m== %s\033[0m\n' "$*"; }
 need_root() { if [ "$(id -u)" -ne 0 ]; then echo "run as root: sudo ./setup.sh" >&2; exit 1; fi; }
 need_root
+# a container (the setup check runs in `docker run ubuntu:24.04`) has no systemd, no ufw kernel support, no sshd
+HAS_SYSTEMD=0; [ -d /run/systemd/system ] && HAS_SYSTEMD=1
 
 if ! grep -q 'VERSION_ID="24.04"' /etc/os-release 2>/dev/null; then
   echo "warning: this script is written for Ubuntu 24.04; continuing anyway" >&2
@@ -29,11 +34,16 @@ fi
 say "packages"
 export DEBIAN_FRONTEND=noninteractive
 apt-get update -qq
-apt-get install -y -qq --no-install-recommends python3 nginx ufw git unzip curl ca-certificates logrotate make >/dev/null
+apt-get install -y -qq --no-install-recommends python3 nginx ufw git unzip curl ca-certificates logrotate make sudo coreutils openssh-client \
+  xvfb libgl1 libgl1-mesa-dri libegl1 libx11-6 libxcursor1 libxinerama1 libxrandr2 libxi6 libxext6 libxrender1 libxfixes3 libxkbcommon0 >/dev/null
 
 say "clock (canonical time is the wall clock; it must be NTP-synchronised)"
-timedatectl set-ntp true 2>/dev/null || true
-[ "$(timedatectl show -p NTPSynchronized --value 2>/dev/null)" = "yes" ] || echo "warning: clock is not NTP-synchronised yet; check 'timedatectl' before genesis" >&2
+if [ "$HAS_SYSTEMD" = 1 ]; then
+  timedatectl set-ntp true 2>/dev/null || true
+  [ "$(timedatectl show -p NTPSynchronized --value 2>/dev/null)" = "yes" ] || echo "warning: clock is not NTP-synchronised yet; check 'timedatectl' before genesis" >&2
+else
+  echo "no systemd here (container?): skipping NTP, UFW, service enablement; configs are still installed and validated" >&2
+fi
 
 say "service user + directories"
 id -u "$SVC_USER" >/dev/null 2>&1 || useradd --system --create-home --home-dir "/home/$SVC_USER" --shell /usr/sbin/nologin "$SVC_USER"
@@ -62,7 +72,9 @@ if ! /usr/local/bin/godot --version 2>/dev/null | grep -q "^${GODOT_VERSION}"; t
 fi
 /usr/local/bin/godot --version
 TPL_DIR="/home/$SVC_USER/.local/share/godot/export_templates/${GODOT_VERSION}.stable"
-if [ ! -f "$TPL_DIR/web_nothreads_release.zip" ]; then
+if [ "${SKIP_WEB_TEMPLATES:-0}" = 1 ]; then
+  echo "SKIP_WEB_TEMPLATES=1: not downloading export templates; the web viewer will not be exported by this run" >&2
+elif [ ! -f "$TPL_DIR/web_nothreads_release.zip" ]; then
   say "web export templates (large download, once)"
   tmp=$(mktemp -d)
   curl -fsSL -o "$tmp/templates.tpz" "$GODOT_URL/$GODOT_TPZ"
@@ -81,15 +93,18 @@ ask() { local var="$1" prompt="$2" default="$3" secret="${4:-}"; local cur; cur=
   echo "${val:-$default}"; }
 if [ -t 0 ]; then
   KEY=$(ask OPENROUTER_API_KEY "OpenRouter API key" "" secret)
+  PIXKEY=$(ask PIXELLAB_API_KEY "PixelLab API key (art; empty = no new art)" "" secret)
   BUDGET=$(ask BUDGET_USD_PER_MONTH "Monthly budget in USD (300-500)" "400")
   DOMAIN=$(ask VESPER_DOMAIN "Domain or public IP for the viewer" "$(curl -fsS -4 https://api.ipify.org 2>/dev/null || hostname -I | awk '{print $1}')")
 else
-  KEY="${OPENROUTER_API_KEY:-$(current OPENROUTER_API_KEY)}"; BUDGET="${BUDGET_USD_PER_MONTH:-$(current BUDGET_USD_PER_MONTH)}"; DOMAIN="${VESPER_DOMAIN:-$(current VESPER_DOMAIN)}"
+  KEY="${OPENROUTER_API_KEY:-$(current OPENROUTER_API_KEY)}"; PIXKEY="${PIXELLAB_API_KEY:-$(current PIXELLAB_API_KEY)}"; BUDGET="${BUDGET_USD_PER_MONTH:-$(current BUDGET_USD_PER_MONTH)}"; DOMAIN="${VESPER_DOMAIN:-$(current VESPER_DOMAIN)}"
 fi
 [ -n "$KEY" ] || echo "warning: OPENROUTER_API_KEY is empty — the town will run on habit only (Tier 1) until you edit $ENV_FILE and run: sudo systemctl restart vesper" >&2
+[ -n "$PIXKEY" ] || echo "warning: PIXELLAB_API_KEY is empty — the Artisan cannot generate new art (cached art still shows)" >&2
 umask 077
 cat > "$ENV_FILE" <<ENV
 OPENROUTER_API_KEY=${KEY}
+PIXELLAB_API_KEY=${PIXKEY}
 BUDGET_USD_PER_MONTH=${BUDGET:-400}
 VESPER_DOMAIN=${DOMAIN}
 ENV
@@ -116,29 +131,43 @@ sudo -u "$SVC_USER" bash -c "cd $INSTALL_DIR && sha256sum -c --quiet kernel/KERN
 sudo -u "$SVC_USER" git -C "$INSTALL_DIR" tag -f last-known-good >/dev/null
 
 say "web viewer export"
-sudo -u "$SVC_USER" bash -c "cd $INSTALL_DIR && HOME=/home/$SVC_USER make -s import >/dev/null 2>&1 || true; HOME=/home/$SVC_USER make -s export-web" \
-  || echo "warning: web export failed; the world server is installed anyway. Fix and run: sudo -u $SVC_USER -H make -C $INSTALL_DIR export-web" >&2
+if [ "${SKIP_WEB_TEMPLATES:-0}" = 1 ]; then
+  sudo -u "$SVC_USER" bash -c "cd $INSTALL_DIR && HOME=/home/$SVC_USER make -s import >/dev/null 2>&1 || true"
+else
+  sudo -u "$SVC_USER" bash -c "cd $INSTALL_DIR && HOME=/home/$SVC_USER make -s import >/dev/null 2>&1 || true; HOME=/home/$SVC_USER make -s export-web" \
+    || echo "warning: web export failed; the world server is installed anyway. Fix and run: sudo -u $SVC_USER -H make -C $INSTALL_DIR export-web" >&2
+fi
 
 say "nginx"
 sed "s/__DOMAIN__/${DOMAIN:-_}/" "$INSTALL_DIR/ops/nginx.conf" > /etc/nginx/sites-available/vesper
 ln -sf /etc/nginx/sites-available/vesper /etc/nginx/sites-enabled/vesper
 rm -f /etc/nginx/sites-enabled/default
-nginx -t && systemctl reload nginx && systemctl enable nginx >/dev/null
+nginx -t
+if [ "$HAS_SYSTEMD" = 1 ]; then systemctl reload nginx && systemctl enable nginx >/dev/null; fi
 
 say "firewall"
-SSH_PORT="$(sshd -T 2>/dev/null | awk '/^port /{print $2; exit}')"
-ufw allow OpenSSH >/dev/null; ufw allow "${SSH_PORT:-22}/tcp" >/dev/null; ufw allow 80/tcp >/dev/null; ufw allow 443/tcp >/dev/null
-ufw --force enable >/dev/null; ufw status | head -5
+if [ "$HAS_SYSTEMD" = 1 ]; then
+  SSH_PORT="$(sshd -T 2>/dev/null | awk '/^port /{print $2; exit}')"
+  ufw allow OpenSSH >/dev/null; ufw allow "${SSH_PORT:-22}/tcp" >/dev/null; ufw allow 80/tcp >/dev/null; ufw allow 443/tcp >/dev/null
+  ufw --force enable >/dev/null; ufw status | head -5
+else
+  echo "(skipped: no systemd)"
+fi
 
 say "systemd"
 for u in vesper.service vesper-overseer.service vesper-overseer.timer vesper-backup.service vesper-backup.timer; do
   install -m 644 "$INSTALL_DIR/ops/$u" "/etc/systemd/system/$u"
 done
 install -m 644 "$INSTALL_DIR/ops/logrotate" /etc/logrotate.d/vesper
-systemctl daemon-reload
-systemctl enable --now vesper.service vesper-overseer.timer vesper-backup.timer >/dev/null
-systemctl restart vesper.service
-sleep 3; systemctl --no-pager --lines=5 status vesper.service || true
+if command -v systemd-analyze >/dev/null 2>&1; then systemd-analyze verify /etc/systemd/system/vesper*.service /etc/systemd/system/vesper*.timer 2>&1 | grep -v "^$" || true; fi
+if [ "$HAS_SYSTEMD" = 1 ]; then
+  systemctl daemon-reload
+  systemctl enable --now vesper.service vesper-overseer.timer vesper-backup.timer >/dev/null
+  systemctl restart vesper.service
+  sleep 3; systemctl --no-pager --lines=5 status vesper.service || true
+else
+  echo "(units installed, not started: no systemd)"
+fi
 
 say "done"
 echo "DEPLOY KEY — add it to GitHub > repo Settings > Deploy keys, tick 'Allow write access', before the first overseer cycle:"
@@ -149,4 +178,6 @@ echo "Viewer:    http://${DOMAIN}/"
 echo "Journal:   http://${DOMAIN}/journal/"
 echo "Logs:      /var/log/vesper/server.log  /var/log/vesper/overseer.log"
 echo "Overseers: systemctl list-timers vesper-overseer.timer   (run one now: sudo systemctl start vesper-overseer.service)"
+echo "Art:       sudo -u $SVC_USER -H make -C $INSTALL_DIR art      (PixelLab; idempotent)   art-eval / screenshot run under Xvfb"
+echo "Visit:     open the viewer and press Visit — walk in, talk, give a small gift, leave a thumbs up or down"
 echo "TLS:       optional — apt install certbot python3-certbot-nginx && certbot --nginx -d ${DOMAIN}"
