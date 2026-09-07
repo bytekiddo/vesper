@@ -27,6 +27,9 @@ var population := 0
 var catching_up := false
 var font: Font
 var art = null
+var world_info := {}       # season, weather, light, tint — from the server
+var modulate_node: CanvasModulate
+var light_node: Node2D     # window lights, on a viewport-following layer above the night modulate
 var world: Node2D
 var cam: Camera2D
 var map_node: Node2D
@@ -68,6 +71,8 @@ func _connect() -> void:
 func _build_scene() -> void:
 	world = Node2D.new()
 	add_child(world)
+	modulate_node = CanvasModulate.new()
+	world.add_child(modulate_node)
 	map_node = MapRenderer.new()
 	map_node.art = art
 	map_node.font = font
@@ -80,7 +85,16 @@ func _build_scene() -> void:
 	cam.position = Vector2(24 * TILE, 18 * TILE)
 	world.add_child(cam)
 	cam.make_current()
+	var lights := CanvasLayer.new()
+	lights.layer = 1
+	lights.follow_viewport_enabled = true
+	add_child(lights)
+	light_node = Node2D.new()
+	lights.add_child(light_node)
+	map_node.light_node = light_node
+	light_node.draw.connect(map_node._draw_lights)
 	hud = Hud.new()
+	hud.layer = 2
 	add_child(hud)
 	hud.build(func(): selected = -1)
 
@@ -129,8 +143,10 @@ func _handle(m: Dictionary) -> void:
 			history = m.get("history", [])
 			events = m.get("events", [])
 			catching_up = m.get("catching_up", false)
+			world_info = m.get("world", world_info)
 			map_node.set_map(map)
 			_rebuild_sprites()
+			_apply_world()
 			cam.position = Vector2(int(map.w) * TILE / 2.0, int(map.h) * TILE / 2.0)
 			_update_hud()
 		"tick":
@@ -154,6 +170,8 @@ func _handle(m: Dictionary) -> void:
 				events.remove_at(0)
 			if need_roster or m.get("roster_changed", false):
 				ws.send_text(JSON.stringify({"type": "hello"}))
+			world_info = m.get("world", world_info)
+			_apply_world()
 			_update_hud()
 		"map":
 			map = m.map
@@ -174,12 +192,26 @@ func _rebuild_sprites() -> void:
 		s.setup(c, art.frames_for(str(c.get("name", ""))), font)
 		sprites[id] = s
 
+## light by the clock (and the weather), ground by the season, people inside closed buildings out of sight
+func _apply_world() -> void:
+	var light := clampf(float(world_info.get("light", 1.0)), 0.0, 1.0)
+	var night := Color(0.42, 0.48, 0.78)   # deep, never muddy
+	modulate_node.color = Color(str(world_info.get("tint", "#ffffff"))) * night.lerp(Color.WHITE, light)
+	map_node.set_world(world_info, citizens)
+	var closed := {}
+	for b in map.get("buildings", []):
+		if not b.get("open", false):
+			closed[int(b.id)] = true
+	for id in sprites:
+		var c: Dictionary = citizens.get(id, {})
+		sprites[id].set_inside(closed.has(int(c.get("place", 0))) and str(c.get("activity", "")) != "walking")
+
 func _update_hud() -> void:
 	var alive := 0
 	for id in citizens:
 		if citizens[id].get("alive", true):
 			alive += 1
-	hud.update(clock, budget, stats, events, history, map, alive, catching_up, connected)
+	hud.update(clock, budget, stats, events, history, map, alive, catching_up, connected, world_info)
 
 # ---------------------------------------------------------------- input
 func _unhandled_input(ev: InputEvent) -> void:

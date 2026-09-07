@@ -10,6 +10,7 @@ var data := {}
 var target := Vector2.ZERO
 var facing := "south"
 var moving := false
+var inside := false   # in a closed building: out of sight, listed under the building's name instead
 var anim: AnimatedSprite2D
 var bubble: Label
 var font: Font
@@ -52,7 +53,7 @@ func apply(c: Dictionary) -> void:
 	target = tile_pos(data)
 	if position.distance_to(target) > TILE * 6:   # teleport (restore, catch-up) rather than glide across town
 		position = target
-	visible = data.get("alive", true)
+	visible = data.get("alive", true) and not inside
 	if data.has("facing"):
 		facing = str(data.facing)
 	var text := str(data.get("bubble", ""))
@@ -61,9 +62,13 @@ func apply(c: Dictionary) -> void:
 	if anim == null:
 		queue_redraw()
 
+func set_inside(v: bool) -> void:
+	inside = v
+	visible = data.get("alive", true) and not inside
+
 func _process(delta: float) -> void:
 	var d := target - position
-	moving = d.length() > 0.5
+	moving = d.length() > 0.5 or bool(data.get("moving", false))
 	if moving:
 		if not data.has("facing"):
 			facing = ("east" if d.x > 0 else "west") if absf(d.x) > absf(d.y) else ("south" if d.y > 0 else "north")

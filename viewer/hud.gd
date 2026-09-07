@@ -97,7 +97,7 @@ func _opaque() -> StyleBoxFlat:
 func set_status(text: String) -> void:
 	status_label.text = text
 
-func update(clock: Dictionary, budget: Dictionary, stats: Dictionary, events: Array, history: Array, map: Dictionary, alive: int, catching_up: bool, connected: bool) -> void:
+func update(clock: Dictionary, budget: Dictionary, stats: Dictionary, events: Array, history: Array, map: Dictionary, alive: int, catching_up: bool, connected: bool, world: Dictionary = {}) -> void:
 	var w := int(map.get("w", 0))
 	var h := int(map.get("h", 0))
 	var nb: int = map.get("buildings", []).size()
@@ -105,8 +105,9 @@ func update(clock: Dictionary, budget: Dictionary, stats: Dictionary, events: Ar
 	if history.size() > 1:
 		var first: Dictionary = history[0]
 		growth = "  (day %d: %d people, %d buildings, %dx%d)" % [int(first.day), int(first.pop), int(first.buildings), int(first.w), int(first.h)]
-	top_label.text = "  VESPER   %s %s  %s   |   population %d   |   map %dx%d, %d buildings%s   |   budget $%.2f / $%.0f this month  (%s)%s" % [
-		clock.get("weekday", ""), str(clock.get("date", "")), clock.get("hhmm", ""), alive, w, h, nb, growth, float(budget.get("month_total", 0.0)),
+	var sky := ("   ·   %s, %s" % [str(world.get("season", "")), str(world.get("weather", ""))]) if world.has("season") else ""
+	top_label.text = "  VESPER   %s %s  %s%s   |   population %d   |   map %dx%d, %d buildings%s   |   budget $%.2f / $%.0f this month  (%s)%s" % [
+		clock.get("weekday", ""), str(clock.get("date", "")), clock.get("hhmm", ""), sky, alive, w, h, nb, growth, float(budget.get("month_total", 0.0)),
 		float(budget.get("budget", 400)), str(budget.get("model", "")), "   |   the town is dreaming through an outage (catching up)" if catching_up else ""]
 	var lines := PackedStringArray()
 	for e in events.slice(maxi(0, events.size() - 6)):

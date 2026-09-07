@@ -359,6 +359,7 @@ static func step(state: Dictionary, tick: int, brain: Callable) -> Array:
 		_new_day(state, tick, sim, brain)
 	if sim.minute == 0 and (tick % 6) == 0:
 		_happenings(state, tick, sim)
+		_hourly(state, tick, sim)
 	var occ := {}
 	var w := int(state.map.w)
 	for c in state.citizens:
@@ -402,6 +403,12 @@ static func step(state: Dictionary, tick: int, brain: Callable) -> Array:
 		# move one tile per tick
 		if c.path.size() > 0:
 			var nxt: Array = c.path.pop_front()
+			var dx := int(nxt[0]) - int(c.x)
+			var dy := int(nxt[1]) - int(c.y)
+			if absi(dx) >= absi(dy) and dx != 0:
+				c.facing = "east" if dx > 0 else "west"
+			elif dy != 0:
+				c.facing = "south" if dy > 0 else "north"
 			c.x = int(nxt[0])
 			c.y = int(nxt[1])
 			if c.path.is_empty():
@@ -603,3 +610,82 @@ static func _happenings(state: Dictionary, tick: int, sim: Dictionary) -> void:
 			Memory.add(c, tick, "obs", "Today %s." % text, int(hap.get("imp", 4)))
 		add_event(state, tick, text[0].to_upper() + text.substr(1) + ".", witnesses.map(func(c): return int(c.id)), int(hap.get("imp", 4)))
 		break  # at most one happening per hour
+
+# ---------------------------------------------------------------- seasons, weather, daylight (Phase 2 hooks; the content is the overseers')
+static func season_for(day: int, rl: Dictionary) -> String:
+	var sr: Dictionary = rl.get("season", {})
+	if str(sr.get("override", "")) != "":
+		return str(sr.override)
+	var by_month: Array = sr.get("by_month", [])
+	if by_month.is_empty():
+		return "spring"
+	var month := int((day % (Clock.DAYS_PER_MONTH * 12)) / Clock.DAYS_PER_MONTH)
+	return str(by_month[month % by_month.size()])
+
+## piecewise-linear light 0..1 over the sim day from rules.daylight [[hour, light], ...]
+static func daylight(minute_of_day: int, rl: Dictionary) -> float:
+	var curve: Array = rl.get("daylight", [[0, 1.0], [24, 1.0]])
+	var h := float(minute_of_day) / 60.0
+	for i in range(curve.size() - 1):
+		var a: Array = curve[i]
+		var b: Array = curve[i + 1]
+		if h >= float(a[0]) and h <= float(b[0]):
+			return lerpf(float(a[1]), float(b[1]), (h - float(a[0])) / maxf(0.001, float(b[0]) - float(a[0])))
+	return float(curve[curve.size() - 1][1])
+
+static func activity(c: Dictionary) -> String:
+	return "walking" if c.path.size() > 0 else category(str(c.action))
+
+## what the viewer needs to light and colour the town; pure over (state, tick)
+static func world_view(state: Dictionary, tick: int) -> Dictionary:
+	var rl := R()
+	var sim := Clock.sim(tick)
+	var season := season_for(int(sim.day), rl)
+	var weather := str(state.get("weather", "clear"))
+	var dl := daylight(int(sim.minute_of_day), rl)
+	var wl: Dictionary = rl.get("weather", {}).get("light", {})
+	return {"season": season, "weather": weather, "daylight": snappedf(dl, 0.01), "light": snappedf(dl * float(wl.get(weather, 1.0)), 0.01),
+		"tint": str(rl.get("season_tint", {}).get(season, "#ffffff"))}
+
+## once per sim hour: the season turning and the weather rolling, both from the deterministic RNG so replay agrees
+static func _hourly(state: Dictionary, tick: int, sim: Dictionary) -> void:
+	var rl := R()
+	var season := season_for(int(sim.day), rl)
+	if season != str(state.get("season", "")):
+		var first := str(state.get("season", "")) == ""
+		state.season = season
+		if not first and tick > 0:
+			var ids: Array = []
+			for c in alive(state):
+				Memory.add(c, tick, "obs", "%s has come to Vesper." % season.capitalize(), 5)
+				ids.append(int(c.id))
+			add_event(state, tick, "%s came to Vesper." % season.capitalize(), ids, 5)
+	var w: Dictionary = rl.get("weather", {})
+	var every := int(w.get("change_every_hours", 6))
+	if every <= 0 or int(sim.hour) % every != 0:
+		return
+	var kinds: Dictionary = w.get("by_season", {}).get(season, w.get("kinds", {"clear": 1.0}))
+	var total := 0.0
+	for k in kinds:
+		total += float(kinds[k])
+	var rng := rng_for(state, tick, 7331)
+	var roll := rng.randf() * total
+	var pick := str(kinds.keys()[0])
+	for k in kinds:
+		roll -= float(kinds[k])
+		if roll <= 0.0:
+			pick = str(k)
+			break
+	var before := str(state.get("weather", "clear"))
+	state.weather = pick
+	state.weather_since = tick
+	var notable := {"rain": "rain came in off the sea", "storm": "a storm broke over the harbour", "fog": "fog swallowed the pier", "snow": "snow began to fall"}
+	if pick != before and notable.has(pick):
+		var text: String = notable[pick]
+		var ids: Array = []
+		for c in alive(state):
+			if c.action != "sleeping":
+				Memory.add(c, tick, "obs", "Today %s." % text, 3)
+				ids.append(int(c.id))
+		if not ids.is_empty():
+			add_event(state, tick, text[0].to_upper() + text.substr(1) + ".", ids, 3)

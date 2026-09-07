@@ -48,6 +48,10 @@
   },
   "moods": ["calm", "restless", "cheerful", "wistful", "tired", "curious", "grumpy", "content"],
   "mood_valence": {"calm": 0.2, "restless": -0.2, "cheerful": 0.8, "wistful": -0.1, "tired": -0.4, "curious": 0.4, "grumpy": -0.7, "content": 0.6},
+  "season": {"override": "", "by_month": ["spring", "spring", "spring", "summer", "summer", "summer", "autumn", "autumn", "autumn", "winter", "winter", "winter"]},
+  "season_tint": {"spring": "#ffffff", "summer": "#fff3d9", "autumn": "#f2cfa6", "winter": "#d6e4f5"},
+  "weather": {"change_every_hours": 6, "kinds": {"clear": 0.55, "cloudy": 0.22, "rain": 0.13, "fog": 0.07, "storm": 0.03}, "by_season": {"winter": {"clear": 0.4, "cloudy": 0.25, "snow": 0.2, "fog": 0.1, "storm": 0.05}}, "light": {"clear": 1.0, "cloudy": 0.9, "rain": 0.75, "fog": 0.8, "storm": 0.6, "snow": 0.9}},
+  "daylight": [[0, 0.15], [5, 0.15], [7, 0.85], [12, 1.0], [17, 0.9], [19, 0.55], [21, 0.2], [24, 0.15]],
 
   "routines": {
     "default": [

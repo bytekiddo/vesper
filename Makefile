@@ -8,7 +8,7 @@ XVFB := $(shell command -v xvfb-run >/dev/null 2>&1 && echo "xvfb-run -a")
 WS ?= ws://127.0.0.1:9002
 OUT ?= state/screenshot.png
 
-.PHONY: smoke smoke-quick run dev viewer viewer-dev screenshot export-web deploy overseer kernel-hash import check verify art art-eval
+.PHONY: smoke smoke-quick run dev viewer viewer-dev screenshot export-web deploy overseer kernel-hash import check verify art art-eval season-cycle
 
 ## headless boot + fast run + determinism replay + checkpoint round-trip + $(SMOKE_SECONDS)s real-time run
 smoke:
@@ -72,6 +72,10 @@ kernel-hash:
 import:
 	$(GODOT) --headless --path . --import || true
 
-check:
+## one sim year of seasons + three days of weather in seconds (world/season_cycle.gd); part of `make check`
+season-cycle:
+	$(GODOT) --headless --path . -s world/season_cycle.gd
+
+check: season-cycle
 	python3 kernel/rails.py
 	python3 overseers/run.py --check

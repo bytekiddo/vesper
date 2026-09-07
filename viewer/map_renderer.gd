@@ -8,8 +8,11 @@ const KIND_COLORS := {"house": Color("#b98a5a"), "cafe": Color("#c86f4a"), "stor
 const GROUND_COLORS := {".": Color("#6f8f5a"), "#": Color("#8c8a80"), "~": Color("#3f6f9a"), "B": Color("#6a5a4a"), "o": Color("#d9c9a0")}
 
 var map := {}
+var world := {}          # season, weather, light, tint
+var occupants := {}      # building id -> first names of the people inside
 var art = null           # art_loader
 var font: Font
+var light_node: Node2D   # window lights; lives on a viewport-following CanvasLayer so the night modulate does not dim it
 var layers: Array = []   # TileMapLayer nodes
 var sprites: Node2D      # building sprites
 var labels: Node2D       # names, drawn last
@@ -83,6 +86,26 @@ func _build_ground(name: String, upper: Callable, sparse: bool) -> void:
 				key = "none" if ids.has("none") else str(ids.keys()[0])
 			layer.set_cell(Vector2i(x, y), ids[key], Vector2i.ZERO)
 
+## season tints the ground, people inside buildings are listed under the name, windows light at dusk
+func set_world(w: Dictionary, citizens: Dictionary) -> void:
+	world = w
+	var tint := Color(str(w.get("tint", "#ffffff")))
+	for l in layers:
+		l.modulate = tint
+	occupants.clear()
+	for id in citizens:
+		var c: Dictionary = citizens[id]
+		var place := int(c.get("place", 0))
+		if c.get("alive", true) and place != 0 and str(c.get("activity", "")) != "walking":
+			if not occupants.has(place):
+				occupants[place] = []
+			occupants[place].append(str(c.get("name", "")).get_slice(" ", 0))
+	labels.queue_redraw()
+	if light_node:
+		light_node.queue_redraw()
+	if layers.is_empty():
+		queue_redraw()
+
 func _draw() -> void:
 	if map.is_empty():
 		return
@@ -90,10 +113,11 @@ func _draw() -> void:
 	var h := int(map.h)
 	if layers.is_empty():   # no ground art: procedural tiles
 		var tiles: String = map.tiles
+		var tint := Color(str(world.get("tint", "#ffffff")))
 		for y in h:
 			for x in w:
 				var t := tiles[y * w + x]
-				var col: Color = GROUND_COLORS.get(t, Color.MAGENTA)
+				var col: Color = GROUND_COLORS.get(t, Color.MAGENTA) * tint
 				if t == "." and (x + y) % 2 == 0:
 					col = col.darkened(0.04)
 				if t == "~" and (x * 7 + y * 3) % 5 == 0:
@@ -120,5 +144,28 @@ func _draw_labels() -> void:
 		return
 	for b in map.buildings:
 		labels.draw_string(font, Vector2(int(b.x) * TILE + 2, int(b.y) * TILE - 3), b.name, HORIZONTAL_ALIGNMENT_LEFT, -1, 9, Color(1, 1, 1, 0.9))
+		var who: Array = occupants.get(int(b.id), [])
+		if who.size() > 0:
+			var text := ", ".join(who.slice(0, 3)) + (" +%d" % (who.size() - 3) if who.size() > 3 else "")
+			labels.draw_string(font, Vector2(int(b.x) * TILE + 2, (int(b.y) + int(b.h)) * TILE + 9), text, HORIZONTAL_ALIGNMENT_LEFT, -1, 7, Color(1, 1, 0.85, 0.9))
 	for s in map.streets:
 		labels.draw_string(font, Vector2(int(s.x) * TILE + 4, int(s.y) * TILE + 12), s.name, HORIZONTAL_ALIGNMENT_LEFT, -1, 8, Color(0.15, 0.15, 0.15, 0.7))
+
+## windows glow from dusk (light < 0.55); brighter when someone is inside; the lighthouse lamp burns all night
+func _draw_lights() -> void:
+	if light_node == null or map.is_empty():
+		return
+	var light := float(world.get("light", 1.0))
+	if light >= 0.55:
+		return
+	var glow := clampf((0.55 - light) / 0.4, 0.0, 1.0)
+	for b in map.get("buildings", []):
+		if b.get("open", false):
+			continue
+		var col := Color(1.0, 0.85, 0.45, glow * (0.95 if occupants.has(int(b.id)) else 0.4))
+		var x := int(b.x) * TILE
+		var bottom := (int(b.y) + int(b.h)) * TILE
+		light_node.draw_rect(Rect2(x + 3, bottom - 9, 4, 4), col)
+		light_node.draw_rect(Rect2(x + int(b.w) * TILE - 7, bottom - 9, 4, 4), col)
+		if str(b.kind) == "lighthouse":
+			light_node.draw_circle(Vector2(x + int(b.w) * TILE / 2.0, int(b.y) * TILE + 5), 7.0, Color(1.0, 0.95, 0.6, glow * 0.8))

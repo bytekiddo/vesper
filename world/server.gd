@@ -49,7 +49,9 @@ func _ready() -> void:
 		push_error("server: refusing to start — " + start_error)
 		get_tree().quit(4)
 		return
-	genesis = int(Time.get_unix_time_from_system()) - 100 if smoke_mode else Clock.genesis_unix()
+	# dev aid: VESPER_DEV_TICK starts a throwaway world at that tick (e.g. 4320 = noon) so a screenshot can pick the hour
+	var dev_offset := int(OS.get_environment("VESPER_DEV_TICK")) if OS.has_environment("VESPER_DEV_TICK") else 100
+	genesis = (int(Time.get_unix_time_from_system()) - dev_offset) if smoke_mode else Clock.genesis_unix()
 	llm = LlmScript.new()
 	llm.stub = smoke_mode
 	add_child(llm)
@@ -288,7 +290,8 @@ func _bubble(c: Dictionary) -> String:
 	return ""
 
 func _public_citizen(c: Dictionary, brief: bool) -> Dictionary:
-	var d := {"id": int(c.id), "x": int(c.x), "y": int(c.y), "action": c.action, "thought": c.thought, "mood": c.mood, "alive": c.alive, "bubble": _bubble(c)}
+	var d := {"id": int(c.id), "x": int(c.x), "y": int(c.y), "action": c.action, "thought": c.thought, "mood": c.mood, "alive": c.alive, "bubble": _bubble(c),
+		"facing": str(c.get("facing", "south")), "moving": c.path.size() > 0, "activity": Sim.activity(c), "place": int(c.place)}
 	if not brief:
 		d.merge({"name": c.name, "color": c.color, "sprite": int(c.sprite), "occupation": c.occupation, "age": int(c.age), "pronouns": c.pronouns})
 	return d
@@ -312,7 +315,7 @@ func _snapshot() -> Dictionary:
 		cs.append(_public_citizen(c, false))
 	return {"type": "snapshot", "tick": int(state.tick), "clock": Clock.sim(int(state.tick)), "map": _public_map(), "citizens": cs,
 		"stats": state.stats, "history": state.history.slice(maxi(0, state.history.size() - 400)), "events": state.events.slice(maxi(0, state.events.size() - 40)),
-		"budget": _budget_msg(), "catching_up": catching_up, "genesis": genesis}
+		"budget": _budget_msg(), "catching_up": catching_up, "genesis": genesis, "world": Sim.world_view(state, int(state.tick))}
 
 func _broadcast_tick(events: Array) -> void:
 	if net.count() == 0:
@@ -327,7 +330,7 @@ func _broadcast_tick(events: Array) -> void:
 			new_names.append(e)
 	net.broadcast({"type": "tick", "tick": int(state.tick), "clock": Clock.sim(int(state.tick)), "citizens": cs, "events": events,
 		"budget": _budget_msg(), "stats": state.stats, "catching_up": catching_up, "population": Sim.alive(state).size(), "buildings": state.map.buildings.size(),
-		"roster_changed": new_names.size() > 0})
+		"roster_changed": new_names.size() > 0, "world": Sim.world_view(state, int(state.tick))})
 
 func _citizen_detail(c: Dictionary) -> Dictionary:
 	var rels: Array = []
