@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Vesper overseers. One cycle: pull -> steward -> propose (worldsmith, weaver, lawgiver) -> apply -> smoke -> judge
+"""Vesper overseers. One cycle: pull -> steward -> director -> propose (worldsmith, weaver, lawgiver) -> apply -> smoke -> judge
 -> commit -> chronicle -> rollback watch -> push -> restart. Merge by default; veto only on hard limits.
 Everything here except kernel/rails.py is the overseers' own to reorganize."""
 import argparse, glob, json, os, re, shutil, subprocess, sys, time
@@ -227,9 +227,70 @@ def steward(st):
     log(f"steward: {json.dumps({r: pick[r] for r in ROLES})}")
 
 
+# ---------------------------------------------------------------- director
+def director(st):
+    """Runs first (after the Steward has assigned its model): owns docs/ROADMAP.md, picks one focus, assigns work.
+    A failed call keeps the previous focus rather than idling the cycle."""
+    rails.begin_session()
+    weekly = time.time() - float(st.get("last_retrospective", 0) or 0) > 7 * 86400
+    roadmap_p = os.path.join(ROOT, "docs", "ROADMAP.md")
+    roadmap = open(roadmap_p, encoding="utf-8").read() if os.path.exists(roadmap_p) else "(no roadmap yet — write the first one)"
+    news = "\n\n".join(f"=== {os.path.basename(f)} ===\n{open(f, encoding='utf-8').read()[:3000]}" for f in sorted(glob.glob(os.path.join(ROOT, "journal", "*.md")))[-3:])
+    feedback = "\n".join(open(f, encoding="utf-8").read().strip()[:300] for f in sorted(glob.glob(os.path.join(ROOT, "state", "feedback", "*")))[-20:]) or "none yet"
+    recent = [h for h in st.get("history", []) if time.time() - h["ts"] < 7 * 86400][-20:]
+    summary, _ = world_summary()
+    user = (f"VISION (docs/VISION.md)\n{read_file('docs/VISION.md')}\n\nCURRENT ROADMAP (docs/ROADMAP.md)\n{roadmap}\n\n"
+            f"GIT LOG (recent)\n{git('log', '--oneline', '-25', check=False)}\n\n"
+            f"OVERSEER HISTORY (last 7 days: hypothesis -> result)\n{json.dumps(recent)[:3000]}\n\n"
+            f"METRICS (state/metrics.json)\n{json.dumps(rails.metrics())[:2000]}\n\nVISITOR FEEDBACK (state/feedback/)\n{feedback}\n\n"
+            f"NEWSPAPER (latest issues)\n{news[:6000]}\n\nWORLD\n{summary[:8000]}\n\n"
+            + ("This is the WEEKLY RETROSPECTIVE cycle: include `retrospective`.\n" if weekly else "")
+            + "Pick this cycle's focus, assign work, and return the full new ROADMAP.md.")
+    try:
+        ans = ask("director", user, max_tokens=4000, temperature=0.5)
+    except Exception as e:  # noqa: BLE001
+        log(f"director: no direction this cycle ({e}); proposers keep the last focus")
+        return
+    focus = str(ans.get("focus", "")).strip()[:300]
+    if not focus:
+        log("director: empty focus; keeping the last one")
+        return
+    st["director"] = {"ts": time.time(), "focus": focus, "milestone": str(ans.get("milestone", "")).strip()[:120],
+                      "assignments": {r: str(v)[:400] for r, v in (ans.get("assignments") or {}).items() if isinstance(r, str) and v}}
+    paths = []
+    rm = str(ans.get("roadmap", "")).strip()
+    if len(rm) > 80:
+        will_write("docs/ROADMAP.md")
+        open(roadmap_p, "w", encoding="utf-8").write(rm + "\n")
+        paths.append("docs/ROADMAP.md")
+        log(f"director: docs/ROADMAP.md updated ({len(rm)} chars)")
+    retro = str(ans.get("retrospective", "")).strip()
+    if weekly and len(retro) > 80:
+        name = f"journal/{datetime.now(timezone.utc).strftime('%Y-%m-%d')}-retrospective.md"
+        will_write(name)
+        open(os.path.join(ROOT, name), "w", encoding="utf-8").write(f"# Director's retrospective\n\n{retro}\n")
+        paths.append(name)
+        st["last_retrospective"] = time.time()
+        log(f"director: weekly retrospective -> {name}")
+    record_decision(ans.get("decision", ""))
+    log(f"director: focus '{focus}' (milestone: {st['director']['milestone'] or 'unnamed'}); assignments for {list(st['director']['assignments'])}")
+    if paths:
+        commit(f"director: {focus[:70]}", "director", model_for("director"), paths)
+
+
 # ---------------------------------------------------------------- proposals
-def propose(role, summary):
-    user = f"WORLD\n{summary}\n\nREPOSITORY (editable files)\n{file_tree()}\n\nCURRENT world/rules.json:\n{read_file('world/rules.json') if role == 'lawgiver' else '(ask to read it if you need it)'}\n\nYour proposal for this cycle:"
+def proposer_prompt(role, summary, st):
+    """The Director's focus and this role's assignment lead every proposer prompt."""
+    d = st.get("director") or {}
+    lead = (f"DIRECTOR'S FOCUS THIS CYCLE: {d['focus']} (milestone: {d.get('milestone') or 'unnamed'})\n"
+            f"YOUR ASSIGNMENT ({role}): {(d.get('assignments') or {}).get(role) or 'no specific assignment — serve the focus, or sit this cycle out'}\n\n") if d.get("focus") else ""
+    return lead + f"WORLD\n{summary}\n\nREPOSITORY (editable files)\n{file_tree()}\n\nCURRENT world/rules.json:\n{read_file('world/rules.json') if role == 'lawgiver' else '(ask to read it if you need it)'}\n\nYour proposal for this cycle:"
+
+
+def propose(role, summary, st):
+    user = proposer_prompt(role, summary, st)
+    if (st.get("director") or {}).get("focus"):
+        log(f"{role}: prompt carries the focus '{st['director']['focus'][:60]}'")
     ans = ask(role, user)
     if isinstance(ans, dict) and ans.get("read") and not ans.get("files") and not ans.get("inbox"):
         wanted = [p for p in ans["read"] if isinstance(p, str) and rails.path_allowed(p) and os.path.isfile(os.path.join(ROOT, p))][:4]
@@ -376,7 +437,7 @@ def run_proposer(role, st, summary):
     rails.begin_session()   # per-session dollar cap (config/budget.json caps_usd.session)
     quarantine_before = rails.quarantine_count_today()   # per proposal: one quarantine must not veto the rest of the cycle
     try:
-        prop = propose(role, summary)
+        prop = propose(role, summary, st)
     except rails.BudgetExhausted as e:
         log(f"{role}: {e}")
         return
@@ -529,6 +590,10 @@ def push():
 
 # ---------------------------------------------------------------- offline canned answers (pipeline test without a key)
 def offline_answer(role, user):
+    if role == "director":
+        return {"focus": "offline: give evenings somewhere to go", "milestone": "Evenings",
+                "assignments": {"worldsmith": "one small evening place with a stove", "weaver": "one arrival who would use it"},
+                "roadmap": "# Vesper — Roadmap\n\n_Owned by the Director._\n\n## Milestones\n- [ ] Evenings — done when: citizens have somewhere to be after work. Hypothesis: \"building visits after 18:00 will rise to 20 per day within 72 hours\". Roles: worldsmith, weaver.\n"}
     if role == "worldsmith":
         return {"hypothesis": "offline: a reading room gives evenings somewhere to go", "inbox": [{"op": "add_building", "building": {"name": "The Reading Room", "kind": "hall", "w": 3, "h": 2, "capacity": 8, "note": "Eleven books and a stove."}}]}
     if role == "weaver":
@@ -561,6 +626,8 @@ def main():
         good, bad = validate_ops([{"op": "event", "text": "hello", "imp": 3}, {"op": "add_citizen", "citizen": {"name": "Tim Cook"}}, {"op": "nope"}])
         assert len(good) == 1 and len(bad) == 2, (good, bad)
         assert sim_clock(8640 * 31 + 3600)[0].startswith("Thornday, Sprout 2, Year 1, 10:00")
+        pp = proposer_prompt("weaver", "WORLD-SUMMARY", {"director": {"focus": "evenings somewhere to go", "milestone": "Evenings", "assignments": {"weaver": "one arrival"}}})
+        assert pp.startswith("DIRECTOR'S FOCUS THIS CYCLE: evenings somewhere to go") and "YOUR ASSIGNMENT (weaver): one arrival" in pp and "WORLD-SUMMARY" in pp
         print("overseer self-check ok")
         return
     for k, v in (line.split("=", 1) for line in open(os.path.join(ROOT, ".env"), encoding="utf-8") if "=" in line and not line.startswith("#")) if os.path.exists(os.path.join(ROOT, ".env")) else []:
@@ -587,6 +654,8 @@ def main():
     else:
         if not ARGS.only or ARGS.only == "steward":
             steward(st)
+        if not ARGS.only or ARGS.only == "director":
+            director(st)
         summary, world = world_summary()
         for role in PROPOSERS:
             if ARGS.only and ARGS.only != role:
