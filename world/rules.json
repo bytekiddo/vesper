@@ -24,7 +24,8 @@
     {"text": "the clock in the square stopped at a quarter past", "imp": 4, "chance": 0.020},
     {"text": "a letter arrived addressed to nobody in particular", "imp": 5, "chance": 0.012},
     {"text": "a fine warm evening; half the town ended up on the pier", "imp": 3, "chance": 0.040},
-    {"text": "rain all day; the streets ran like rivers", "imp": 3, "chance": 0.040}
+    {"text": "rain all day; the streets ran like rivers", "imp": 3, "chance": 0.040},
+    {"text": "a light far out at sea answered the lighthouse lamp", "imp": 6, "chance": 0.010}
   ],
 
   "small_talk": [
