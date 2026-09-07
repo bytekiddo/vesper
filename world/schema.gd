@@ -29,7 +29,7 @@ const CITIZEN := {
 	"routine": [], "plan": [], "plan_day": -1,
 	"memories": [], "relationships": {}, "last_reflect_tick": 0, "imp_since_reflect": 0,
 	"conv": {}, "last_conv_tick": -100000, "last_conscious_tick": -100000,
-	"alive": true, "arrived_tick": 0, "color": "#c9a86b", "sprite": 0, "parents": [],
+	"alive": true, "arrived_tick": 0, "color": "#c9a86b", "sprite": 0, "parents": [], "visitor": false, "expires_tick": 0,
 }
 
 const MEMORY := {"t": 0, "kind": "obs", "text": "", "imp": 1, "last": 0, "cites": []}

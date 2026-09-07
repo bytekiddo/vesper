@@ -376,8 +376,14 @@ static func step(state: Dictionary, tick: int, brain: Callable) -> Array:
 			continue
 		var cid := int(c.id)
 		var rng := rng_for(state, tick, cid)
+		# visitors: no plans, no reflections; they leave when nobody has heard from them for a while
+		if c.get("visitor", false):
+			if tick >= int(c.get("expires_tick", 0)):
+				kill(state, c, tick, "went back down the road")
+				add_event(state, tick, "%s, the visitor, went back down the road." % c.name, [int(c.id)], 3)
+				continue
 		# daily plan (Tier 2) at plan_hour
-		if sim.hour == int(cons.get("plan_hour", 6)) and sim.minute == 0 and int(c.plan_day) != int(sim.day):
+		elif sim.hour == int(cons.get("plan_hour", 6)) and sim.minute == 0 and int(c.plan_day) != int(sim.day):
 			if brain.call("plan", state, c, {"day": sim.day}):
 				c.last_conscious_tick = tick
 		# conversation in progress
@@ -447,7 +453,9 @@ static func step(state: Dictionary, tick: int, brain: Callable) -> Array:
 					continue
 		# reflection when enough has happened
 		if int(c.imp_since_reflect) >= int(rl.get("reflection_threshold", 45)):
-			if not brain.call("reflect", state, c, {}):
+			if c.get("visitor", false):
+				pass
+			elif not brain.call("reflect", state, c, {}):
 				Memory.tier1_reflect(c, tick, rl)
 			else:
 				c.last_conscious_tick = tick
@@ -689,3 +697,78 @@ static func _hourly(state: Dictionary, tick: int, sim: Dictionary) -> void:
 				ids.append(int(c.id))
 		if not ids.is_empty():
 			add_event(state, tick, text[0].to_upper() + text.substr(1) + ".", ids, 3)
+
+# ---------------------------------------------------------------- visitors (Phase 2): temporary citizens who live in the server sim
+static func add_visitor(state: Dictionary, tick: int, name: String) -> Dictionary:
+	var rng := rng_for(state, tick, 4711 + state.citizens.size())
+	var c := make_citizen(state, rng, tick, {"name": name, "age": 30, "pronouns": "they/them", "occupation": "visitor", "innate": "curious, polite",
+		"learned": "came in along the coast road today", "lifestyle": "passing through", "currently": "seeing Vesper for the first time"})
+	for b in state.map.buildings:
+		b.residents.erase(int(c.id))
+	c.home = 0
+	c.work = 0
+	c.place = 0   # make_citizen parked them at a home; a visitor stands outdoors
+	c.routine = []
+	c.plan = []
+	c.visitor = true
+	c.expires_tick = tick + int(R().get("visitor", {}).get("ttl_ticks", 180))
+	c.action = "looking around"
+	c.color = "#d8c8ff"
+	var spot := resolve_place(state, c, "square")
+	var t: Array = Map.target_tile(state.map, spot, rng) if not spot.is_empty() else [int(state.map.w) / 2, int(state.map.h) / 2]
+	if t.size() == 2 and int(t[0]) >= 0:
+		c.x = int(t[0])
+		c.y = int(t[1])
+	var ids: Array = []
+	for o in alive(state):
+		if int(o.id) != int(c.id) and o.action != "sleeping" and absi(int(o.x) - int(c.x)) + absi(int(o.y) - int(c.y)) <= 8:
+			Memory.add(o, tick, "obs", "A visitor called %s came into town." % c.name, 3)
+			ids.append(int(o.id))
+	add_event(state, tick, "A visitor, %s, walked into Vesper." % c.name, ids, 4)
+	return c
+
+static func nearest_local(state: Dictionary, v: Dictionary, radius: int) -> Dictionary:
+	var best := {}
+	var bd := radius + 1
+	for o in alive(state):
+		if o.get("visitor", false) or int(o.id) == int(v.id) or o.action == "sleeping":
+			continue
+		var dd := absi(int(o.x) - int(v.x)) + absi(int(o.y) - int(v.y))
+		if dd < bd:
+			bd = dd
+			best = o
+	return best
+
+## the visitor speaks; the nearest citizen answers through Tier 2 (kind "visit") or, when the brain declines, with a Tier 1 line
+static func visitor_say(state: Dictionary, tick: int, v: Dictionary, text: String, brain: Callable) -> Dictionary:
+	var vr: Dictionary = R().get("visitor", {})
+	v.expires_tick = tick + int(vr.get("ttl_ticks", 180))
+	var c := nearest_local(state, v, int(vr.get("radius", 3)))
+	if c.is_empty():
+		return {"ok": false, "why": "nobody close enough to hear you"}
+	var said := text.left(200)
+	var dur := int(R().get("conversation", {}).get("duration_ticks", 10))
+	for pair in [[v, c], [c, v]]:
+		pair[0].conv = {"with": int(pair[1].id), "lines": ["%s: %s" % [v.name, said]], "until": tick + dur, "started": tick, "tier2": false, "visitor": true}
+	c.last_conv_tick = tick
+	var tier2: bool = brain.call("visit", state, c, {"with": int(v.id), "text": said})
+	if not tier2:
+		var reply := str(pick(vr.get("replies", ["Welcome to Vesper."]), rng_for(state, tick, int(c.id))))
+		c.conv.lines.append("%s: %s" % [c.name, reply])
+		v.conv.lines = c.conv.lines
+		Memory.add(c, tick, "chat", "A visitor, %s, said \"%s\". I said \"%s\"." % [v.name, said, reply], imp("visit"))
+		relate(c, int(v.id), "acquaintance", 0.05, "a visitor who spoke to me")
+	return {"ok": true, "citizen": c.name, "tier2": tier2}
+
+static func visitor_gift(state: Dictionary, tick: int, v: Dictionary, item: String) -> Dictionary:
+	var vr: Dictionary = R().get("visitor", {})
+	v.expires_tick = tick + int(vr.get("ttl_ticks", 180))
+	var c := nearest_local(state, v, int(vr.get("radius", 3)))
+	if c.is_empty():
+		return {"ok": false, "why": "nobody close enough to give it to"}
+	var it := item.left(40)
+	Memory.add(c, tick, "event", "A visitor, %s, gave me %s." % [v.name, it], imp("gift"))
+	relate(c, int(v.id), "acquaintance", 0.1, "gave me %s" % it)
+	c.thought = "%s. From a stranger." % it.capitalize()
+	add_event(state, tick, "%s gave %s %s." % [v.name, c.name, it], [int(c.id), int(v.id)], imp("gift"))
+	return {"ok": true, "citizen": c.name}

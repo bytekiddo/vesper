@@ -8,7 +8,7 @@ XVFB := $(shell command -v xvfb-run >/dev/null 2>&1 && echo "xvfb-run -a")
 WS ?= ws://127.0.0.1:9002
 OUT ?= state/screenshot.png
 
-.PHONY: smoke smoke-quick run dev viewer viewer-dev screenshot export-web deploy overseer kernel-hash import check verify art art-eval season-cycle
+.PHONY: smoke smoke-quick run dev viewer viewer-dev screenshot export-web deploy overseer kernel-hash import check verify art art-eval season-cycle visitor-check
 
 ## headless boot + fast run + determinism replay + checkpoint round-trip + $(SMOKE_SECONDS)s real-time run
 smoke:
@@ -76,6 +76,10 @@ import:
 season-cycle:
 	$(GODOT) --headless --path . -s world/season_cycle.gd
 
-check: season-cycle
+## a visitor joins, walks, talks (stub Tier 2), gives a gift, is remembered, expires (world/visitor_check.gd)
+visitor-check:
+	$(GODOT) --headless --path . -s world/visitor_check.gd
+
+check: season-cycle visitor-check
 	python3 kernel/rails.py
 	python3 overseers/run.py --check

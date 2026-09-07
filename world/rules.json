@@ -2,7 +2,7 @@
   "version": 1,
   "_who_edits": "The Lawgiver. Every value here is a hypothesis about how minds and the town should work. Keep it JSON.",
 
-  "importance": {"routine": 1, "observe": 2, "meet": 3, "chat": 4, "plan": 4, "event": 6, "reflect": 7, "arrival": 7, "departure": 8, "birth": 9, "death": 10},
+  "importance": {"visit": 6, "gift": 6, "routine": 1, "observe": 2, "meet": 3, "chat": 4, "plan": 4, "event": 6, "reflect": 7, "arrival": 7, "departure": 8, "birth": 9, "death": 10},
   "reflection_threshold": 45,
   "retrieval": {"recency_decay_per_sim_hour": 0.97, "w_recency": 1.0, "w_importance": 1.0, "w_relevance": 1.2, "top_k": 10},
   "memory_cap": 240,
@@ -52,6 +52,7 @@
   "season_tint": {"spring": "#ffffff", "summer": "#fff3d9", "autumn": "#f2cfa6", "winter": "#d6e4f5"},
   "weather": {"change_every_hours": 6, "kinds": {"clear": 0.55, "cloudy": 0.22, "rain": 0.13, "fog": 0.07, "storm": 0.03}, "by_season": {"winter": {"clear": 0.4, "cloudy": 0.25, "snow": 0.2, "fog": 0.1, "storm": 0.05}}, "light": {"clear": 1.0, "cloudy": 0.9, "rain": 0.75, "fog": 0.8, "storm": 0.6, "snow": 0.9}},
   "daylight": [[0, 0.15], [5, 0.15], [7, 0.85], [12, 1.0], [17, 0.9], [19, 0.55], [21, 0.2], [24, 0.15]],
+  "visitor": {"ttl_ticks": 180, "radius": 3, "max_visitors": 20, "replies": ["Welcome to Vesper. Mind the tide; it comes up the third step some days.", "You are not from here. Nobody is, at first.", "If you are looking for the ferry, so are we.", "The lamp does what it likes. We have stopped asking."]},
 
   "routines": {
     "default": [

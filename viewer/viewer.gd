@@ -36,6 +36,7 @@ var map_node: Node2D
 var citizen_layer: Node2D
 var hud: CanvasLayer
 var dragging := false
+var visitor_id := -1      # the citizen we walk as, once joined
 var shot_path := ""      # --screenshot=<png>: save the view a few seconds after connecting, then quit (dev aid)
 var shot_at := 0.0
 
@@ -56,6 +57,9 @@ func _pick_url() -> String:
 		if a.begins_with("--ws="):
 			return a.substr(5)
 	if OS.has_feature("web"):
+		var q := str(JavaScriptBridge.eval("new URLSearchParams(location.search).get('ws') || ''"))
+		if q.begins_with("ws://") or q.begins_with("wss://"):
+			return q   # dev aid: index.html?ws=ws://127.0.0.1:9002
 		var host := str(JavaScriptBridge.eval("location.host"))
 		var proto := str(JavaScriptBridge.eval("location.protocol"))
 		return ("wss://" if proto == "https:" else "ws://") + host + "/ws"
@@ -96,7 +100,11 @@ func _build_scene() -> void:
 	hud = Hud.new()
 	hud.layer = 2
 	add_child(hud)
-	hud.build(func(): selected = -1)
+	hud.build(func(): selected = -1, _send)
+
+func _send(msg: Dictionary) -> void:
+	if ws.get_ready_state() == WebSocketPeer.STATE_OPEN:
+		ws.send_text(JSON.stringify(msg))
 
 # ---------------------------------------------------------------- network
 func _process(_delta: float) -> void:
@@ -180,6 +188,11 @@ func _handle(m: Dictionary) -> void:
 			hud.show_citizen(m.citizen)
 		"journal":
 			hud.update_news(m)
+		"visitor":
+			if m.get("ok", false) and m.has("id"):
+				visitor_id = int(m.id)
+				hud.visitor_joined(str(m.get("name", "")))
+			hud.visitor_reply(m)
 
 func _rebuild_sprites() -> void:
 	for id in sprites:
@@ -242,4 +255,7 @@ func _click(pos: Vector2) -> void:
 	if best >= 0:
 		selected = best
 		last_detail_request = 0.0
+		dragging = false
+	elif visitor_id >= 0:   # visiting: a click on the ground is where we walk
+		_send({"type": "move", "x": int(floor(pos.x / TILE)), "y": int(floor(pos.y / TILE))})
 		dragging = false

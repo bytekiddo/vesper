@@ -18,6 +18,7 @@ var results: Array = []      # {kind, cid, ctx, text, tick}
 var pending := {}            # HTTPRequest -> meta
 var idle: Array = []
 var citizen_month_cost := 0.0
+var visitor_month_cost := 0.0   # the "visitor" ledger category: a separate, smaller purse for people who walk in
 var spent_today := 0.0
 var day_key := ""
 var last_ledger_sync := 0.0
@@ -57,6 +58,8 @@ func sync_ledger() -> void:
 	for role in t.by_role:
 		if str(role).begins_with("citizen"):
 			citizen_month_cost += float(t.by_role[role])
+	visitor_month_cost = float(t.by_category.get("visitor", 0.0))
+	citizen_month_cost -= visitor_month_cost
 	var today := Time.get_date_string_from_system(true)
 	if today != day_key:
 		day_key = today
@@ -71,6 +74,9 @@ func allowance_today() -> float:
 
 func can_afford() -> bool:
 	return spent_today + est_cost() <= allowance_today() and Ledger.remaining(citizen_month_cost) > est_cost()
+
+func can_afford_visitor() -> bool:
+	return visitor_month_cost + est_cost() <= Ledger.budget() * Ledger.share("visitor") and Ledger.remaining() > est_cost()
 
 func status() -> Dictionary:
 	return {"model": model, "budget": Ledger.budget(), "citizen_spent_month": snappedf(citizen_month_cost, 0.0001), "spent_today": snappedf(spent_today, 0.0001),
@@ -89,7 +95,7 @@ func request(kind: String, state: Dictionary, c: Dictionary, ctx: Dictionary, ti
 		results.append({"kind": kind, "cid": int(c.id), "ctx": ctx, "text": Cognition.stub(kind, state, c, ctx, tick), "tick": tick})
 		state.stats.tier2_calls = int(state.stats.tier2_calls) + 1
 		return true
-	if catching_up or api_key == "" or idle.is_empty() or not can_afford():
+	if catching_up or api_key == "" or idle.is_empty() or not (can_afford_visitor() if kind == "visit" else can_afford()):
 		return false
 	var p := Cognition.prompt(kind, state, c, ctx, tick)
 	var body := JSON.stringify({"model": model, "max_tokens": p.max_tokens, "temperature": 0.8,
@@ -125,9 +131,14 @@ func _on_completed(result: int, code: int, _headers: PackedStringArray, body: Pa
 	var pt := int(usage.get("prompt_tokens", 0))
 	var ct := int(usage.get("completion_tokens", 0))
 	var cost: float = float(usage.get("cost", pt * price_in + ct * price_out))
-	spent_today += cost - est_cost()
-	citizen_month_cost += cost
-	Ledger.append("server", "citizen:" + meta.kind, str(data.get("model", model)), pt, ct, cost)
+	if meta.kind == "visit":
+		visitor_month_cost += cost
+		spent_today -= est_cost()   # the visitor purse, not the citizens' day
+		Ledger.append("server", "citizen:" + meta.kind, str(data.get("model", model)), pt, ct, cost, "visitor")
+	else:
+		spent_today += cost - est_cost()
+		citizen_month_cost += cost
+		Ledger.append("server", "citizen:" + meta.kind, str(data.get("model", model)), pt, ct, cost)
 	var choices: Array = data.get("choices", [])
 	if choices.is_empty():
 		return

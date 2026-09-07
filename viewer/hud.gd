@@ -12,9 +12,18 @@ var news_text: RichTextLabel
 var news_list: ItemList
 var journal := {"name": "", "issues": []}
 var on_close: Callable
+var send: Callable          # sends a message to the server
+var visit_panel: PanelContainer
+var visit_name: LineEdit
+var visit_say: LineEdit
+var visit_gift: LineEdit
+var visit_reason: LineEdit
+var visit_status: Label
+var visit_rows: VBoxContainer
 
-func build(close_cb: Callable) -> void:
+func build(close_cb: Callable, send_cb: Callable = Callable()) -> void:
 	on_close = close_cb
+	send = send_cb
 	var top := PanelContainer.new()
 	top.set_anchors_and_offsets_preset(Control.PRESET_TOP_WIDE)
 	add_child(top)
@@ -24,10 +33,15 @@ func build(close_cb: Callable) -> void:
 	top_label.text = "Vesper"
 	top_label.size_flags_horizontal = Control.SIZE_EXPAND_FILL
 	row.add_child(top_label)
+	var visit_btn := Button.new()
+	visit_btn.text = "Visit"
+	visit_btn.pressed.connect(func(): visit_panel.visible = not visit_panel.visible)
+	row.add_child(visit_btn)
 	var news_btn := Button.new()
 	news_btn.text = "Newspaper"
 	news_btn.pressed.connect(func(): news_panel.visible = not news_panel.visible)
 	row.add_child(news_btn)
+	_build_visit()
 	status_label = Label.new()
 	status_label.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_LEFT)
 	status_label.position = Vector2(8, -28)
@@ -84,6 +98,107 @@ func build(close_cb: Callable) -> void:
 	news_text.size_flags_vertical = Control.SIZE_EXPAND_FILL
 	news_text.selection_enabled = true
 	nv.add_child(news_text)
+
+## walk in as a temporary citizen: a name, then talk, give, leave; 👍/👎 with a reason goes to state/feedback/
+func _build_visit() -> void:
+	visit_panel = PanelContainer.new()
+	visit_panel.add_theme_stylebox_override("panel", _opaque())
+	visit_panel.set_anchors_and_offsets_preset(Control.PRESET_BOTTOM_RIGHT)
+	visit_panel.offset_left = -360
+	visit_panel.offset_top = -250
+	visit_panel.offset_right = -8
+	visit_panel.offset_bottom = -8
+	visit_panel.visible = false
+	add_child(visit_panel)
+	var v := VBoxContainer.new()
+	visit_panel.add_child(v)
+	var title := Label.new()
+	title.text = "Visit Vesper"
+	v.add_child(title)
+	var r0 := HBoxContainer.new()
+	v.add_child(r0)
+	visit_name = LineEdit.new()
+	visit_name.placeholder_text = "your name"
+	visit_name.name = "VisitName"
+	visit_name.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	r0.add_child(visit_name)
+	var join := Button.new()
+	join.text = "Walk in"
+	join.name = "Join"
+	join.pressed.connect(func(): send.call({"type": "join", "name": visit_name.text}))
+	r0.add_child(join)
+	visit_rows = VBoxContainer.new()
+	visit_rows.visible = false
+	v.add_child(visit_rows)
+	var r1 := HBoxContainer.new()
+	visit_rows.add_child(r1)
+	visit_say = LineEdit.new()
+	visit_say.placeholder_text = "say something to whoever is near"
+	visit_say.name = "Say"
+	visit_say.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	visit_say.text_submitted.connect(func(t): send.call({"type": "say", "text": t}); visit_say.text = "")
+	r1.add_child(visit_say)
+	var say_btn := Button.new()
+	say_btn.text = "Say"
+	say_btn.name = "SayButton"
+	say_btn.pressed.connect(func(): send.call({"type": "say", "text": visit_say.text}); visit_say.text = "")
+	r1.add_child(say_btn)
+	var r2 := HBoxContainer.new()
+	visit_rows.add_child(r2)
+	visit_gift = LineEdit.new()
+	visit_gift.placeholder_text = "a small gift (a shell, a loaf...)"
+	visit_gift.name = "Gift"
+	visit_gift.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	r2.add_child(visit_gift)
+	var give := Button.new()
+	give.text = "Give"
+	give.name = "GiveButton"
+	give.pressed.connect(func(): send.call({"type": "gift", "item": visit_gift.text}); visit_gift.text = "")
+	r2.add_child(give)
+	var leave := Button.new()
+	leave.text = "Leave town"
+	leave.name = "Leave"
+	leave.pressed.connect(func(): send.call({"type": "leave"}))
+	r2.add_child(leave)
+	var hint := Label.new()
+	hint.text = "Click the ground to walk. Stand next to someone to talk."
+	hint.add_theme_font_size_override("font_size", 10)
+	visit_rows.add_child(hint)
+	var r3 := HBoxContainer.new()
+	v.add_child(r3)
+	var up := Button.new()
+	up.text = "👍"
+	up.name = "ThumbsUp"
+	up.pressed.connect(func(): send.call({"type": "feedback", "vote": "up", "reason": visit_reason.text}); visit_reason.text = "")
+	r3.add_child(up)
+	var down := Button.new()
+	down.text = "👎"
+	down.name = "ThumbsDown"
+	down.pressed.connect(func(): send.call({"type": "feedback", "vote": "down", "reason": visit_reason.text}); visit_reason.text = "")
+	r3.add_child(down)
+	visit_reason = LineEdit.new()
+	visit_reason.placeholder_text = "one line: why?"
+	visit_reason.name = "Reason"
+	visit_reason.size_flags_horizontal = Control.SIZE_EXPAND_FILL
+	r3.add_child(visit_reason)
+	visit_status = Label.new()
+	visit_status.name = "VisitStatus"
+	visit_status.autowrap_mode = TextServer.AUTOWRAP_WORD
+	visit_status.add_theme_font_size_override("font_size", 10)
+	v.add_child(visit_status)
+
+func visitor_joined(name: String) -> void:
+	visit_rows.visible = true
+	visit_panel.visible = true
+	visit_status.text = "You are %s. Click the ground to walk." % name
+
+func visitor_reply(m: Dictionary) -> void:
+	if m.get("thanks", false):
+		visit_status.text = "Thank you — noted for the town's makers."
+	elif not m.get("ok", false):
+		visit_status.text = str(m.get("why", "no"))
+	elif m.has("citizen"):
+		visit_status.text = "%s heard you%s." % [str(m.citizen), " and is thinking" if m.get("tier2", false) else ""]
 
 func _opaque() -> StyleBoxFlat:
 	var sb := StyleBoxFlat.new()

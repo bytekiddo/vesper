@@ -88,4 +88,5 @@ func _draw() -> void:
 		if kind >= 2:
 			draw_rect(Rect2(-4, -10, 8, 3), col.darkened(0.4))
 	if font:
-		draw_string(font, Vector2(-30, 18), str(data.get("name", "")).get_slice(" ", 0), HORIZONTAL_ALIGNMENT_CENTER, 60, 8, Color(1, 1, 1, 0.95))
+		var col := Color(0.86, 0.78, 1.0, 0.95) if data.get("visitor", false) else Color(1, 1, 1, 0.95)
+		draw_string(font, Vector2(-30, 18), str(data.get("name", "")).get_slice(" ", 0), HORIZONTAL_ALIGNMENT_CENTER, 60, 8, col)

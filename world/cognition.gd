@@ -50,6 +50,10 @@ static func prompt(kind: String, state: Dictionary, c: Dictionary, ctx: Dictiona
 			var mem := Memory.lines(Memory.retrieve(c, tick, other.get("name", "") + " " + c.currently, Sim.R()))
 			var omem := Memory.lines(Memory.retrieve(other, tick, c.name + " " + other.get("currently", ""), Sim.R())) if not other.is_empty() else ""
 			return {"system": sys, "max_tokens": 700, "user": head + "\nYour relevant memories:\n%s\n\nYou run into %s near %s.\nAbout them:\n%s\nTheir relevant memories (you do not know these, but they shape what they say):\n%s\n\nWrite the exchange: 2 to 6 short lines, alternating, both in character. Then say what you take away.\nJSON: {\"lines\":[{\"who\":\"<name>\",\"text\":\"<line>\"}],\"my_takeaway\":\"<one line, first person>\",\"relationship\":{\"kind\":\"<friend|neighbour|acquaintance|rival|colleague|old friend|partner>\",\"score_delta\":<-0.1 to 0.1>,\"note\":\"<one line about them>\"}}" % [mem, other.get("name", "someone"), Sim.place_name(state, c), persona(state, other) if not other.is_empty() else "", omem]}
+		"visit":
+			var v := Sim.citizen(state, int(ctx.get("with", -1)))
+			var mem := Memory.lines(Memory.retrieve(c, tick, str(v.get("name", "")) + " visitor " + c.currently, Sim.R()))
+			return {"system": sys, "max_tokens": 400, "user": head + "\nYour relevant memories:\n%s\n\nA visitor to Vesper, %s, stops you near %s and says: \"%s\"\nAnswer in character, 1 to 3 short lines. Then say what you take away.\nJSON: {\"reply\":\"<your words>\",\"my_takeaway\":\"<one line, first person>\",\"relationship\":{\"kind\":\"acquaintance\",\"score_delta\":<-0.1 to 0.1>,\"note\":\"<one line about them>\"}}" % [mem, v.get("name", "a stranger"), Sim.place_name(state, c), str(ctx.get("text", "")).left(300)]}
 	return {"system": sys, "user": head, "max_tokens": 200}
 
 static func _indexed(ms: Array) -> String:
@@ -73,6 +77,10 @@ static func stub(kind: String, state: Dictionary, c: Dictionary, ctx: Dictionary
 			var on: String = other.get("name", "someone")
 			return JSON.stringify({"lines": [{"who": c.name, "text": "Did you see the lamp last night?"}, {"who": on, "text": "I try not to look at it."}, {"who": c.name, "text": "That's fair."}],
 				"my_takeaway": "%s does not want to talk about the lamp either." % on, "relationship": {"kind": "acquaintance", "score_delta": 0.05, "note": "avoids the lamp"}})
+		"visit":
+			var v := Sim.citizen(state, int(ctx.get("with", -1)))
+			return JSON.stringify({"reply": "Welcome to Vesper. Mind the tide; it comes up the third step some days.",
+				"my_takeaway": "A visitor called %s asked me about the town." % v.get("name", "someone"), "relationship": {"kind": "acquaintance", "score_delta": 0.05, "note": "a visitor, curious"}})
 	return "{}"
 
 # Applies a model reply. Returns true if anything entered world state. Filtered by the kernel first.
@@ -160,6 +168,29 @@ static func apply(kind: String, state: Dictionary, c: Dictionary, ctx: Dictionar
 					Sim.relate(c, int(other.id), rkind, clampf(float(rel.get("score_delta", 0.0)), -0.1, 0.1), str(rel.get("note", "")).left(120))
 					if rkind != "" and rkind not in ["", "acquaintance"]:
 						c.relationships[str(int(other.id))].kind = rkind
+			state.stats.tier2_applied = int(state.stats.tier2_applied) + 1
+			return true
+		"visit":
+			var v := Sim.citizen(state, int(ctx.get("with", -1)))
+			var reply := str(data.get("reply", "")).left(300)
+			if reply == "":
+				return false
+			var said := str(ctx.get("text", "")).left(200)
+			var lines: Array = ["%s: %s" % [v.get("name", "Visitor"), said], "%s: %s" % [c.name, reply]]
+			if not c.conv.is_empty() and int(c.conv.get("with", -1)) == int(ctx.get("with", -1)):
+				c.conv.lines = lines
+				c.conv.tier2 = true
+			if not v.is_empty() and not v.conv.is_empty():
+				v.conv.lines = lines
+				v.conv.tier2 = true
+			Memory.add(c, tick, "chat", "A visitor, %s, said \"%s\". I said \"%s\"." % [v.get("name", "someone"), said, reply], Sim.imp("visit"))
+			if str(data.get("my_takeaway", "")) != "":
+				Memory.add(c, tick, "chat", str(data.my_takeaway).left(240), Sim.imp("visit"))
+				c.thought = str(data.my_takeaway).left(160)
+			if not v.is_empty():
+				var rel = data.get("relationship", {})
+				var delta := clampf(float(rel.get("score_delta", 0.05)), -0.1, 0.1) if typeof(rel) == TYPE_DICTIONARY else 0.05
+				Sim.relate(c, int(v.id), "acquaintance", delta, str(rel.get("note", "a visitor")).left(120) if typeof(rel) == TYPE_DICTIONARY else "a visitor")
 			state.stats.tier2_applied = int(state.stats.tier2_applied) + 1
 			return true
 	return false

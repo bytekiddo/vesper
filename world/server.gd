@@ -266,7 +266,42 @@ func _ingest_inbox(tick: int) -> void:
 	_checkpoint(tick)   # applied ops must survive a restart
 
 # ---------------------------------------------------------------- viewer feed
+var visitors := {}     # peer id -> citizen id of the visitor they walk as
+var last_input := {}   # peer id -> {kind: unix}; visitor input is untrusted: filtered, capped, throttled
+
+func _throttled(peer_id: int, kind: String, gap: float) -> bool:
+	var now := Time.get_unix_time_from_system()
+	var t: Dictionary = last_input.get(peer_id, {})
+	if now - float(t.get(kind, 0.0)) < gap:
+		return true
+	t[kind] = now
+	last_input[peer_id] = t
+	return false
+
+## kernel content filter on every visitor string; a refusal is quarantined and answered, never applied
+func _clean(peer_id: int, text: String, max_len: int, what: String) -> String:
+	var t := text.strip_edges().left(max_len)
+	if t == "":
+		return ""
+	var r := Filter.check(t)
+	if not r.ok:
+		Filter.quarantine(t, r.reason, "visitor:%s" % what)
+		net.send(peer_id, {"type": "visitor", "ok": false, "why": "that cannot be said in Vesper"})
+		return ""
+	return t
+
+func _visitor(peer_id: int) -> Dictionary:
+	var c := Sim.citizen(state, int(visitors.get(peer_id, -1)))
+	return c if not c.is_empty() and c.alive else {}
+
+## Tier 2 for a visitor's question: no consciousness cadence (someone is standing in front of them), the visitor purse pays
+func visitor_brain(kind: String, st: Dictionary, c: Dictionary, ctx: Dictionary) -> bool:
+	if catching_up:
+		return false
+	return llm.request(kind, st, c, ctx, int(st.tick))
+
 func _on_message(peer_id: int, msg: Dictionary) -> void:
+	var tick := int(state.tick)
 	match str(msg.get("type", "")):
 		"hello":
 			net.send(peer_id, _snapshot())
@@ -275,6 +310,73 @@ func _on_message(peer_id: int, msg: Dictionary) -> void:
 			var c := Sim.citizen(state, int(msg.get("id", -1)))
 			if not c.is_empty():
 				net.send(peer_id, {"type": "citizen", "citizen": _citizen_detail(c)})
+		"join":
+			if _throttled(peer_id, "join", 10.0):
+				return
+			if not _visitor(peer_id).is_empty():
+				net.send(peer_id, {"type": "visitor", "ok": true, "id": int(visitors[peer_id]), "name": _visitor(peer_id).name})
+				return
+			if visitors.size() >= int(Sim.R().get("visitor", {}).get("max_visitors", 20)):
+				net.send(peer_id, {"type": "visitor", "ok": false, "why": "the inn is full; try again later"})
+				return
+			var re := RegEx.new()
+			re.compile("[^A-Za-z '\\-]")
+			var name := _clean(peer_id, re.sub(str(msg.get("name", "")), "", true), 24, "name")
+			if name.length() < 2:
+				net.send(peer_id, {"type": "visitor", "ok": false, "why": "give a name (letters only)"})
+				return
+			var v := Sim.add_visitor(state, tick, name)
+			visitors[peer_id] = int(v.id)
+			net.send(peer_id, {"type": "visitor", "ok": true, "id": int(v.id), "name": v.name})
+			_broadcast_tick([])
+		"move":
+			var v := _visitor(peer_id)
+			if v.is_empty() or _throttled(peer_id, "move", 0.4):
+				return
+			var x := clampi(int(msg.get("x", 0)), 0, int(state.map.w) - 1)
+			var y := clampi(int(msg.get("y", 0)), 0, int(state.map.h) - 1)
+			var path: Array = Map.find_path(state.map, [int(v.x), int(v.y)], [x, y])
+			if path.size() > 0:
+				v.path = path
+				v.goal = [x, y]
+				v.action = "walking"
+				v.expires_tick = tick + int(Sim.R().get("visitor", {}).get("ttl_ticks", 180))
+		"say":
+			var v := _visitor(peer_id)
+			if v.is_empty() or _throttled(peer_id, "say", 6.0):
+				return
+			var text := _clean(peer_id, str(msg.get("text", "")), 200, "say")
+			if text == "":
+				return
+			var r := Sim.visitor_say(state, tick, v, text, Callable(self, "visitor_brain"))
+			r["type"] = "visitor"
+			net.send(peer_id, r)
+		"gift":
+			var v := _visitor(peer_id)
+			if v.is_empty() or _throttled(peer_id, "gift", 30.0):
+				return
+			var item := _clean(peer_id, str(msg.get("item", "")), 40, "gift")
+			if item == "":
+				return
+			var r := Sim.visitor_gift(state, tick, v, item)
+			r["type"] = "visitor"
+			net.send(peer_id, r)
+		"leave":
+			var v := _visitor(peer_id)
+			if not v.is_empty():
+				v.expires_tick = tick   # the next step sends them down the road
+		"feedback":
+			if _throttled(peer_id, "feedback", 20.0):
+				return
+			var vote := "up" if str(msg.get("vote", "")) == "up" else "down"
+			var reason := _clean(peer_id, str(msg.get("reason", "")), 200, "feedback")
+			var dir := root() + "state/feedback"
+			DirAccess.make_dir_recursive_absolute(dir)
+			var f := FileAccess.open("%s/%d-%d.json" % [dir, int(Time.get_unix_time_from_system()), peer_id], FileAccess.WRITE)
+			if f:
+				f.store_string(JSON.stringify({"ts": int(Time.get_unix_time_from_system()), "tick": tick, "vote": vote, "reason": reason, "clock": Clock.sim(tick).date, "visitor": _visitor(peer_id).get("name", "")}, "  "))
+				f.close()
+			net.send(peer_id, {"type": "visitor", "ok": true, "thanks": true})
 
 func _bubble(c: Dictionary) -> String:
 	if c.conv.is_empty():
@@ -291,7 +393,7 @@ func _bubble(c: Dictionary) -> String:
 
 func _public_citizen(c: Dictionary, brief: bool) -> Dictionary:
 	var d := {"id": int(c.id), "x": int(c.x), "y": int(c.y), "action": c.action, "thought": c.thought, "mood": c.mood, "alive": c.alive, "bubble": _bubble(c),
-		"facing": str(c.get("facing", "south")), "moving": c.path.size() > 0, "activity": Sim.activity(c), "place": int(c.place)}
+		"facing": str(c.get("facing", "south")), "moving": c.path.size() > 0, "activity": Sim.activity(c), "place": int(c.place), "visitor": c.get("visitor", false)}
 	if not brief:
 		d.merge({"name": c.name, "color": c.color, "sprite": int(c.sprite), "occupation": c.occupation, "age": int(c.age), "pronouns": c.pronouns})
 	return d
