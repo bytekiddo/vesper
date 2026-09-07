@@ -11,3 +11,4 @@ kernel/__pycache__/
 *.pyc
 .DS_Store
 world/inbox/*.json
+.worktrees/

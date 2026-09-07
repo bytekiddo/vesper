@@ -1,8 +1,9 @@
 #!/usr/bin/env python3
-"""Vesper overseers. One cycle: pull -> steward -> director -> propose (worldsmith, weaver, lawgiver) -> apply -> smoke -> judge
--> commit -> chronicle -> rollback watch -> push -> restart. Merge by default; veto only on hard limits.
+"""Vesper overseers. One cycle: pull -> steward -> director -> agentic sessions (worldsmith, weaver, lawgiver, engineer), each on
+its own branch against a throwaway world -> gate (squash-merge, full smoke, judge) -> commit -> chronicle -> rollback watch -> push -> restart.
+Merge by default; veto only on hard limits.
 Everything here except kernel/rails.py is the overseers' own to reorganize."""
-import argparse, glob, json, os, re, shutil, subprocess, sys, time
+import argparse, base64, glob, json, os, re, shlex, shutil, signal, subprocess, sys, time
 from datetime import datetime, timezone
 
 ROOT = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
@@ -11,7 +12,7 @@ import rails  # noqa: E402  (frozen kernel: budget, ledger, content filter, mode
 
 STATE_FILE = os.path.join(ROOT, "overseers", "state.json")
 MODELS_FILE = os.path.join(ROOT, "config", "models.json")
-PROPOSERS = ["worldsmith", "weaver", "lawgiver"]
+PROPOSERS = ["worldsmith", "weaver", "lawgiver", "engineer"]
 ROLES = ["citizen", "steward", "director", *PROPOSERS, "judge", "chronicler"]   # everything the Steward assigns a model to
 EDITABLE = ("world/", "viewer/", "overseers/", "ops/", "docs/", "README.md", "journal/", "config/", "Makefile", "setup.sh", "export_presets.cfg", "project.godot")
 FAMILY = lambda mid: mid.split("/")[0]  # noqa: E731
@@ -86,9 +87,8 @@ def model_for(role):
 
 
 def role_prompt(role):
-    proto = open(os.path.join(ROOT, "overseers", "roles", "_protocol.md"), encoding="utf-8").read()
-    body = open(os.path.join(ROOT, "overseers", "roles", f"{role}.md"), encoding="utf-8").read()
-    return body + "\n\n" + proto
+    parts = [open(os.path.join(ROOT, "overseers", "roles", f"{n}.md"), encoding="utf-8").read() for n in (role, "_protocol", *(["_tools"] if role in PROPOSERS else []))]
+    return "\n\n".join(parts)
 
 
 def latest_checkpoint():
@@ -155,16 +155,20 @@ def read_file(rel):
     return open(os.path.join(ROOT, rel), encoding="utf-8").read()
 
 
-def ask(role, user, max_tokens=4000, temperature=0.7):
-    """One sanctioned model call; returns parsed JSON. Offline mode returns canned answers."""
-    if ARGS.offline:
-        return offline_answer(role, user)
+def chat_messages(role, messages, max_tokens=4000, temperature=0.7):
+    """One sanctioned model call over a full message list (text or image parts); returns the raw text."""
     model = model_for(role)
     est = 15000 * models_config().get(role, {}).get("prompt", 1e-7) + max_tokens * models_config().get(role, {}).get("completion", 4e-7)
-    text, usage = rails.chat(model, [{"role": "system", "content": role_prompt(role)}, {"role": "user", "content": user}],
-                             role=role, max_tokens=max_tokens, temperature=temperature, json_mode=True, est_cost=max(est, 0.001))
+    text, usage = rails.chat(model, messages, role=role, max_tokens=max_tokens, temperature=temperature, json_mode=True, est_cost=max(est, 0.001))
     log(f"{role} <- {model}: {usage['prompt_tokens']}+{usage['completion_tokens']} tokens, ${usage['cost']:.4f}")
-    return rails.parse_json(text)
+    return text
+
+
+def ask(role, user, max_tokens=4000, temperature=0.7):
+    """One-shot call (steward, director, judge, chronicler); returns parsed JSON. Offline mode returns canned answers."""
+    if ARGS.offline:
+        return offline_answer(role, user)
+    return rails.parse_json(chat_messages(role, [{"role": "system", "content": role_prompt(role)}, {"role": "user", "content": user}], max_tokens, temperature))
 
 
 # ---------------------------------------------------------------- steward
@@ -287,18 +291,6 @@ def proposer_prompt(role, summary, st):
     return lead + f"WORLD\n{summary}\n\nREPOSITORY (editable files)\n{file_tree()}\n\nCURRENT world/rules.json:\n{read_file('world/rules.json') if role == 'lawgiver' else '(ask to read it if you need it)'}\n\nYour proposal for this cycle:"
 
 
-def propose(role, summary, st):
-    user = proposer_prompt(role, summary, st)
-    if (st.get("director") or {}).get("focus"):
-        log(f"{role}: prompt carries the focus '{st['director']['focus'][:60]}'")
-    ans = ask(role, user)
-    if isinstance(ans, dict) and ans.get("read") and not ans.get("files") and not ans.get("inbox"):
-        wanted = [p for p in ans["read"] if isinstance(p, str) and rails.path_allowed(p) and os.path.isfile(os.path.join(ROOT, p))][:4]
-        shown = "\n\n".join(f"=== {p} ===\n{read_file(p)[:60000]}" for p in wanted)
-        ans = ask(role, user + f"\n\nYou asked to read files. Here they are:\n{shown}\n\nNow give your final proposal (no more `read`).")
-    return ans if isinstance(ans, dict) else {}
-
-
 def validate_ops(ops):
     """Shape + content check of inbox ops. Returns (good_ops, rejected_reasons)."""
     good, bad = [], []
@@ -328,39 +320,173 @@ def validate_ops(ops):
     return good, bad
 
 
-def apply_proposal(role, prop):
-    """Writes files and the inbox file. Returns (touched paths, inbox path or None, rejected notes)."""
-    touched, notes = [], []
-    for rel, content in (prop.get("files") or {}).items():
-        if not isinstance(content, str) or not rails.path_allowed(rel) or not rel.startswith(EDITABLE):
-            notes.append(f"refused file {rel}")
+# ---------------------------------------------------------------- agentic sessions
+WT_DIR = os.path.join(ROOT, ".worktrees")
+RUN_WHITELIST = ("make smoke-quick", "make dev", "make export-web", "make art-eval", "git status", "git diff", "git log", "git show", "git grep", "git ls-files")
+
+
+def run_capped(args, cwd, timeout):
+    """Runs a command in its own process group and kills the whole group on timeout (make -> godot must not linger on port 9002)."""
+    pr = subprocess.Popen(args, cwd=cwd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, text=True, start_new_session=True)
+    try:
+        out, _ = pr.communicate(timeout=timeout)
+        return pr.returncode, out or ""
+    except subprocess.TimeoutExpired:
+        os.killpg(pr.pid, signal.SIGKILL)
+        out, _ = pr.communicate()
+        return -1, (out or "") + f"\n(stopped after {timeout}s)"
+
+
+def tool_run(cmd, wt):
+    """Whitelisted commands only, no shell, in the session's worktree; `make dev` is a 20-second boot check."""
+    cmd = " ".join(str(cmd).split())
+    if not cmd.startswith(RUN_WHITELIST):
+        return f"refused: only {', '.join(RUN_WHITELIST)} may be run"
+    args = shlex.split(cmd)
+    if args[0] == "make":
+        args = ["make", "-s", *args[1:]]
+    # ponytail: Godot hangs instead of exiting when a preloaded script fails to parse (kernel smoke.gd); 240 s bounds a smoke-quick either way
+    code, out = run_capped(args, wt, 20 if cmd == "make dev" else 240 if cmd == "make smoke-quick" else 1200)
+    return f"exit {code}\n{out[-8000:]}"
+
+
+def tool_read(rel, wt):
+    full = os.path.realpath(os.path.join(wt, rel))
+    if not full.startswith(os.path.realpath(wt) + os.sep) or os.path.basename(full) == ".env" or not os.path.isfile(full):
+        return f"refused or missing: {rel}"
+    return open(full, encoding="utf-8", errors="replace").read()[:60000]
+
+
+def tool_write(rel, content, wt):
+    """Same checks the old whole-file proposals had: editable path, content limits, valid JSON."""
+    if not isinstance(content, str) or not rails.path_allowed(rel) or not rel.startswith(EDITABLE):
+        return f"refused: {rel} is not an editable path"
+    ok, why = rails.content_check(content)
+    if not ok:
+        rails.quarantine(content, why, f"overseer:{os.path.basename(wt)}")
+        return f"refused: content limit ({why})"
+    if rel.endswith(".json"):
+        try:
+            json.loads(content)
+        except json.JSONDecodeError as e:
+            return f"refused: invalid JSON ({e})"
+    full = os.path.join(wt, rel)
+    os.makedirs(os.path.dirname(full), exist_ok=True)
+    open(full, "w", encoding="utf-8").write(content if content.endswith("\n") else content + "\n")
+    return f"wrote {rel} ({len(content)} chars)"
+
+
+def tool_screenshot(wt, tag):
+    """Boots the throwaway world in the worktree, shoots the viewer once (under xvfb on a server), kills the world."""
+    out = os.path.join(wt, "state", f"shot-{tag}.png")
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    srv = subprocess.Popen(["make", "-s", "dev"], cwd=wt, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, start_new_session=True)
+    try:
+        time.sleep(5)
+        code, log_ = run_capped(["make", "-s", "screenshot", f"OUT={out}"], wt, 90)
+    finally:
+        os.killpg(srv.pid, signal.SIGTERM)
+        try:
+            srv.wait(timeout=10)
+        except subprocess.TimeoutExpired:
+            os.killpg(srv.pid, signal.SIGKILL)
+    return out if os.path.exists(out) else f"screenshot failed (exit {code}): {log_[-1500:]}"
+
+
+def image_message(path, wt):
+    """A user message carrying one PNG from the worktree as an OpenAI-shaped image part (rails passes messages through untouched)."""
+    full = os.path.realpath(path if os.path.isabs(path) else os.path.join(wt, path))
+    if not full.startswith(os.path.realpath(wt) + os.sep) or not full.endswith(".png") or not os.path.isfile(full):
+        return None
+    b64 = base64.b64encode(open(full, "rb").read()).decode()
+    return {"role": "user", "content": [{"type": "text", "text": f"image: {os.path.relpath(full, wt)}"},
+                                        {"type": "image_url", "image_url": {"url": f"data:image/png;base64,{b64}"}}]}
+
+
+def compact(messages, keep=8):
+    """Old tool results, old full-file writes and old images are elided so a long session does not pay for its whole history every step."""
+    for m in messages[2:-keep]:
+        if isinstance(m.get("content"), str) and len(m["content"]) > 400:
+            m["content"] = m["content"][:300] + "\n… (elided; read the file or run the command again if you need it)"
+        elif isinstance(m.get("content"), list):
+            m["content"] = "(image elided)"
+    return messages
+
+
+def session(role, st, summary):
+    """The tool-use loop: own branch + worktree, throwaway world, step cap here, dollar cap in the rails.
+    Returns (branch, worktree, the `done` call or None, accepted inbox ops)."""
+    slug = datetime.now(timezone.utc).strftime("%Y%m%d-%H%M%S")
+    branch, wt = f"overseer/{role}/{slug}", os.path.join(WT_DIR, f"{role}-{slug}")
+    os.makedirs(WT_DIR, exist_ok=True)
+    open(os.path.join(WT_DIR, ".gdignore"), "a").close()   # Godot must not import the worktrees as part of the main project
+    git("worktree", "add", "-q", "-B", branch, wt, "HEAD")
+    os.makedirs(os.path.join(wt, "state", "smoke"), exist_ok=True)
+    rails.begin_session()
+    max_steps = int(rails.budget_config().get("max_steps_per_session", 24))
+    code, out = run_capped(["make", "-s", "smoke-quick"], wt, 240)
+    opening = (proposer_prompt(role, summary, st) + f"\n\nSMOKE STATUS at session start (`make smoke-quick` on your branch): exit {code}\n{out[-2500:]}\n\n"
+               f"You have {max_steps} steps. Reply with your first tool call.")
+    messages = [{"role": "system", "content": role_prompt(role)}, {"role": "user", "content": opening}]
+    ops, done = [], None
+    for step in range(max_steps):
+        try:
+            text = offline_session(role, step) if ARGS.offline else chat_messages(role, compact(messages), max_tokens=8000, temperature=0.4)
+        except rails.ContentBreach as e:
+            log(f"{role}: output quarantined ({e}) — hard-limit breach recorded")
+            st.setdefault("breaches", []).append({"ts": time.time(), "role": role, "reason": str(e)})
+            break
+        except Exception as e:  # noqa: BLE001  (BudgetExhausted, network, marketplace)
+            log(f"{role}: session ended at step {step + 1} ({e})")
+            break
+        messages.append({"role": "assistant", "content": text})
+        try:
+            call = rails.parse_json(text)
+        except ValueError:
+            messages.append({"role": "user", "content": "Reply with exactly ONE JSON tool call."})
             continue
-        ok, why = rails.content_check(content)
-        if not ok:
-            notes.append(f"content: {rel}: {why}")
-            rails.quarantine(content, why, f"overseer:{role}")
-            continue
-        if rel.endswith(".json"):
-            try:
-                json.loads(content)
-            except json.JSONDecodeError as e:
-                notes.append(f"{rel}: invalid JSON ({e})")
-                continue
-        full = os.path.join(ROOT, rel)
-        os.makedirs(os.path.dirname(full), exist_ok=True)
-        will_write(rel)
-        open(full, "w", encoding="utf-8").write(content if content.endswith("\n") else content + "\n")
-        touched.append(rel)
-    inbox = None
-    good, bad = validate_ops(prop.get("inbox") or [])
-    notes += bad
-    if good:
-        inbox = f"overseers/proposals/{int(time.time())}-{role}.json"
-        os.makedirs(os.path.join(ROOT, "overseers", "proposals"), exist_ok=True)
-        will_write(inbox)
-        json.dump(good, open(os.path.join(ROOT, inbox), "w", encoding="utf-8"), indent=1)
-        touched.append(inbox)
-    return touched, inbox, notes
+        tool = str(call.get("tool", ""))
+        if tool == "done":
+            done = call
+            break
+        if tool == "read_file":
+            out = tool_read(str(call.get("path", "")), wt)
+        elif tool == "write_file":
+            out = tool_write(str(call.get("path", "")), call.get("content"), wt)
+        elif tool == "run":
+            out = tool_run(call.get("cmd", ""), wt)
+        elif tool == "screenshot":
+            out = tool_screenshot(wt, step)
+        elif tool == "view_image":
+            msg = image_message(str(call.get("path", "")), wt)
+            out = None if msg else "no such image (use the path returned by screenshot)"
+            if msg:
+                messages.append(msg)
+        elif tool == "inbox":
+            good, bad = validate_ops(call.get("ops"))
+            ops += good
+            out = f"accepted {len(good)} ops; rejected: {bad or 'none'}"
+        else:
+            out = f"unknown tool {tool!r}"
+        log(f"{role}: step {step + 1} {tool} {str(call.get('path') or call.get('cmd') or '')[:60]} -> {(out or 'image')[:90].replace(chr(10), ' ')}")
+        if out is not None:
+            messages.append({"role": "user", "content": f"{out[-12000:]}\n\n({max_steps - step - 1} steps left)"})
+    return branch, wt, done, ops
+
+
+def drop_worktree(wt, branch=None):
+    subprocess.run(["git", "worktree", "remove", "--force", wt], cwd=ROOT, capture_output=True)
+    if branch:
+        git("branch", "-D", branch, check=False)
+
+
+def prune_branches(days=14):
+    """Vetoed branches are evidence for a while, not forever."""
+    for line in git("for-each-ref", "--format=%(refname:short) %(committerdate:unix)", "refs/heads/overseer/", check=False).splitlines():
+        name, ts = line.split()
+        if time.time() - int(ts) > days * 86400:
+            git("branch", "-D", name, check=False)
+    git("worktree", "prune", check=False)
 
 
 def deliver(proposal_rel):
@@ -389,7 +515,7 @@ def revert(touched):
 def judge(role, touched, smoke_ok, report, breaches):
     code = [t for t in touched if not t.startswith("overseers/proposals/")]
     diff = git("diff", "HEAD", "--", *code, check=False)[:40000] if code else ""   # never an empty pathspec: that would diff the whole tree
-    new_files = "\n".join(f"=== {t} ===\n{read_file(t)[:20000]}" for t in touched if t.startswith("overseers/proposals/"))
+    new_files = "\n".join(f"=== {t} ===\n{read_file(t)[:20000]}" for t in touched if os.path.isfile(os.path.join(ROOT, t)) and git("ls-files", "--error-unmatch", t, check=False) != t)   # untracked = new in this branch
     # the mechanical content check skips files whose job is to *describe* the limits (role prompts, the runner itself)
     checkable = [t for t in code if not t.startswith(("overseers/roles/", "overseers/run.py"))]
     checked_diff = git("diff", "HEAD", "--", *checkable, check=False)[:40000] if checkable else ""
@@ -415,14 +541,15 @@ def judge(role, touched, smoke_ok, report, breaches):
     return veto, (breaches[0] if breaches else str(verdict.get("reason", ""))), str(verdict.get("notes", ""))[:300]
 
 
-def commit(message, role, model, paths):
+def commit(message, role, model, paths, milestone=None):
     if ARGS.dry_run:
         log(f"(dry-run) would commit: {message}")
         return "dry-run"
     git("add", "-A", "--", *paths)
     if not git("diff", "--cached", "--name-only", check=False):
         return ""
-    git("commit", "-q", "-m", message, "-m", f"Overseer: {role}/{model}", "--", *paths)   # only these paths, whatever else is staged
+    trailers = ([f"Milestone: {milestone}"] if milestone else []) + [f"Overseer: {role}/{model}"]
+    git("commit", "-q", "-m", message, *sum([["-m", t] for t in trailers], []), "--", *paths)   # only these paths, whatever else is staged
     return git("rev-parse", "--short", "HEAD")
 
 
@@ -434,44 +561,75 @@ def record_decision(line):
 
 
 def run_proposer(role, st, summary):
-    rails.begin_session()   # per-session dollar cap (config/budget.json caps_usd.session)
-    quarantine_before = rails.quarantine_count_today()   # per proposal: one quarantine must not veto the rest of the cycle
-    try:
-        prop = propose(role, summary, st)
-    except rails.BudgetExhausted as e:
-        log(f"{role}: {e}")
+    branch, wt, done, ops = session(role, st, summary)
+    if done is None:
+        log(f"{role}: session ended without `done`; branch {branch} discarded")
+        drop_worktree(wt, branch)
         return
-    except rails.ContentBreach as e:
-        log(f"{role}: output quarantined ({e}) — hard-limit breach recorded")
-        st.setdefault("breaches", []).append({"ts": time.time(), "role": role, "reason": str(e)})
+    hyp = str(done.get("hypothesis", "")).strip()[:200] or "no hypothesis stated"
+    milestone = str(done.get("milestone", "")).strip()[:80] or (st.get("director") or {}).get("milestone") or "unnamed"
+    if ops:
+        rel = f"overseers/proposals/{int(time.time())}-{role}.json"
+        os.makedirs(os.path.join(wt, "overseers", "proposals"), exist_ok=True)
+        json.dump(ops, open(os.path.join(wt, rel), "w", encoding="utf-8"), indent=1)
+    subprocess.run(["git", "add", "-A"], cwd=wt, capture_output=True)
+    if not subprocess.run(["git", "diff", "--cached", "--name-only"], cwd=wt, capture_output=True, text=True).stdout.strip():
+        log(f"{role}: nothing this cycle ({done.get('summary') or hyp})")
+        drop_worktree(wt, branch)
         return
-    except Exception as e:  # noqa: BLE001
-        log(f"{role}: no proposal ({e})")
+    subprocess.run(["git", "commit", "-q", "-m", f"{role}: {hyp}", "-m", f"Milestone: {milestone}", "-m", f"Overseer: {role}/{model_for(role)}"], cwd=wt, capture_output=True)
+    drop_worktree(wt)   # the branch stays; the gate merges it or keeps it as evidence
+    gate(role, st, branch, hyp, milestone, str(done.get("decision", "")))
+
+
+def gate(role, st, branch, hyp, milestone, decision):
+    """Main accepts a branch only through here: squash-merge into the working tree, re-validate ops, full smoke, Judge, commit or revert."""
+    quarantine_before = rails.quarantine_count_today()   # per branch: one quarantine must not veto the rest of the cycle
+    touched = [t for t in git("diff", "--name-only", "HEAD", branch, check=False).splitlines() if t]
+    if not touched or any(not rails.path_allowed(t) or not t.startswith(EDITABLE) for t in touched):
+        log(f"{role}: branch {branch} touches a protected path or nothing ({touched}); refused")
+        git("branch", "-D", branch, check=False)
         return
-    hyp = str(prop.get("hypothesis", "")).strip()[:200] or "no hypothesis stated"
-    touched, inbox, notes = apply_proposal(role, prop)
-    for n in notes:
-        log(f"{role}: {n}")
-    if not touched:
-        log(f"{role}: nothing to apply ({hyp})")
+    for t in touched:
+        will_write(t)
+    if subprocess.run(["git", "merge", "--squash", "-q", branch], cwd=ROOT, capture_output=True).returncode != 0:
+        log(f"{role}: squash-merge of {branch} failed (dirty tree?); reverting")
+        git("reset", "-q", check=False)
+        revert(touched)
         return
-    log(f"{role}: applying {touched} — {hyp}")
+    git("reset", "-q", check=False)   # unstaged, like a hand-written change; commit() stages exactly `touched`
+    proposals = []
+    for t in touched:
+        if t.startswith("overseers/proposals/") and t.endswith(".json") and os.path.isfile(os.path.join(ROOT, t)):
+            try:
+                good, bad = validate_ops(json.load(open(os.path.join(ROOT, t), encoding="utf-8")))
+            except (OSError, json.JSONDecodeError):
+                good, bad = [], ["unreadable proposal file"]
+            for b in bad:
+                log(f"{role}: {t}: {b}")
+            json.dump(good, open(os.path.join(ROOT, t), "w", encoding="utf-8"), indent=1)
+            proposals.append(t)
+    log(f"{role}: gate for {branch}: {touched} — {hyp}")
     smoke_ok, report = rails.run_smoke(ARGS.smoke_seconds)
     breaches = rails.hard_limit_breaches(smoke_ok, quarantine_before)
+    if "overseers/run.py" in touched and subprocess.run([sys.executable, "overseers/run.py", "--check"], cwd=ROOT, capture_output=True).returncode != 0:
+        breaches.append("overseers/run.py self-check failed")
     veto, reason, advice = judge(role, touched, smoke_ok, report, breaches)
     if veto:
-        log(f"{role}: VETOED — {reason}")
+        log(f"{role}: VETOED — {reason} (branch {branch} kept as evidence)")
         revert(touched)
-        st["history"].append({"ts": time.time(), "role": role, "hypothesis": hyp, "result": "veto", "reason": reason})
+        st["history"].append({"ts": time.time(), "role": role, "hypothesis": hyp, "milestone": milestone, "result": "veto", "reason": reason, "branch": branch})
         return
-    sha = commit(f"{role}: {hyp}", role, model_for(role), touched)
-    record_decision(prop.get("decision", ""))
-    deliver(inbox)
+    sha = commit(f"{role}: {hyp}", role, model_for(role), touched, milestone)
+    record_decision(decision)
+    for t in proposals:
+        deliver(t)
     if any(t.startswith("viewer/") for t in touched) and not ARGS.dry_run:
         export_web()
-    st["merges"].append({"sha": sha, "ts": time.time(), "role": role, "hypothesis": hyp, "baseline": rails.metrics(), "files": touched,
+    git("branch", "-D", branch, check=False)
+    st["merges"].append({"sha": sha, "ts": time.time(), "role": role, "hypothesis": hyp, "milestone": milestone, "baseline": rails.metrics(), "files": touched,
                          "needs_restart": any(not t.startswith("overseers/proposals/") for t in touched)})
-    st["history"].append({"ts": time.time(), "role": role, "hypothesis": hyp, "result": "merged", "sha": sha, "advice": advice})
+    st["history"].append({"ts": time.time(), "role": role, "hypothesis": hyp, "milestone": milestone, "result": "merged", "sha": sha, "advice": advice})
     log(f"{role}: merged {sha} ({reason or 'ok'})")
 
 
@@ -589,17 +747,26 @@ def push():
 
 
 # ---------------------------------------------------------------- offline canned answers (pipeline test without a key)
+OFFLINE_STEPS = {
+    "worldsmith": [{"tool": "inbox", "ops": [{"op": "add_building", "building": {"name": "The Reading Room", "kind": "hall", "w": 3, "h": 2, "capacity": 8, "note": "Eleven books and a stove."}}]},
+                   {"tool": "done", "milestone": "Evenings", "hypothesis": "building visits after 18:00 will rise to 20 per day within 72 hours", "summary": "a reading room gives evenings somewhere to go"}],
+    "weaver": [{"tool": "inbox", "ops": [{"op": "add_citizen", "citizen": {"name": "Marit Ebb", "age": 38, "pronouns": "she/her", "occupation": "tide-reader", "innate": "methodical, superstitious", "learned": "kept the ferry's log until it stopped", "lifestyle": "up with the tide", "currently": "looking for the old logbook"}, "relationships": [[4, "colleague", 0.4, "worked the ferry with Cassius"]]}]},
+               {"tool": "done", "milestone": "Evenings", "hypothesis": "conversations per day will rise to 30 within 72 hours", "summary": "one arrival who knew the ferry"}],
+    "lawgiver": [{"tool": "read_file", "path": "world/rules.json"}, {"tool": "done", "hypothesis": "no change", "summary": "nothing this cycle"}],
+    "engineer": [{"tool": "run", "cmd": "git status"}, {"tool": "done", "hypothesis": "no change", "summary": "nothing this cycle"}],
+}
+
+
+def offline_session(role, step):
+    steps = OFFLINE_STEPS.get(role) or [{"tool": "done", "summary": "nothing this cycle"}]
+    return json.dumps(steps[min(step, len(steps) - 1)])
+
+
 def offline_answer(role, user):
     if role == "director":
         return {"focus": "offline: give evenings somewhere to go", "milestone": "Evenings",
                 "assignments": {"worldsmith": "one small evening place with a stove", "weaver": "one arrival who would use it"},
                 "roadmap": "# Vesper — Roadmap\n\n_Owned by the Director._\n\n## Milestones\n- [ ] Evenings — done when: citizens have somewhere to be after work. Hypothesis: \"building visits after 18:00 will rise to 20 per day within 72 hours\". Roles: worldsmith, weaver.\n"}
-    if role == "worldsmith":
-        return {"hypothesis": "offline: a reading room gives evenings somewhere to go", "inbox": [{"op": "add_building", "building": {"name": "The Reading Room", "kind": "hall", "w": 3, "h": 2, "capacity": 8, "note": "Eleven books and a stove."}}]}
-    if role == "weaver":
-        return {"hypothesis": "offline: one arrival who knew the ferry", "inbox": [{"op": "add_citizen", "citizen": {"name": "Marit Ebb", "age": 38, "pronouns": "she/her", "occupation": "tide-reader", "innate": "methodical, superstitious", "learned": "kept the ferry's log until it stopped", "lifestyle": "up with the tide", "currently": "looking for the old logbook"}, "relationships": [[4, "colleague", 0.4, "worked the ferry with Cassius"]]}]}
-    if role == "lawgiver":
-        return {"hypothesis": "offline: no rule change"}
     if role == "judge":
         return {"veto": False, "reason": "offline judge"}
     if role == "chronicler":
@@ -628,6 +795,10 @@ def main():
         assert sim_clock(8640 * 31 + 3600)[0].startswith("Thornday, Sprout 2, Year 1, 10:00")
         pp = proposer_prompt("weaver", "WORLD-SUMMARY", {"director": {"focus": "evenings somewhere to go", "milestone": "Evenings", "assignments": {"weaver": "one arrival"}}})
         assert pp.startswith("DIRECTOR'S FOCUS THIS CYCLE: evenings somewhere to go") and "YOUR ASSIGNMENT (weaver): one arrival" in pp and "WORLD-SUMMARY" in pp
+        assert tool_run("rm -rf /", ROOT).startswith("refused") and tool_run("git push origin main", ROOT).startswith("refused")
+        assert tool_write("kernel/clock.gd", "x", ROOT).startswith("refused") and tool_write("config/budget.json", "{}", ROOT).startswith("refused")
+        assert tool_write("world/x.json", "{bad", ROOT).startswith("refused") and tool_read("../.env", ROOT).startswith("refused")
+        assert "_tools" in role_prompt("engineer").lower() or "tool call" in role_prompt("engineer")
         print("overseer self-check ok")
         return
     for k, v in (line.split("=", 1) for line in open(os.path.join(ROOT, ".env"), encoding="utf-8") if "=" in line and not line.startswith("#")) if os.path.exists(os.path.join(ROOT, ".env")) else []:
@@ -643,6 +814,7 @@ def main():
     if git("remote", check=False) and not ARGS.dry_run:
         sync_upstream()
     rollback_watch(st)
+    prune_branches()
     quarantine_before = rails.quarantine_count_today()
     broke = rails.overseer_remaining() < 0.02 and not ARGS.offline
     if broke:

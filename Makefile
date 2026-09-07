@@ -1,13 +1,18 @@
 # Vesper — make targets. `make smoke` is the definition of done.
 GODOT ?= $(shell command -v godot 2>/dev/null || (test -x /Applications/Godot.app/Contents/MacOS/Godot && echo /Applications/Godot.app/Contents/MacOS/Godot) || echo /usr/local/bin/godot)
 SMOKE_SECONDS ?= 600
+# coreutils timeout (Linux) bounds a smoke whose Godot never exits, e.g. after a script load failure; absent on macOS
+TIMEOUT := $(shell command -v timeout >/dev/null 2>&1 && echo "timeout $$(( $(SMOKE_SECONDS) + 600 ))")
 SHA256 := $(shell command -v sha256sum 2>/dev/null || echo "shasum -a 256")
+XVFB := $(shell command -v xvfb-run >/dev/null 2>&1 && echo "xvfb-run -a")
+WS ?= ws://127.0.0.1:9002
+OUT ?= state/screenshot.png
 
-.PHONY: smoke smoke-quick run dev viewer viewer-dev export-web deploy overseer kernel-hash import check
+.PHONY: smoke smoke-quick run dev viewer viewer-dev screenshot export-web deploy overseer kernel-hash import check
 
 ## headless boot + fast run + determinism replay + checkpoint round-trip + $(SMOKE_SECONDS)s real-time run
 smoke:
-	SMOKE_SECONDS=$(SMOKE_SECONDS) $(GODOT) --headless --path . -s kernel/smoke.gd
+	SMOKE_SECONDS=$(SMOKE_SECONDS) $(TIMEOUT) $(GODOT) --headless --path . -s kernel/smoke.gd
 
 smoke-quick:
 	$(MAKE) -s smoke SMOKE_SECONDS=15
@@ -25,6 +30,10 @@ viewer:
 
 viewer-dev:
 	$(GODOT) --path . -- --ws=ws://127.0.0.1:9002
+
+## save one PNG of the viewer connected to WS (default: the throwaway world), then quit; under xvfb on a server. Used by overseer sessions and the Judge.
+screenshot:
+	$(XVFB) $(GODOT) --path . -- --ws=$(WS) --screenshot=$(OUT)
 
 export-web:
 	mkdir -p build/web
