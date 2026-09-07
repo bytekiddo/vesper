@@ -12,6 +12,7 @@ import rails  # noqa: E402  (frozen kernel: budget, ledger, content filter, mode
 STATE_FILE = os.path.join(ROOT, "overseers", "state.json")
 MODELS_FILE = os.path.join(ROOT, "config", "models.json")
 PROPOSERS = ["worldsmith", "weaver", "lawgiver"]
+ROLES = ["citizen", "steward", "director", *PROPOSERS, "judge", "chronicler"]   # everything the Steward assigns a model to
 EDITABLE = ("world/", "viewer/", "overseers/", "ops/", "docs/", "README.md", "journal/", "config/", "Makefile", "setup.sh", "export_presets.cfg", "project.godot")
 FAMILY = lambda mid: mid.split("/")[0]  # noqa: E731
 ARGS = None
@@ -168,6 +169,7 @@ def ask(role, user, max_tokens=4000, temperature=0.7):
 
 # ---------------------------------------------------------------- steward
 def steward(st):
+    rails.begin_session()
     if ARGS.offline:
         return
     try:
@@ -175,48 +177,54 @@ def steward(st):
     except Exception as e:  # noqa: BLE001
         log(f"steward: marketplace unavailable ({e}); keeping current models")
         return
-    cands = sorted(((v["prompt"], v["completion"], k, v) for k, v in market.items()
-                    if v["json"] and v["context"] >= 32000 and 0 < v["prompt"] < 5e-6 and v["completion"] < 2e-5), key=lambda r: (r[0] + 3 * r[1]))
-    rows = [f"{k}  in ${p*1e6:.3f}/M out ${c*1e6:.3f}/M ctx {v['context']//1000}k" for p, c, k, v in cands[:90]]
+    cands = sorted(((k, v) for k, v in market.items() if v["json"] and v["context"] >= 32000 and v["prompt"] > 0 and ":free" not in k),
+                   key=lambda kv: kv[1]["prompt"] + 3 * kv[1]["completion"])
+    row = lambda k, v: f"{k}  in ${v['prompt']*1e6:.3f}/M out ${v['completion']*1e6:.3f}/M ctx {v['context']//1000}k"  # noqa: E731
+    cheap = [(k, v) for k, v in cands if v["prompt"] < 1e-6 and v["completion"] < 5e-6][:60]
+    frontier = [(k, v) for k, v in cands if v["prompt"] >= 1e-6 and v["context"] >= 128000][:60]
     ledger = rails.month_total()
-    remaining = rails.overseer_remaining()
+    split = rails.budget_config()["split"]
+    left = {c: round(rails.category_remaining(c, ledger), 2) for c in split}
     days_left = max(1.0, (datetime(datetime.now(timezone.utc).year + (datetime.now(timezone.utc).month == 12), datetime.now(timezone.utc).month % 12 + 1, 1, tzinfo=timezone.utc) - datetime.now(timezone.utc)).total_seconds() / 86400)
     cfg = models_config()
     user = (f"Month so far: ${ledger['cost']:.2f} of ${rails.budget():.0f}; by role: {json.dumps({k: round(v, 3) for k, v in ledger['by_role'].items()})}.\n"
-            f"Overseer share remaining this month: ${remaining:.2f} over ~{days_left:.0f} days at 4 cycles/day. Citizens get 70% of the budget.\n"
-            f"Current assignment: {json.dumps({r: cfg.get(r, {}).get('model') for r in ['citizen', *PROPOSERS, 'judge', 'chronicler', 'steward']})}\n"
-            f"Marketplace (cheapest first, JSON-capable, >=32k context):\n" + "\n".join(rows))
+            f"Budget split by category: {json.dumps(split)}. Remaining this month per category: {json.dumps(left)} over ~{days_left:.0f} days at 4 cycles/day.\n"
+            f"Current assignment: {json.dumps({r: cfg.get(r, {}).get('model') for r in ROLES})}\n"
+            "Frontier-class marketplace (JSON-capable, >=128k context, >=$1/M input; cheapest first):\n" + "\n".join(row(k, v) for k, v in frontier) +
+            "\n\nCheap marketplace (JSON-capable, >=32k context; cheapest first):\n" + "\n".join(row(k, v) for k, v in cheap))
     try:
-        ans = ask("steward", user, max_tokens=400, temperature=0.3)
+        ans = ask("steward", user, max_tokens=500, temperature=0.3)
     except Exception as e:  # noqa: BLE001
         log(f"steward failed: {e}")
         return
-    roles = ["citizen", "steward", "worldsmith", "weaver", "lawgiver", "judge", "chronicler"]
-    pick = {r: ans.get(r) for r in roles}
-    if any(pick[r] not in market for r in roles):
+    pick = {r: ans.get(r) for r in ROLES}
+    if any(pick[r] not in market for r in ROLES):
         log(f"steward: unknown model in {pick}; keeping current")
         return
-    if FAMILY(pick["judge"]) in {FAMILY(pick[r]) for r in PROPOSERS}:
+    thinkers = {FAMILY(pick[r]) for r in ("director", *PROPOSERS)}
+    if FAMILY(pick["judge"]) in thinkers:
         # enforce the independent judge mechanically
-        alt = next((k for p, c, k, v in cands if FAMILY(k) not in {FAMILY(pick[r]) for r in PROPOSERS}), None)
+        alt = next((k for k, v in frontier + cheap if FAMILY(k) not in thinkers), None)
         if not alt:
             return
-        log(f"steward: judge shared a family with proposers; using {alt}")
+        log(f"steward: judge shared a family with the director/proposers; using {alt}")
         pick["judge"] = alt
-    est_cycle = sum(15000 * market[pick[r]]["prompt"] + 3000 * market[pick[r]]["completion"] for r in PROPOSERS) \
-        + 3 * (8000 * market[pick["judge"]]["prompt"] + 300 * market[pick["judge"]]["completion"]) \
-        + 12000 * market[pick["chronicler"]]["prompt"] + 1500 * market[pick["chronicler"]]["completion"]
-    if est_cycle * 4 * days_left > remaining * 1.05 and remaining > 0:
-        log(f"steward: assignment costs ${est_cycle:.3f}/cycle, over the remaining share; falling back to the cheapest viable roster")
-        cheapest = [k for p, c, k, v in cands]
-        pick = {r: cheapest[0] for r in roles}
-        pick["judge"] = next((k for k in cheapest if FAMILY(k) != FAMILY(cheapest[0])), cheapest[0])
+    est = lambda r, pt, ct: pt * market[pick[r]]["prompt"] + ct * market[pick[r]]["completion"]  # noqa: E731
+    est_overseers = est("director", 20000, 2000) + sum(est(r, 15000, 3000) for r in PROPOSERS) + est("chronicler", 12000, 1500) + est("steward", 8000, 500)
+    est_judge = 3 * est("judge", 8000, 300)
+    for cat, per_cycle in (("overseers", est_overseers), ("judge", est_judge)):
+        if per_cycle * 4 * days_left > left[cat] * 1.05 and left[cat] > 0:
+            log(f"steward: {cat} assignment costs ${per_cycle:.3f}/cycle, over the remaining share; falling back to the cheapest viable roster")
+            cheapest = [k for k, v in cands]
+            pick = {r: cheapest[0] for r in ROLES}
+            pick["judge"] = next((k for k in cheapest if FAMILY(k) != FAMILY(cheapest[0])), cheapest[0])
+            break
     new = {"_written_by": "the Steward", "updated": datetime.now(timezone.utc).isoformat(), "reason": str(ans.get("reason", ""))[:300]}
-    for r in roles:
+    for r in ROLES:
         new[r] = {"model": pick[r], "prompt": market[pick[r]]["prompt"], "completion": market[pick[r]]["completion"]}
     will_write("config/models.json")
     json.dump(new, open(MODELS_FILE, "w", encoding="utf-8"), indent=2)
-    log(f"steward: {json.dumps({r: pick[r] for r in roles})}")
+    log(f"steward: {json.dumps({r: pick[r] for r in ROLES})}")
 
 
 # ---------------------------------------------------------------- proposals
@@ -365,6 +373,7 @@ def record_decision(line):
 
 
 def run_proposer(role, st, summary):
+    rails.begin_session()   # per-session dollar cap (config/budget.json caps_usd.session)
     quarantine_before = rails.quarantine_count_today()   # per proposal: one quarantine must not veto the rest of the cycle
     try:
         prop = propose(role, summary)
@@ -407,6 +416,7 @@ def run_proposer(role, st, summary):
 
 # ---------------------------------------------------------------- chronicler
 def chronicle(st, summary_full, world):
+    rails.begin_session()
     mast_path = os.path.join(ROOT, "journal", "MASTHEAD.json")
     masthead = json.load(open(mast_path, encoding="utf-8")) if os.path.exists(mast_path) else {}
     recent = [h for h in st.get("history", []) if time.time() - h["ts"] < 7 * 3600]
@@ -481,11 +491,12 @@ def update_readme():
         return
     t = rails.month_total()
     cfg = models_config()
-    roles = ["citizen", "steward", "worldsmith", "weaver", "lawgiver", "judge", "chronicler"]
+    by_cat = " · ".join(f"{c}: ${t['by_category'].get(c, 0.0):.2f} of ${rails.budget() * rails.share(c):.0f}" for c in rails.budget_config()["split"])
     lines = [f"*Updated {datetime.now(timezone.utc).strftime('%Y-%m-%d %H:%M UTC')} by the overseer runner.*", "",
              f"**Spend this month ({t['month']}):** ${t['cost']:.2f} of ${rails.budget():.0f} across {t['calls']} calls "
-             f"({t['prompt_tokens']:,} prompt / {t['completion_tokens']:,} completion tokens).", "", "| Role | Model | Spent |", "|---|---|---|"]
-    for r in roles:
+             f"({t['prompt_tokens']:,} prompt / {t['completion_tokens']:,} completion tokens).", "", f"**By category:** {by_cat}", "",
+             "| Role | Model | Spent |", "|---|---|---|"]
+    for r in ROLES:
         spent = sum(v for k, v in t["by_role"].items() if k == r or (r == "citizen" and k.startswith("citizen")))
         lines.append(f"| {r} | `{cfg.get(r, {}).get('model', '?')}` | ${spent:.2f} |")
     block = "\n".join(lines)
@@ -559,6 +570,7 @@ def main():
     if not ok:
         log(f"kernel manifest check failed ({why}); aborting cycle")
         sys.exit(4)
+    rails.begin_cycle()   # per-cycle dollar cap (config/budget.json caps_usd.cycle)
     st = load_state()
     st["cycle"] = st.get("cycle", 0) + 1
     if git("remote", check=False) and not ARGS.dry_run:

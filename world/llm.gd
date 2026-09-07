@@ -66,7 +66,7 @@ func est_cost() -> float:
 	return 1800.0 * price_in + 350.0 * price_out
 
 func allowance_today() -> float:
-	var share := Ledger.budget() * Ledger.CITIZEN_SHARE
+	var share := Ledger.budget() * Ledger.share("citizens")
 	return maxf(0.0, (share - citizen_month_cost) / Ledger.days_left_in_month())
 
 func can_afford() -> bool:

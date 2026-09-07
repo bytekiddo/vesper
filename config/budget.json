@@ -1,0 +1,7 @@
+{
+  "_comment": "Money is the sun. BUDGET_USD_PER_MONTH in .env is the only lever (clamped to range_usd); this file only splits it. Kernel-protected: overseers cannot edit it. Read by kernel/ledger.gd and kernel/rails.py.",
+  "default_usd_per_month": 400,
+  "range_usd": [300, 500],
+  "split": {"overseers": 0.5, "citizens": 0.3, "art": 0.1, "judge": 0.1},
+  "caps_usd": {"session": 2.5, "cycle": 8.0}
+}

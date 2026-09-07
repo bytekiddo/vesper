@@ -81,7 +81,7 @@ ask() { local var="$1" prompt="$2" default="$3" secret="${4:-}"; local cur; cur=
   echo "${val:-$default}"; }
 if [ -t 0 ]; then
   KEY=$(ask OPENROUTER_API_KEY "OpenRouter API key" "" secret)
-  BUDGET=$(ask BUDGET_USD_PER_MONTH "Monthly budget in USD (50-100)" "75")
+  BUDGET=$(ask BUDGET_USD_PER_MONTH "Monthly budget in USD (300-500)" "400")
   DOMAIN=$(ask VESPER_DOMAIN "Domain or public IP for the viewer" "$(curl -fsS -4 https://api.ipify.org 2>/dev/null || hostname -I | awk '{print $1}')")
 else
   KEY="${OPENROUTER_API_KEY:-$(current OPENROUTER_API_KEY)}"; BUDGET="${BUDGET_USD_PER_MONTH:-$(current BUDGET_USD_PER_MONTH)}"; DOMAIN="${VESPER_DOMAIN:-$(current VESPER_DOMAIN)}"
@@ -90,7 +90,7 @@ fi
 umask 077
 cat > "$ENV_FILE" <<ENV
 OPENROUTER_API_KEY=${KEY}
-BUDGET_USD_PER_MONTH=${BUDGET:-75}
+BUDGET_USD_PER_MONTH=${BUDGET:-400}
 VESPER_DOMAIN=${DOMAIN}
 ENV
 umask 022
