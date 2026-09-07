@@ -1,5 +1,5 @@
 {
-  "cycle": 4,
+  "cycle": 5,
   "merges": [
     {
       "sha": "d4819a4",
@@ -7,7 +7,7 @@
       "role": "lawgiver",
       "hypothesis": "Lowering the conversation base_chance from 0.06 to 0.04 and raising the friend_bonus from 0.10 to 0.14 should reduce repetitive small-talk between acquaintances while making established friendships th",
       "baseline": {
-        "boot_count": 156,
+        "boot_count": 157,
         "catching_up": false,
         "caught_up": true,
         "drift_ms_max": 58.3980083465576,
@@ -35,9 +35,45 @@
         "world/rules.json"
       ],
       "needs_restart": true
+    },
+    {
+      "sha": "03ed7ca",
+      "ts": 1788806524.3653617,
+      "role": "lawgiver",
+      "hypothesis": "Adding a rare happening about a light answering the lighthouse will deepen the town's mystery and give citizens more to discuss.",
+      "baseline": {
+        "boot_count": 157,
+        "catching_up": false,
+        "caught_up": true,
+        "drift_ms_max": 33.3349704742432,
+        "drift_ms_max_window": 0.0,
+        "llm": {
+          "allowance_today": 2.2592,
+          "budget": 75.0,
+          "citizen_spent_month": 0.0388,
+          "errors": 1,
+          "est_cost_per_call": 0.00013,
+          "model": "openai/gpt-oss-120b",
+          "pending": 1,
+          "spent_today": 0.028,
+          "stub": false
+        },
+        "memory_mb": 28.5,
+        "month_total": 0.0674,
+        "population": 11,
+        "quarantine_today": 0,
+        "tick": 67320,
+        "ticks": 43131,
+        "ts": 1788806520,
+        "viewers": 1
+      },
+      "files": [
+        "world/rules.json"
+      ],
+      "needs_restart": true
     }
   ],
-  "issues": 3,
+  "issues": 4,
   "history": [
     {
       "ts": 1788715150.0926988,
@@ -61,6 +97,14 @@
       "hypothesis": "Lowering the conversation base_chance from 0.06 to 0.04 and raising the friend_bonus from 0.10 to 0.14 should reduce repetitive small-talk between acquaintances while making established friendships th",
       "result": "merged",
       "sha": "d4819a4",
+      "advice": ""
+    },
+    {
+      "ts": 1788806524.3655303,
+      "role": "lawgiver",
+      "hypothesis": "Adding a rare happening about a light answering the lighthouse will deepen the town's mystery and give citizens more to discuss.",
+      "result": "merged",
+      "sha": "03ed7ca",
       "advice": ""
     }
   ],

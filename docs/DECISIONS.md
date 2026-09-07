@@ -41,3 +41,4 @@ One line per decision. Append; never rewrite history. Format: `YYYY-MM-DD — de
 - 2026-09-07 — Added a net-mender as a grounded, sea-wise arrival; her old connection to Emmet and her quiet interest in the answering light deepen the town's central mystery without resolving it.
 - 2026-09-07 — Raised conversation base chance from 0.06 to 0.10; expected to roughly double daily conversation frequency without overwhelming the sim.
 - 2026-09-07 — Lowered base conversation chance and raised friend bonus to make established relationships, not proximity, drive small talk.
+- 2026-09-07 — No trade-off; the change is additive and low-risk.
