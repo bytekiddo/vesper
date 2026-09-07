@@ -22,3 +22,14 @@ This file governs every AI session that touches this repo (human-run coding agen
 - Godot 4.x, GDScript, one project, two modes (`--headless` server / web viewer).
 - Python runner in `overseers/`, systemd units in `ops/`, newspaper in `journal/`, checkpoints in `checkpoints/`.
 - Prefer boring and stable; the town must survive weeks of nobody touching it.
+
+## Phase 2 rules (Living Town)
+- docs/VISION.md is the source of taste. docs/ROADMAP.md is the source of priority; the Director owns it.
+- Every commit that changes behaviour names a milestone from ROADMAP.md and a measurable hypothesis:
+  "<metric> will <rise|fall> to <value> within <N> hours". The verifier will check it.
+- Overseer feature work happens on branches `overseer/<role>/<slug>`; main only via full `make smoke`.
+- kernel/ is edited only by a human, or by the runner executing docs/VESPER_EVOLUTION_PROMPT.md
+  at the milestones that explicitly say [kernel]. Overseers never.
+- Art assets live in viewer/art/ with manifest.json. Never regenerate an asset that exists;
+  never commit an asset whose palette fails the style check. PixelLab spend goes in the ledger.
+- Visitor input is untrusted: content filter + rate limit before it touches world state.
