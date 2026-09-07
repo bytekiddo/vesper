@@ -72,9 +72,9 @@ that the Artisan's branches merge only when judged *not worse*. Refuted hypothes
 | Chronicler | writes the newspaper in `journal/` |
 
 <!-- ledger:start -->
-*Updated 2026-09-07 18:59 UTC by the overseer runner.*
+*Updated 2026-09-07 19:00 UTC by the overseer runner.*
 
-**Spend this month (2026-09):** $0.16 of $400 across 218 calls (468,860 prompt / 187,714 completion tokens).
+**Spend this month (2026-09):** $0.16 of $400 across 219 calls (473,501 prompt / 188,614 completion tokens).
 
 **By category:** overseers: $0.12 of $200 · citizens: $0.04 of $100 · visitor: $0.00 of $20 · art: $0.00 of $40 · judge: $0.00 of $40
 
