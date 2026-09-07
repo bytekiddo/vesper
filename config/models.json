@@ -2,7 +2,7 @@
   "_written_by": "the Steward, every cycle; prices are USD per token from the OpenRouter marketplace",
   "updated": "2026-09-07T00:00:00Z",
   "citizen":    {"model": "openai/gpt-oss-120b",             "prompt": 3.7e-08, "completion": 1.7e-07},
-  "steward":    {"model": "deepseek/deepseek-v4-flash-0731", "prompt": 1.4e-07, "completion": 2.8e-07},
+  "steward":    {"model": "openai/gpt-oss-120b",             "prompt": 3.7e-08, "completion": 1.7e-07},
   "director":   {"model": "anthropic/claude-sonnet-5",       "prompt": 2.0e-06, "completion": 1.0e-05},
   "worldsmith": {"model": "anthropic/claude-sonnet-5",       "prompt": 2.0e-06, "completion": 1.0e-05},
   "weaver":     {"model": "anthropic/claude-sonnet-5",       "prompt": 2.0e-06, "completion": 1.0e-05},
