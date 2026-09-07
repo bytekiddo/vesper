@@ -8,7 +8,7 @@
   "memory_cap": 240,
   "memory_prune_keep_importance_over": 6,
 
-  "conversation": {"radius": 2, "base_chance": 0.10, "friend_bonus": 0.10, "cooldown_ticks": 720, "duration_ticks": 10, "max_lines": 6},
+  "conversation": {"radius": 2, "base_chance": 0.04, "friend_bonus": 0.14, "cooldown_ticks": 720, "duration_ticks": 10, "max_lines": 6},
   "consciousness": {"min_ticks_between": 1440, "plan_hour": 6, "max_calls_per_tick": 2, "catchup_threshold_ticks": 60},
 
   "population": {"birth_daily_chance": 0.02, "death_age": 78, "death_daily_chance_per_year_over": 0.004, "departure_daily_chance": 0.0015, "adult_age": 18, "arrival_quiet_days": 10, "arrival_daily_chance": 0.08},
