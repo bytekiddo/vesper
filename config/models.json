@@ -8,6 +8,7 @@
   "weaver":     {"model": "anthropic/claude-sonnet-5",       "prompt": 2.0e-06, "completion": 1.0e-05},
   "lawgiver":   {"model": "anthropic/claude-sonnet-5",       "prompt": 2.0e-06, "completion": 1.0e-05},
   "engineer":   {"model": "anthropic/claude-sonnet-5",       "prompt": 2.0e-06, "completion": 1.0e-05},
+  "artisan":    {"model": "anthropic/claude-sonnet-5",       "prompt": 2.0e-06, "completion": 1.0e-05},
   "judge":      {"model": "openai/gpt-5.4",                  "prompt": 2.5e-06, "completion": 1.5e-05},
   "chronicler": {"model": "openai/gpt-oss-120b",             "prompt": 3.7e-08, "completion": 1.7e-07}
 }

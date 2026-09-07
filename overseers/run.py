@@ -12,7 +12,8 @@ import rails  # noqa: E402  (frozen kernel: budget, ledger, content filter, mode
 
 STATE_FILE = os.path.join(ROOT, "overseers", "state.json")
 MODELS_FILE = os.path.join(ROOT, "config", "models.json")
-PROPOSERS = ["worldsmith", "weaver", "lawgiver", "engineer"]
+PROPOSERS = ["worldsmith", "weaver", "lawgiver", "engineer", "artisan"]
+ROLE_PATHS = {"artisan": ("viewer/",)}   # roles confined to a subtree; everyone else gets EDITABLE
 ROLES = ["citizen", "steward", "director", *PROPOSERS, "judge", "chronicler"]   # everything the Steward assigns a model to
 EDITABLE = ("world/", "viewer/", "overseers/", "ops/", "docs/", "README.md", "journal/", "config/", "Makefile", "setup.sh", "export_presets.cfg", "project.godot")
 FAMILY = lambda mid: mid.split("/")[0]  # noqa: E731
@@ -330,7 +331,7 @@ def validate_ops(ops):
 
 # ---------------------------------------------------------------- agentic sessions
 WT_DIR = os.path.join(ROOT, ".worktrees")
-RUN_WHITELIST = ("make smoke-quick", "make dev", "make export-web", "make art-eval", "git status", "git diff", "git log", "git show", "git grep", "git ls-files")
+RUN_WHITELIST = ("make smoke-quick", "make dev", "make export-web", "make art-eval", "make art", "git status", "git diff", "git log", "git show", "git grep", "git ls-files")
 
 
 def run_capped(args, cwd, timeout):
@@ -365,10 +366,10 @@ def tool_read(rel, wt):
     return open(full, encoding="utf-8", errors="replace").read()[:60000]
 
 
-def tool_write(rel, content, wt):
-    """Same checks the old whole-file proposals had: editable path, content limits, valid JSON."""
-    if not isinstance(content, str) or not rails.path_allowed(rel) or not rel.startswith(EDITABLE):
-        return f"refused: {rel} is not an editable path"
+def tool_write(rel, content, wt, role=""):
+    """Same checks the old whole-file proposals had: editable path (per role), content limits, valid JSON."""
+    if not isinstance(content, str) or not rails.path_allowed(rel) or not rel.startswith(ROLE_PATHS.get(role, EDITABLE)):
+        return f"refused: {rel} is not an editable path for {role or 'this role'}"
     ok, why = rails.content_check(content)
     if not ok:
         rails.quarantine(content, why, f"overseer:{os.path.basename(wt)}")
@@ -463,7 +464,7 @@ def session(role, st, summary):
         if tool == "read_file":
             out = tool_read(str(call.get("path", "")), wt)
         elif tool == "write_file":
-            out = tool_write(str(call.get("path", "")), call.get("content"), wt)
+            out = tool_write(str(call.get("path", "")), call.get("content"), wt, role)
         elif tool == "run":
             out = tool_run(call.get("cmd", ""), wt)
         elif tool == "screenshot":
@@ -642,7 +643,7 @@ def gate(role, st, branch, hyp, milestone, decision):
     """Main accepts a branch only through here: squash-merge into the working tree, re-validate ops, full smoke, Judge, commit or revert."""
     quarantine_before = rails.quarantine_count_today()   # per branch: one quarantine must not veto the rest of the cycle
     touched = [t for t in git("diff", "--name-only", "HEAD", branch, check=False).splitlines() if t]
-    if not touched or any(not rails.path_allowed(t) or not t.startswith(EDITABLE) for t in touched):
+    if not touched or any(not rails.path_allowed(t) or not t.startswith(ROLE_PATHS.get(role, EDITABLE)) for t in touched):
         log(f"{role}: branch {branch} touches a protected path or nothing ({touched}); refused")
         git("branch", "-D", branch, check=False)
         return
@@ -901,6 +902,7 @@ OFFLINE_STEPS = {
                {"tool": "done", "milestone": "Evenings", "hypothesis": "conversations per day will rise to 30 within 72 hours", "summary": "one arrival who knew the ferry"}],
     "lawgiver": [{"tool": "read_file", "path": "world/rules.json"}, {"tool": "done", "hypothesis": "no change", "summary": "nothing this cycle"}],
     "engineer": [{"tool": "run", "cmd": "git status"}, {"tool": "done", "hypothesis": "no change", "summary": "nothing this cycle"}],
+    "artisan": [{"tool": "run", "cmd": "git status"}, {"tool": "done", "hypothesis": "no change", "summary": "nothing this cycle"}],
 }
 
 
@@ -947,6 +949,7 @@ def main():
         assert tool_run("rm -rf /", ROOT).startswith("refused") and tool_run("git push origin main", ROOT).startswith("refused")
         assert tool_write("kernel/clock.gd", "x", ROOT).startswith("refused") and tool_write("config/budget.json", "{}", ROOT).startswith("refused")
         assert tool_write("world/x.json", "{bad", ROOT).startswith("refused") and tool_read("../.env", ROOT).startswith("refused")
+        assert tool_write("world/rules.json", "{}", ROOT, "artisan").startswith("refused") and tool_write("viewer/x.json", "{bad", ROOT, "artisan").startswith("refused: invalid")
         assert "_tools" in role_prompt("engineer").lower() or "tool call" in role_prompt("engineer")
         hp = parse_hypothesis("Conversations per day will rise to 30 within 72 hours")
         assert hp == {"metric": "conversations_per_day", "dir": "rise", "value": 30.0, "hours": 72}, hp

@@ -1,0 +1,637 @@
+{
+ "_comment": "viewer/art cache, written by overseers/pixellab.py. Never regenerate an asset listed here. Sprites generated with PixelLab.",
+ "buildings": {
+  "cafe_4x3": "buildings/cafe_4x3.png",
+  "clinic_3x3": "buildings/clinic_3x3.png",
+  "hall_5x3": "buildings/hall_5x3.png",
+  "house_3x2": "buildings/house_3x2.png",
+  "landmark_1x1": "buildings/landmark_1x1.png",
+  "landmark_3x2": "buildings/landmark_3x2.png",
+  "lighthouse_3x3": "buildings/lighthouse_3x3.png",
+  "office_3x3": "buildings/office_3x3.png",
+  "pier_2x4": "buildings/pier_2x4.png",
+  "square_5x4": "buildings/square_5x4.png",
+  "store_3x3": "buildings/store_3x3.png"
+ },
+ "citizens": {
+  "default": {
+   "animations": {
+    "idle": {
+     "east": [
+      "citizens/default/idle_east_0.png",
+      "citizens/default/idle_east_1.png",
+      "citizens/default/idle_east_2.png",
+      "citizens/default/idle_east_3.png"
+     ],
+     "north": [
+      "citizens/default/idle_north_0.png",
+      "citizens/default/idle_north_1.png",
+      "citizens/default/idle_north_2.png",
+      "citizens/default/idle_north_3.png"
+     ],
+     "south": [
+      "citizens/default/idle_south_0.png",
+      "citizens/default/idle_south_1.png",
+      "citizens/default/idle_south_2.png",
+      "citizens/default/idle_south_3.png"
+     ],
+     "west": [
+      "citizens/default/idle_west_0.png",
+      "citizens/default/idle_west_1.png",
+      "citizens/default/idle_west_2.png",
+      "citizens/default/idle_west_3.png"
+     ]
+    },
+    "walk": {
+     "east": [
+      "citizens/default/walk_east_0.png",
+      "citizens/default/walk_east_1.png",
+      "citizens/default/walk_east_2.png",
+      "citizens/default/walk_east_3.png",
+      "citizens/default/walk_east_4.png",
+      "citizens/default/walk_east_5.png"
+     ],
+     "north": [
+      "citizens/default/walk_north_0.png",
+      "citizens/default/walk_north_1.png",
+      "citizens/default/walk_north_2.png",
+      "citizens/default/walk_north_3.png",
+      "citizens/default/walk_north_4.png",
+      "citizens/default/walk_north_5.png"
+     ],
+     "south": [
+      "citizens/default/walk_south_0.png",
+      "citizens/default/walk_south_1.png",
+      "citizens/default/walk_south_2.png",
+      "citizens/default/walk_south_3.png",
+      "citizens/default/walk_south_4.png",
+      "citizens/default/walk_south_5.png"
+     ],
+     "west": [
+      "citizens/default/walk_west_0.png",
+      "citizens/default/walk_west_1.png",
+      "citizens/default/walk_west_2.png",
+      "citizens/default/walk_west_3.png",
+      "citizens/default/walk_west_4.png",
+      "citizens/default/walk_west_5.png"
+     ]
+    }
+   },
+   "character_id": "fb6498c3-3785-4b53-80ee-952d95b4f860",
+   "dir": "citizens/default",
+   "rotations": {
+    "east": "citizens/default/east.png",
+    "north": "citizens/default/north.png",
+    "south": "citizens/default/south.png",
+    "west": "citizens/default/west.png"
+   },
+   "size": [
+    48,
+    48
+   ]
+  },
+  "ines-marlowe": {
+   "animations": {
+    "idle": {
+     "east": [
+      "citizens/ines-marlowe/idle_east_0.png",
+      "citizens/ines-marlowe/idle_east_1.png",
+      "citizens/ines-marlowe/idle_east_2.png",
+      "citizens/ines-marlowe/idle_east_3.png"
+     ],
+     "north": [
+      "citizens/ines-marlowe/idle_north_0.png",
+      "citizens/ines-marlowe/idle_north_1.png",
+      "citizens/ines-marlowe/idle_north_2.png",
+      "citizens/ines-marlowe/idle_north_3.png"
+     ],
+     "south": [
+      "citizens/ines-marlowe/idle_south_0.png",
+      "citizens/ines-marlowe/idle_south_1.png",
+      "citizens/ines-marlowe/idle_south_2.png",
+      "citizens/ines-marlowe/idle_south_3.png"
+     ],
+     "west": [
+      "citizens/ines-marlowe/idle_west_0.png",
+      "citizens/ines-marlowe/idle_west_1.png",
+      "citizens/ines-marlowe/idle_west_2.png",
+      "citizens/ines-marlowe/idle_west_3.png"
+     ]
+    },
+    "walk": {
+     "east": [
+      "citizens/ines-marlowe/walk_east_0.png",
+      "citizens/ines-marlowe/walk_east_1.png",
+      "citizens/ines-marlowe/walk_east_2.png",
+      "citizens/ines-marlowe/walk_east_3.png",
+      "citizens/ines-marlowe/walk_east_4.png",
+      "citizens/ines-marlowe/walk_east_5.png"
+     ],
+     "north": [
+      "citizens/ines-marlowe/walk_north_0.png",
+      "citizens/ines-marlowe/walk_north_1.png",
+      "citizens/ines-marlowe/walk_north_2.png",
+      "citizens/ines-marlowe/walk_north_3.png",
+      "citizens/ines-marlowe/walk_north_4.png",
+      "citizens/ines-marlowe/walk_north_5.png"
+     ],
+     "south": [
+      "citizens/ines-marlowe/walk_south_0.png",
+      "citizens/ines-marlowe/walk_south_1.png",
+      "citizens/ines-marlowe/walk_south_2.png",
+      "citizens/ines-marlowe/walk_south_3.png",
+      "citizens/ines-marlowe/walk_south_4.png",
+      "citizens/ines-marlowe/walk_south_5.png"
+     ],
+     "west": [
+      "citizens/ines-marlowe/walk_west_0.png",
+      "citizens/ines-marlowe/walk_west_1.png",
+      "citizens/ines-marlowe/walk_west_2.png",
+      "citizens/ines-marlowe/walk_west_3.png",
+      "citizens/ines-marlowe/walk_west_4.png",
+      "citizens/ines-marlowe/walk_west_5.png"
+     ]
+    }
+   },
+   "character_id": "015134a4-45e7-4641-997e-cecdd0c70f6d",
+   "dir": "citizens/ines-marlowe",
+   "rotations": {
+    "east": "citizens/ines-marlowe/east.png",
+    "north": "citizens/ines-marlowe/north.png",
+    "south": "citizens/ines-marlowe/south.png",
+    "west": "citizens/ines-marlowe/west.png"
+   },
+   "size": [
+    48,
+    48
+   ]
+  },
+  "tobiah-renn": {
+   "animations": {
+    "idle": {
+     "east": [
+      "citizens/tobiah-renn/idle_east_0.png",
+      "citizens/tobiah-renn/idle_east_1.png",
+      "citizens/tobiah-renn/idle_east_2.png",
+      "citizens/tobiah-renn/idle_east_3.png"
+     ],
+     "north": [
+      "citizens/tobiah-renn/idle_north_0.png",
+      "citizens/tobiah-renn/idle_north_1.png",
+      "citizens/tobiah-renn/idle_north_2.png",
+      "citizens/tobiah-renn/idle_north_3.png"
+     ],
+     "south": [
+      "citizens/tobiah-renn/idle_south_0.png",
+      "citizens/tobiah-renn/idle_south_1.png",
+      "citizens/tobiah-renn/idle_south_2.png",
+      "citizens/tobiah-renn/idle_south_3.png"
+     ],
+     "west": [
+      "citizens/tobiah-renn/idle_west_0.png",
+      "citizens/tobiah-renn/idle_west_1.png",
+      "citizens/tobiah-renn/idle_west_2.png",
+      "citizens/tobiah-renn/idle_west_3.png"
+     ]
+    },
+    "walk": {
+     "east": [
+      "citizens/tobiah-renn/walk_east_0.png",
+      "citizens/tobiah-renn/walk_east_1.png",
+      "citizens/tobiah-renn/walk_east_2.png",
+      "citizens/tobiah-renn/walk_east_3.png",
+      "citizens/tobiah-renn/walk_east_4.png",
+      "citizens/tobiah-renn/walk_east_5.png"
+     ],
+     "north": [
+      "citizens/tobiah-renn/walk_north_0.png",
+      "citizens/tobiah-renn/walk_north_1.png",
+      "citizens/tobiah-renn/walk_north_2.png",
+      "citizens/tobiah-renn/walk_north_3.png",
+      "citizens/tobiah-renn/walk_north_4.png",
+      "citizens/tobiah-renn/walk_north_5.png"
+     ],
+     "south": [
+      "citizens/tobiah-renn/walk_south_0.png",
+      "citizens/tobiah-renn/walk_south_1.png",
+      "citizens/tobiah-renn/walk_south_2.png",
+      "citizens/tobiah-renn/walk_south_3.png",
+      "citizens/tobiah-renn/walk_south_4.png",
+      "citizens/tobiah-renn/walk_south_5.png"
+     ],
+     "west": [
+      "citizens/tobiah-renn/walk_west_0.png",
+      "citizens/tobiah-renn/walk_west_1.png",
+      "citizens/tobiah-renn/walk_west_2.png",
+      "citizens/tobiah-renn/walk_west_3.png",
+      "citizens/tobiah-renn/walk_west_4.png",
+      "citizens/tobiah-renn/walk_west_5.png"
+     ]
+    }
+   },
+   "character_id": "820a8bb5-3ba9-400c-9333-de5c9a10db04",
+   "dir": "citizens/tobiah-renn",
+   "rotations": {
+    "east": "citizens/tobiah-renn/east.png",
+    "north": "citizens/tobiah-renn/north.png",
+    "south": "citizens/tobiah-renn/south.png",
+    "west": "citizens/tobiah-renn/west.png"
+   },
+   "size": [
+    48,
+    48
+   ]
+  },
+  "wren-halloway": {
+   "animations": {
+    "idle": {
+     "east": [
+      "citizens/wren-halloway/idle_east_0.png",
+      "citizens/wren-halloway/idle_east_1.png",
+      "citizens/wren-halloway/idle_east_2.png",
+      "citizens/wren-halloway/idle_east_3.png"
+     ],
+     "north": [
+      "citizens/wren-halloway/idle_north_0.png",
+      "citizens/wren-halloway/idle_north_1.png",
+      "citizens/wren-halloway/idle_north_2.png",
+      "citizens/wren-halloway/idle_north_3.png"
+     ],
+     "south": [
+      "citizens/wren-halloway/idle_south_0.png",
+      "citizens/wren-halloway/idle_south_1.png",
+      "citizens/wren-halloway/idle_south_2.png",
+      "citizens/wren-halloway/idle_south_3.png"
+     ],
+     "west": [
+      "citizens/wren-halloway/idle_west_0.png",
+      "citizens/wren-halloway/idle_west_1.png",
+      "citizens/wren-halloway/idle_west_2.png",
+      "citizens/wren-halloway/idle_west_3.png"
+     ]
+    },
+    "walk": {
+     "east": [
+      "citizens/wren-halloway/walk_east_0.png",
+      "citizens/wren-halloway/walk_east_1.png",
+      "citizens/wren-halloway/walk_east_2.png",
+      "citizens/wren-halloway/walk_east_3.png",
+      "citizens/wren-halloway/walk_east_4.png",
+      "citizens/wren-halloway/walk_east_5.png"
+     ],
+     "north": [
+      "citizens/wren-halloway/walk_north_0.png",
+      "citizens/wren-halloway/walk_north_1.png",
+      "citizens/wren-halloway/walk_north_2.png",
+      "citizens/wren-halloway/walk_north_3.png",
+      "citizens/wren-halloway/walk_north_4.png",
+      "citizens/wren-halloway/walk_north_5.png"
+     ],
+     "south": [
+      "citizens/wren-halloway/walk_south_0.png",
+      "citizens/wren-halloway/walk_south_1.png",
+      "citizens/wren-halloway/walk_south_2.png",
+      "citizens/wren-halloway/walk_south_3.png",
+      "citizens/wren-halloway/walk_south_4.png",
+      "citizens/wren-halloway/walk_south_5.png"
+     ],
+     "west": [
+      "citizens/wren-halloway/walk_west_0.png",
+      "citizens/wren-halloway/walk_west_1.png",
+      "citizens/wren-halloway/walk_west_2.png",
+      "citizens/wren-halloway/walk_west_3.png",
+      "citizens/wren-halloway/walk_west_4.png",
+      "citizens/wren-halloway/walk_west_5.png"
+     ]
+    }
+   },
+   "character_id": "69286774-62c0-4703-a57e-fcdb6c16b245",
+   "dir": "citizens/wren-halloway",
+   "rotations": {
+    "east": "citizens/wren-halloway/east.png",
+    "north": "citizens/wren-halloway/north.png",
+    "south": "citizens/wren-halloway/south.png",
+    "west": "citizens/wren-halloway/west.png"
+   },
+   "size": [
+    48,
+    48
+   ]
+  }
+ },
+ "palette": [
+  "#111111",
+  "#cc6666",
+  "#eecc88",
+  "#99aa66",
+  "#884433",
+  "#663333",
+  "#662222",
+  "#552222",
+  "#441111",
+  "#556644",
+  "#557755",
+  "#223322",
+  "#dd9955",
+  "#eeaa66",
+  "#99bb77",
+  "#dd8844",
+  "#889955",
+  "#aa5544",
+  "#335533",
+  "#778855",
+  "#eeeeee",
+  "#886666",
+  "#0077bb",
+  "#44aa00",
+  "#0066bb",
+  "#00aaee",
+  "#002244",
+  "#0099ee",
+  "#66cc11",
+  "#66bb11",
+  "#0077cc",
+  "#008800",
+  "#0066cc",
+  "#002233",
+  "#002255",
+  "#44bb00",
+  "#003333",
+  "#007700",
+  "#0099dd",
+  "#0066aa",
+  "#009900",
+  "#88cc22",
+  "#55cc11",
+  "#776699",
+  "#554477",
+  "#44aa22",
+  "#554466",
+  "#cceedd",
+  "#666699",
+  "#44bb11",
+  "#337733",
+  "#111122",
+  "#55cc22",
+  "#bbeeee",
+  "#bbeedd",
+  "#338822",
+  "#665588",
+  "#221133",
+  "#221122",
+  "#222233"
+ ],
+ "style_ref": "style_ref.png",
+ "tilesets": {
+  "ground": {
+   "dir": "tiles/ground",
+   "lower": "deep blue sea water with soft ripples",
+   "raw_corners": {
+    "wang_0": {
+     "NE": "lower",
+     "NW": "lower",
+     "SE": "lower",
+     "SW": "lower"
+    },
+    "wang_1": {
+     "NE": "lower",
+     "NW": "lower",
+     "SE": "upper",
+     "SW": "lower"
+    },
+    "wang_10": {
+     "NE": "lower",
+     "NW": "upper",
+     "SE": "lower",
+     "SW": "upper"
+    },
+    "wang_11": {
+     "NE": "lower",
+     "NW": "upper",
+     "SE": "upper",
+     "SW": "upper"
+    },
+    "wang_12": {
+     "NE": "upper",
+     "NW": "upper",
+     "SE": "lower",
+     "SW": "lower"
+    },
+    "wang_13": {
+     "NE": "upper",
+     "NW": "upper",
+     "SE": "upper",
+     "SW": "lower"
+    },
+    "wang_14": {
+     "NE": "upper",
+     "NW": "upper",
+     "SE": "lower",
+     "SW": "upper"
+    },
+    "wang_15": {
+     "NE": "upper",
+     "NW": "upper",
+     "SE": "upper",
+     "SW": "upper"
+    },
+    "wang_2": {
+     "NE": "lower",
+     "NW": "lower",
+     "SE": "lower",
+     "SW": "upper"
+    },
+    "wang_3": {
+     "NE": "lower",
+     "NW": "lower",
+     "SE": "upper",
+     "SW": "upper"
+    },
+    "wang_4": {
+     "NE": "upper",
+     "NW": "lower",
+     "SE": "lower",
+     "SW": "lower"
+    },
+    "wang_5": {
+     "NE": "upper",
+     "NW": "lower",
+     "SE": "upper",
+     "SW": "lower"
+    },
+    "wang_6": {
+     "NE": "upper",
+     "NW": "lower",
+     "SE": "lower",
+     "SW": "upper"
+    },
+    "wang_7": {
+     "NE": "upper",
+     "NW": "lower",
+     "SE": "upper",
+     "SW": "upper"
+    },
+    "wang_8": {
+     "NE": "lower",
+     "NW": "upper",
+     "SE": "lower",
+     "SW": "lower"
+    },
+    "wang_9": {
+     "NE": "lower",
+     "NW": "upper",
+     "SE": "upper",
+     "SW": "lower"
+    }
+   },
+   "terrain_types": [
+    "lower",
+    "upper"
+   ],
+   "tiles": {
+    "NE": "tiles/ground/NE.png",
+    "NE+SE": "tiles/ground/NE+SE.png",
+    "NE+SW": "tiles/ground/NE+SW.png",
+    "NE+SW+SE": "tiles/ground/NE+SW+SE.png",
+    "NW": "tiles/ground/NW.png",
+    "NW+NE": "tiles/ground/NW+NE.png",
+    "NW+NE+SE": "tiles/ground/NW+NE+SE.png",
+    "NW+NE+SW": "tiles/ground/NW+NE+SW.png",
+    "NW+NE+SW+SE": "tiles/ground/NW+NE+SW+SE.png",
+    "NW+SE": "tiles/ground/NW+SE.png",
+    "NW+SW": "tiles/ground/NW+SW.png",
+    "NW+SW+SE": "tiles/ground/NW+SW+SE.png",
+    "SE": "tiles/ground/SE.png",
+    "SW": "tiles/ground/SW.png",
+    "SW+SE": "tiles/ground/SW+SE.png",
+    "none": "tiles/ground/none.png"
+   },
+   "upper": "soft green meadow grass"
+  },
+  "streets": {
+   "dir": "tiles/streets",
+   "lower": "soft green meadow grass",
+   "raw_corners": {
+    "wang_0": {
+     "NE": "lower",
+     "NW": "lower",
+     "SE": "lower",
+     "SW": "lower"
+    },
+    "wang_1": {
+     "NE": "lower",
+     "NW": "lower",
+     "SE": "upper",
+     "SW": "lower"
+    },
+    "wang_10": {
+     "NE": "lower",
+     "NW": "upper",
+     "SE": "lower",
+     "SW": "upper"
+    },
+    "wang_11": {
+     "NE": "lower",
+     "NW": "upper",
+     "SE": "upper",
+     "SW": "upper"
+    },
+    "wang_12": {
+     "NE": "upper",
+     "NW": "upper",
+     "SE": "lower",
+     "SW": "lower"
+    },
+    "wang_13": {
+     "NE": "upper",
+     "NW": "upper",
+     "SE": "upper",
+     "SW": "lower"
+    },
+    "wang_14": {
+     "NE": "upper",
+     "NW": "upper",
+     "SE": "lower",
+     "SW": "upper"
+    },
+    "wang_15": {
+     "NE": "upper",
+     "NW": "upper",
+     "SE": "upper",
+     "SW": "upper"
+    },
+    "wang_2": {
+     "NE": "lower",
+     "NW": "lower",
+     "SE": "lower",
+     "SW": "upper"
+    },
+    "wang_3": {
+     "NE": "lower",
+     "NW": "lower",
+     "SE": "upper",
+     "SW": "upper"
+    },
+    "wang_4": {
+     "NE": "upper",
+     "NW": "lower",
+     "SE": "lower",
+     "SW": "lower"
+    },
+    "wang_5": {
+     "NE": "upper",
+     "NW": "lower",
+     "SE": "upper",
+     "SW": "lower"
+    },
+    "wang_6": {
+     "NE": "upper",
+     "NW": "lower",
+     "SE": "lower",
+     "SW": "upper"
+    },
+    "wang_7": {
+     "NE": "upper",
+     "NW": "lower",
+     "SE": "upper",
+     "SW": "upper"
+    },
+    "wang_8": {
+     "NE": "lower",
+     "NW": "upper",
+     "SE": "lower",
+     "SW": "lower"
+    },
+    "wang_9": {
+     "NE": "lower",
+     "NW": "upper",
+     "SE": "upper",
+     "SW": "lower"
+    }
+   },
+   "terrain_types": [
+    "lower",
+    "upper"
+   ],
+   "tiles": {
+    "NE": "tiles/streets/NE.png",
+    "NE+SE": "tiles/streets/NE+SE.png",
+    "NE+SW": "tiles/streets/NE+SW.png",
+    "NE+SW+SE": "tiles/streets/NE+SW+SE.png",
+    "NW": "tiles/streets/NW.png",
+    "NW+NE": "tiles/streets/NW+NE.png",
+    "NW+NE+SE": "tiles/streets/NW+NE+SE.png",
+    "NW+NE+SW": "tiles/streets/NW+NE+SW.png",
+    "NW+NE+SW+SE": "tiles/streets/NW+NE+SW+SE.png",
+    "NW+SE": "tiles/streets/NW+SE.png",
+    "NW+SW": "tiles/streets/NW+SW.png",
+    "NW+SW+SE": "tiles/streets/NW+SW+SE.png",
+    "SE": "tiles/streets/SE.png",
+    "SW": "tiles/streets/SW.png",
+    "SW+SE": "tiles/streets/SW+SE.png",
+    "none": "tiles/streets/none.png"
+   },
+   "upper": "grey cobblestone street"
+  }
+ }
+}

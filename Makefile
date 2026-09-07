@@ -8,7 +8,7 @@ XVFB := $(shell command -v xvfb-run >/dev/null 2>&1 && echo "xvfb-run -a")
 WS ?= ws://127.0.0.1:9002
 OUT ?= state/screenshot.png
 
-.PHONY: smoke smoke-quick run dev viewer viewer-dev screenshot export-web deploy overseer kernel-hash import check verify
+.PHONY: smoke smoke-quick run dev viewer viewer-dev screenshot export-web deploy overseer kernel-hash import check verify art art-eval
 
 ## headless boot + fast run + determinism replay + checkpoint round-trip + $(SMOKE_SECONDS)s real-time run
 smoke:
@@ -37,6 +37,7 @@ screenshot:
 
 export-web:
 	mkdir -p build/web
+	$(GODOT) --headless --path . --import >/dev/null 2>&1 || true
 	$(GODOT) --headless --path . --export-release Web build/web/index.html
 	@test -f build/web/index.wasm && echo "web export ok: build/web" || (echo "web export failed (are the export templates installed?)" && exit 1)
 
@@ -49,6 +50,14 @@ deploy:
 
 overseer:
 	python3 overseers/run.py $(ARGS)
+
+## PixelLab: generate whatever the world has and viewer/art/manifest.json lacks (idempotent; spend goes to the art category)
+art:
+	python3 overseers/pixellab.py --batch $(ARGS)
+
+## art-eval: coverage (no magenta), shared-palette check, size limit, web export boots. The pairwise Judge runs in the gate.
+art-eval:
+	python3 overseers/pixellab.py --eval
 
 ## give every due hypothesis (24-72 h after its merge) a verdict: journal/verdicts.md + state/verdicts.json
 verify:
