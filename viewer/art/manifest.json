@@ -14,6 +14,82 @@
   "store_3x3": "buildings/store_3x3.png"
  },
  "citizens": {
+  "cassius-ode": {
+   "animations": {
+    "idle": {
+     "east": [
+      "citizens/cassius-ode/idle_east_0.png",
+      "citizens/cassius-ode/idle_east_1.png",
+      "citizens/cassius-ode/idle_east_2.png",
+      "citizens/cassius-ode/idle_east_3.png"
+     ],
+     "north": [
+      "citizens/cassius-ode/idle_north_0.png",
+      "citizens/cassius-ode/idle_north_1.png",
+      "citizens/cassius-ode/idle_north_2.png",
+      "citizens/cassius-ode/idle_north_3.png"
+     ],
+     "south": [
+      "citizens/cassius-ode/idle_south_0.png",
+      "citizens/cassius-ode/idle_south_1.png",
+      "citizens/cassius-ode/idle_south_2.png",
+      "citizens/cassius-ode/idle_south_3.png"
+     ],
+     "west": [
+      "citizens/cassius-ode/idle_west_0.png",
+      "citizens/cassius-ode/idle_west_1.png",
+      "citizens/cassius-ode/idle_west_2.png",
+      "citizens/cassius-ode/idle_west_3.png"
+     ]
+    },
+    "walk": {
+     "east": [
+      "citizens/cassius-ode/walk_east_0.png",
+      "citizens/cassius-ode/walk_east_1.png",
+      "citizens/cassius-ode/walk_east_2.png",
+      "citizens/cassius-ode/walk_east_3.png",
+      "citizens/cassius-ode/walk_east_4.png",
+      "citizens/cassius-ode/walk_east_5.png"
+     ],
+     "north": [
+      "citizens/cassius-ode/walk_north_0.png",
+      "citizens/cassius-ode/walk_north_1.png",
+      "citizens/cassius-ode/walk_north_2.png",
+      "citizens/cassius-ode/walk_north_3.png",
+      "citizens/cassius-ode/walk_north_4.png",
+      "citizens/cassius-ode/walk_north_5.png"
+     ],
+     "south": [
+      "citizens/cassius-ode/walk_south_0.png",
+      "citizens/cassius-ode/walk_south_1.png",
+      "citizens/cassius-ode/walk_south_2.png",
+      "citizens/cassius-ode/walk_south_3.png",
+      "citizens/cassius-ode/walk_south_4.png",
+      "citizens/cassius-ode/walk_south_5.png"
+     ],
+     "west": [
+      "citizens/cassius-ode/walk_west_0.png",
+      "citizens/cassius-ode/walk_west_1.png",
+      "citizens/cassius-ode/walk_west_2.png",
+      "citizens/cassius-ode/walk_west_3.png",
+      "citizens/cassius-ode/walk_west_4.png",
+      "citizens/cassius-ode/walk_west_5.png"
+     ]
+    }
+   },
+   "character_id": "8b4bc714-7d6d-4be8-8ee7-9a3f59e8582c",
+   "dir": "citizens/cassius-ode",
+   "rotations": {
+    "east": "citizens/cassius-ode/east.png",
+    "north": "citizens/cassius-ode/north.png",
+    "south": "citizens/cassius-ode/south.png",
+    "west": "citizens/cassius-ode/west.png"
+   },
+   "size": [
+    48,
+    48
+   ]
+  },
   "default": {
    "animations": {
     "idle": {
@@ -90,6 +166,158 @@
     48
    ]
   },
+  "emmet-sallow": {
+   "animations": {
+    "idle": {
+     "east": [
+      "citizens/emmet-sallow/idle_east_0.png",
+      "citizens/emmet-sallow/idle_east_1.png",
+      "citizens/emmet-sallow/idle_east_2.png",
+      "citizens/emmet-sallow/idle_east_3.png"
+     ],
+     "north": [
+      "citizens/emmet-sallow/idle_north_0.png",
+      "citizens/emmet-sallow/idle_north_1.png",
+      "citizens/emmet-sallow/idle_north_2.png",
+      "citizens/emmet-sallow/idle_north_3.png"
+     ],
+     "south": [
+      "citizens/emmet-sallow/idle_south_0.png",
+      "citizens/emmet-sallow/idle_south_1.png",
+      "citizens/emmet-sallow/idle_south_2.png",
+      "citizens/emmet-sallow/idle_south_3.png"
+     ],
+     "west": [
+      "citizens/emmet-sallow/idle_west_0.png",
+      "citizens/emmet-sallow/idle_west_1.png",
+      "citizens/emmet-sallow/idle_west_2.png",
+      "citizens/emmet-sallow/idle_west_3.png"
+     ]
+    },
+    "walk": {
+     "east": [
+      "citizens/emmet-sallow/walk_east_0.png",
+      "citizens/emmet-sallow/walk_east_1.png",
+      "citizens/emmet-sallow/walk_east_2.png",
+      "citizens/emmet-sallow/walk_east_3.png",
+      "citizens/emmet-sallow/walk_east_4.png",
+      "citizens/emmet-sallow/walk_east_5.png"
+     ],
+     "north": [
+      "citizens/emmet-sallow/walk_north_0.png",
+      "citizens/emmet-sallow/walk_north_1.png",
+      "citizens/emmet-sallow/walk_north_2.png",
+      "citizens/emmet-sallow/walk_north_3.png",
+      "citizens/emmet-sallow/walk_north_4.png",
+      "citizens/emmet-sallow/walk_north_5.png"
+     ],
+     "south": [
+      "citizens/emmet-sallow/walk_south_0.png",
+      "citizens/emmet-sallow/walk_south_1.png",
+      "citizens/emmet-sallow/walk_south_2.png",
+      "citizens/emmet-sallow/walk_south_3.png",
+      "citizens/emmet-sallow/walk_south_4.png",
+      "citizens/emmet-sallow/walk_south_5.png"
+     ],
+     "west": [
+      "citizens/emmet-sallow/walk_west_0.png",
+      "citizens/emmet-sallow/walk_west_1.png",
+      "citizens/emmet-sallow/walk_west_2.png",
+      "citizens/emmet-sallow/walk_west_3.png",
+      "citizens/emmet-sallow/walk_west_4.png",
+      "citizens/emmet-sallow/walk_west_5.png"
+     ]
+    }
+   },
+   "character_id": "d974ce0a-47e1-4790-813c-a790b659c5b0",
+   "dir": "citizens/emmet-sallow",
+   "rotations": {
+    "east": "citizens/emmet-sallow/east.png",
+    "north": "citizens/emmet-sallow/north.png",
+    "south": "citizens/emmet-sallow/south.png",
+    "west": "citizens/emmet-sallow/west.png"
+   },
+   "size": [
+    48,
+    48
+   ]
+  },
+  "halcyon-brisk": {
+   "animations": {
+    "idle": {
+     "east": [
+      "citizens/halcyon-brisk/idle_east_0.png",
+      "citizens/halcyon-brisk/idle_east_1.png",
+      "citizens/halcyon-brisk/idle_east_2.png",
+      "citizens/halcyon-brisk/idle_east_3.png"
+     ],
+     "north": [
+      "citizens/halcyon-brisk/idle_north_0.png",
+      "citizens/halcyon-brisk/idle_north_1.png",
+      "citizens/halcyon-brisk/idle_north_2.png",
+      "citizens/halcyon-brisk/idle_north_3.png"
+     ],
+     "south": [
+      "citizens/halcyon-brisk/idle_south_0.png",
+      "citizens/halcyon-brisk/idle_south_1.png",
+      "citizens/halcyon-brisk/idle_south_2.png",
+      "citizens/halcyon-brisk/idle_south_3.png"
+     ],
+     "west": [
+      "citizens/halcyon-brisk/idle_west_0.png",
+      "citizens/halcyon-brisk/idle_west_1.png",
+      "citizens/halcyon-brisk/idle_west_2.png",
+      "citizens/halcyon-brisk/idle_west_3.png"
+     ]
+    },
+    "walk": {
+     "east": [
+      "citizens/halcyon-brisk/walk_east_0.png",
+      "citizens/halcyon-brisk/walk_east_1.png",
+      "citizens/halcyon-brisk/walk_east_2.png",
+      "citizens/halcyon-brisk/walk_east_3.png",
+      "citizens/halcyon-brisk/walk_east_4.png",
+      "citizens/halcyon-brisk/walk_east_5.png"
+     ],
+     "north": [
+      "citizens/halcyon-brisk/walk_north_0.png",
+      "citizens/halcyon-brisk/walk_north_1.png",
+      "citizens/halcyon-brisk/walk_north_2.png",
+      "citizens/halcyon-brisk/walk_north_3.png",
+      "citizens/halcyon-brisk/walk_north_4.png",
+      "citizens/halcyon-brisk/walk_north_5.png"
+     ],
+     "south": [
+      "citizens/halcyon-brisk/walk_south_0.png",
+      "citizens/halcyon-brisk/walk_south_1.png",
+      "citizens/halcyon-brisk/walk_south_2.png",
+      "citizens/halcyon-brisk/walk_south_3.png",
+      "citizens/halcyon-brisk/walk_south_4.png",
+      "citizens/halcyon-brisk/walk_south_5.png"
+     ],
+     "west": [
+      "citizens/halcyon-brisk/walk_west_0.png",
+      "citizens/halcyon-brisk/walk_west_1.png",
+      "citizens/halcyon-brisk/walk_west_2.png",
+      "citizens/halcyon-brisk/walk_west_3.png",
+      "citizens/halcyon-brisk/walk_west_4.png",
+      "citizens/halcyon-brisk/walk_west_5.png"
+     ]
+    }
+   },
+   "character_id": "63336292-9b29-4ad4-b6fd-525c62878f6e",
+   "dir": "citizens/halcyon-brisk",
+   "rotations": {
+    "east": "citizens/halcyon-brisk/east.png",
+    "north": "citizens/halcyon-brisk/north.png",
+    "south": "citizens/halcyon-brisk/south.png",
+    "west": "citizens/halcyon-brisk/west.png"
+   },
+   "size": [
+    48,
+    48
+   ]
+  },
   "ines-marlowe": {
    "animations": {
     "idle": {
@@ -160,6 +388,310 @@
     "north": "citizens/ines-marlowe/north.png",
     "south": "citizens/ines-marlowe/south.png",
     "west": "citizens/ines-marlowe/west.png"
+   },
+   "size": [
+    48,
+    48
+   ]
+  },
+  "juno-farrow": {
+   "animations": {
+    "idle": {
+     "east": [
+      "citizens/juno-farrow/idle_east_0.png",
+      "citizens/juno-farrow/idle_east_1.png",
+      "citizens/juno-farrow/idle_east_2.png",
+      "citizens/juno-farrow/idle_east_3.png"
+     ],
+     "north": [
+      "citizens/juno-farrow/idle_north_0.png",
+      "citizens/juno-farrow/idle_north_1.png",
+      "citizens/juno-farrow/idle_north_2.png",
+      "citizens/juno-farrow/idle_north_3.png"
+     ],
+     "south": [
+      "citizens/juno-farrow/idle_south_0.png",
+      "citizens/juno-farrow/idle_south_1.png",
+      "citizens/juno-farrow/idle_south_2.png",
+      "citizens/juno-farrow/idle_south_3.png"
+     ],
+     "west": [
+      "citizens/juno-farrow/idle_west_0.png",
+      "citizens/juno-farrow/idle_west_1.png",
+      "citizens/juno-farrow/idle_west_2.png",
+      "citizens/juno-farrow/idle_west_3.png"
+     ]
+    },
+    "walk": {
+     "east": [
+      "citizens/juno-farrow/walk_east_0.png",
+      "citizens/juno-farrow/walk_east_1.png",
+      "citizens/juno-farrow/walk_east_2.png",
+      "citizens/juno-farrow/walk_east_3.png",
+      "citizens/juno-farrow/walk_east_4.png",
+      "citizens/juno-farrow/walk_east_5.png"
+     ],
+     "north": [
+      "citizens/juno-farrow/walk_north_0.png",
+      "citizens/juno-farrow/walk_north_1.png",
+      "citizens/juno-farrow/walk_north_2.png",
+      "citizens/juno-farrow/walk_north_3.png",
+      "citizens/juno-farrow/walk_north_4.png",
+      "citizens/juno-farrow/walk_north_5.png"
+     ],
+     "south": [
+      "citizens/juno-farrow/walk_south_0.png",
+      "citizens/juno-farrow/walk_south_1.png",
+      "citizens/juno-farrow/walk_south_2.png",
+      "citizens/juno-farrow/walk_south_3.png",
+      "citizens/juno-farrow/walk_south_4.png",
+      "citizens/juno-farrow/walk_south_5.png"
+     ],
+     "west": [
+      "citizens/juno-farrow/walk_west_0.png",
+      "citizens/juno-farrow/walk_west_1.png",
+      "citizens/juno-farrow/walk_west_2.png",
+      "citizens/juno-farrow/walk_west_3.png",
+      "citizens/juno-farrow/walk_west_4.png",
+      "citizens/juno-farrow/walk_west_5.png"
+     ]
+    }
+   },
+   "character_id": "5b4ac032-229d-44c2-90c4-e44e9bea04c2",
+   "dir": "citizens/juno-farrow",
+   "rotations": {
+    "east": "citizens/juno-farrow/east.png",
+    "north": "citizens/juno-farrow/north.png",
+    "south": "citizens/juno-farrow/south.png",
+    "west": "citizens/juno-farrow/west.png"
+   },
+   "size": [
+    48,
+    48
+   ]
+  },
+  "mara-kettle": {
+   "animations": {
+    "idle": {
+     "east": [
+      "citizens/mara-kettle/idle_east_0.png",
+      "citizens/mara-kettle/idle_east_1.png",
+      "citizens/mara-kettle/idle_east_2.png",
+      "citizens/mara-kettle/idle_east_3.png"
+     ],
+     "north": [
+      "citizens/mara-kettle/idle_north_0.png",
+      "citizens/mara-kettle/idle_north_1.png",
+      "citizens/mara-kettle/idle_north_2.png",
+      "citizens/mara-kettle/idle_north_3.png"
+     ],
+     "south": [
+      "citizens/mara-kettle/idle_south_0.png",
+      "citizens/mara-kettle/idle_south_1.png",
+      "citizens/mara-kettle/idle_south_2.png",
+      "citizens/mara-kettle/idle_south_3.png"
+     ],
+     "west": [
+      "citizens/mara-kettle/idle_west_0.png",
+      "citizens/mara-kettle/idle_west_1.png",
+      "citizens/mara-kettle/idle_west_2.png",
+      "citizens/mara-kettle/idle_west_3.png"
+     ]
+    },
+    "walk": {
+     "east": [
+      "citizens/mara-kettle/walk_east_0.png",
+      "citizens/mara-kettle/walk_east_1.png",
+      "citizens/mara-kettle/walk_east_2.png",
+      "citizens/mara-kettle/walk_east_3.png",
+      "citizens/mara-kettle/walk_east_4.png",
+      "citizens/mara-kettle/walk_east_5.png"
+     ],
+     "north": [
+      "citizens/mara-kettle/walk_north_0.png",
+      "citizens/mara-kettle/walk_north_1.png",
+      "citizens/mara-kettle/walk_north_2.png",
+      "citizens/mara-kettle/walk_north_3.png",
+      "citizens/mara-kettle/walk_north_4.png",
+      "citizens/mara-kettle/walk_north_5.png"
+     ],
+     "south": [
+      "citizens/mara-kettle/walk_south_0.png",
+      "citizens/mara-kettle/walk_south_1.png",
+      "citizens/mara-kettle/walk_south_2.png",
+      "citizens/mara-kettle/walk_south_3.png",
+      "citizens/mara-kettle/walk_south_4.png",
+      "citizens/mara-kettle/walk_south_5.png"
+     ],
+     "west": [
+      "citizens/mara-kettle/walk_west_0.png",
+      "citizens/mara-kettle/walk_west_1.png",
+      "citizens/mara-kettle/walk_west_2.png",
+      "citizens/mara-kettle/walk_west_3.png",
+      "citizens/mara-kettle/walk_west_4.png",
+      "citizens/mara-kettle/walk_west_5.png"
+     ]
+    }
+   },
+   "character_id": "e2315656-31e8-4e96-b3ca-3f623574394f",
+   "dir": "citizens/mara-kettle",
+   "rotations": {
+    "east": "citizens/mara-kettle/east.png",
+    "north": "citizens/mara-kettle/north.png",
+    "south": "citizens/mara-kettle/south.png",
+    "west": "citizens/mara-kettle/west.png"
+   },
+   "size": [
+    48,
+    48
+   ]
+  },
+  "petra-vell": {
+   "animations": {
+    "idle": {
+     "east": [
+      "citizens/petra-vell/idle_east_0.png",
+      "citizens/petra-vell/idle_east_1.png",
+      "citizens/petra-vell/idle_east_2.png",
+      "citizens/petra-vell/idle_east_3.png"
+     ],
+     "north": [
+      "citizens/petra-vell/idle_north_0.png",
+      "citizens/petra-vell/idle_north_1.png",
+      "citizens/petra-vell/idle_north_2.png",
+      "citizens/petra-vell/idle_north_3.png"
+     ],
+     "south": [
+      "citizens/petra-vell/idle_south_0.png",
+      "citizens/petra-vell/idle_south_1.png",
+      "citizens/petra-vell/idle_south_2.png",
+      "citizens/petra-vell/idle_south_3.png"
+     ],
+     "west": [
+      "citizens/petra-vell/idle_west_0.png",
+      "citizens/petra-vell/idle_west_1.png",
+      "citizens/petra-vell/idle_west_2.png",
+      "citizens/petra-vell/idle_west_3.png"
+     ]
+    },
+    "walk": {
+     "east": [
+      "citizens/petra-vell/walk_east_0.png",
+      "citizens/petra-vell/walk_east_1.png",
+      "citizens/petra-vell/walk_east_2.png",
+      "citizens/petra-vell/walk_east_3.png",
+      "citizens/petra-vell/walk_east_4.png",
+      "citizens/petra-vell/walk_east_5.png"
+     ],
+     "north": [
+      "citizens/petra-vell/walk_north_0.png",
+      "citizens/petra-vell/walk_north_1.png",
+      "citizens/petra-vell/walk_north_2.png",
+      "citizens/petra-vell/walk_north_3.png",
+      "citizens/petra-vell/walk_north_4.png",
+      "citizens/petra-vell/walk_north_5.png"
+     ],
+     "south": [
+      "citizens/petra-vell/walk_south_0.png",
+      "citizens/petra-vell/walk_south_1.png",
+      "citizens/petra-vell/walk_south_2.png",
+      "citizens/petra-vell/walk_south_3.png",
+      "citizens/petra-vell/walk_south_4.png",
+      "citizens/petra-vell/walk_south_5.png"
+     ],
+     "west": [
+      "citizens/petra-vell/walk_west_0.png",
+      "citizens/petra-vell/walk_west_1.png",
+      "citizens/petra-vell/walk_west_2.png",
+      "citizens/petra-vell/walk_west_3.png",
+      "citizens/petra-vell/walk_west_4.png",
+      "citizens/petra-vell/walk_west_5.png"
+     ]
+    }
+   },
+   "character_id": "27f9a55c-e829-4b86-a657-fb8d10190a09",
+   "dir": "citizens/petra-vell",
+   "rotations": {
+    "east": "citizens/petra-vell/east.png",
+    "north": "citizens/petra-vell/north.png",
+    "south": "citizens/petra-vell/south.png",
+    "west": "citizens/petra-vell/west.png"
+   },
+   "size": [
+    48,
+    48
+   ]
+  },
+  "sable-tide": {
+   "animations": {
+    "idle": {
+     "east": [
+      "citizens/sable-tide/idle_east_0.png",
+      "citizens/sable-tide/idle_east_1.png",
+      "citizens/sable-tide/idle_east_2.png",
+      "citizens/sable-tide/idle_east_3.png"
+     ],
+     "north": [
+      "citizens/sable-tide/idle_north_0.png",
+      "citizens/sable-tide/idle_north_1.png",
+      "citizens/sable-tide/idle_north_2.png",
+      "citizens/sable-tide/idle_north_3.png"
+     ],
+     "south": [
+      "citizens/sable-tide/idle_south_0.png",
+      "citizens/sable-tide/idle_south_1.png",
+      "citizens/sable-tide/idle_south_2.png",
+      "citizens/sable-tide/idle_south_3.png"
+     ],
+     "west": [
+      "citizens/sable-tide/idle_west_0.png",
+      "citizens/sable-tide/idle_west_1.png",
+      "citizens/sable-tide/idle_west_2.png",
+      "citizens/sable-tide/idle_west_3.png"
+     ]
+    },
+    "walk": {
+     "east": [
+      "citizens/sable-tide/walk_east_0.png",
+      "citizens/sable-tide/walk_east_1.png",
+      "citizens/sable-tide/walk_east_2.png",
+      "citizens/sable-tide/walk_east_3.png",
+      "citizens/sable-tide/walk_east_4.png",
+      "citizens/sable-tide/walk_east_5.png"
+     ],
+     "north": [
+      "citizens/sable-tide/walk_north_0.png",
+      "citizens/sable-tide/walk_north_1.png",
+      "citizens/sable-tide/walk_north_2.png",
+      "citizens/sable-tide/walk_north_3.png",
+      "citizens/sable-tide/walk_north_4.png",
+      "citizens/sable-tide/walk_north_5.png"
+     ],
+     "south": [
+      "citizens/sable-tide/walk_south_0.png",
+      "citizens/sable-tide/walk_south_1.png",
+      "citizens/sable-tide/walk_south_2.png",
+      "citizens/sable-tide/walk_south_3.png",
+      "citizens/sable-tide/walk_south_4.png",
+      "citizens/sable-tide/walk_south_5.png"
+     ],
+     "west": [
+      "citizens/sable-tide/walk_west_0.png",
+      "citizens/sable-tide/walk_west_1.png",
+      "citizens/sable-tide/walk_west_2.png",
+      "citizens/sable-tide/walk_west_3.png",
+      "citizens/sable-tide/walk_west_4.png",
+      "citizens/sable-tide/walk_west_5.png"
+     ]
+    }
+   },
+   "character_id": "cfc313fb-7672-4d99-abdf-8c5c9621cb3f",
+   "dir": "citizens/sable-tide",
+   "rotations": {
+    "east": "citizens/sable-tide/east.png",
+    "north": "citizens/sable-tide/north.png",
+    "south": "citizens/sable-tide/south.png",
+    "west": "citizens/sable-tide/west.png"
    },
    "size": [
     48,
