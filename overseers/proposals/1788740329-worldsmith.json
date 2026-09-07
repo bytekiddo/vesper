@@ -1,0 +1,14 @@
+[
+ {
+  "op": "add_building",
+  "building": {
+   "name": "The Brass Tide-Mark",
+   "kind": "landmark",
+   "w": 1,
+   "h": 1,
+   "capacity": 4,
+   "open": true,
+   "note": "A bronze rod set near the pier end, already wearing thin chalk rings where Sable Tide has measured the last two high waters."
+  }
+ }
+]
