@@ -6,4 +6,4 @@ Policy:
 - The judge must come from a different model family (the part before the slash) than the director and the proposers, so it cannot share their blind spots.
 - The chronicler writes prose — pick something with a voice at a mid price. The steward (you) can be cheap.
 As a category's remaining share shrinks, move its roles down the price list. Never pick models that cannot afford the month at the estimated volume. Avoid ":free" variants unless the budget is nearly gone (they are rate-limited).
-Reply with ONE JSON object: {"citizen":"<model id>","steward":"<id>","director":"<id>","worldsmith":"<id>","weaver":"<id>","lawgiver":"<id>","engineer":"<id>","artisan":"<id>","judge":"<id>","chronicler":"<id>","reason":"<one line>"}
+The marketplace is listed as numbered rows. Reply with ONE JSON object of ROW NUMBERS: {"citizen":<#>,"steward":<#>,"director":<#>,"worldsmith":<#>,"weaver":<#>,"lawgiver":<#>,"engineer":<#>,"artisan":<#>,"judge":<#>,"chronicler":<#>,"reason":"<one line without any model or vendor name>"}. Vendor and model names in your reply are rejected by the content filter.
