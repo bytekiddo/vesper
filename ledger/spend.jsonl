@@ -218,3 +218,4 @@
 {"ts": 1788807588, "month": "2026-09", "source": "overseer", "role": "director", "model": "anthropic/claude-sonnet-5", "category": "overseers", "prompt_tokens": 9280, "completion_tokens": 7381, "cost": 0.09237}
 {"ts": 1788807611, "month": "2026-09", "source": "overseer", "role": "steward", "model": "deepseek/deepseek-v4-flash-0731", "category": "overseers", "prompt_tokens": 4641, "completion_tokens": 900, "cost": 0.00044046}
 {"ts": 1788807671, "month": "2026-09", "source": "overseer", "role": "steward", "model": "openai/gpt-oss-120b", "category": "overseers", "prompt_tokens": 4617, "completion_tokens": 1086, "cost": 0.00134415}
+{"ts": 1788807756, "month": "2026-09", "source": "overseer", "role": "steward", "model": "openai/gpt-oss-120b", "category": "overseers", "prompt_tokens": 5035, "completion_tokens": 1310, "cost": 0.00037375}

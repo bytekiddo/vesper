@@ -1,14 +1,55 @@
 {
-  "_written_by": "the Steward, every cycle; prices are USD per token from the OpenRouter marketplace",
-  "updated": "2026-09-07T00:00:00Z",
-  "citizen":    {"model": "openai/gpt-oss-120b",             "prompt": 3.7e-08, "completion": 1.7e-07},
-  "steward":    {"model": "openai/gpt-oss-120b",             "prompt": 3.7e-08, "completion": 1.7e-07},
-  "director":   {"model": "anthropic/claude-sonnet-5",       "prompt": 2.0e-06, "completion": 1.0e-05},
-  "worldsmith": {"model": "anthropic/claude-sonnet-5",       "prompt": 2.0e-06, "completion": 1.0e-05},
-  "weaver":     {"model": "anthropic/claude-sonnet-5",       "prompt": 2.0e-06, "completion": 1.0e-05},
-  "lawgiver":   {"model": "anthropic/claude-sonnet-5",       "prompt": 2.0e-06, "completion": 1.0e-05},
-  "engineer":   {"model": "anthropic/claude-sonnet-5",       "prompt": 2.0e-06, "completion": 1.0e-05},
-  "artisan":    {"model": "anthropic/claude-sonnet-5",       "prompt": 2.0e-06, "completion": 1.0e-05},
-  "judge":      {"model": "openai/gpt-5.4",                  "prompt": 2.5e-06, "completion": 1.5e-05},
-  "chronicler": {"model": "openai/gpt-oss-120b",             "prompt": 3.7e-08, "completion": 1.7e-07}
+  "_written_by": "the Steward",
+  "updated": "2026-09-07T19:02:36.707261+00:00",
+  "reason": "balanced cost while meeting image and coding requirements",
+  "citizen": {
+    "model": "mistralai/mistral-nemo",
+    "prompt": 1.9e-08,
+    "completion": 3e-08
+  },
+  "steward": {
+    "model": "inclusionai/ling-3.0-flash",
+    "prompt": 2.1e-08,
+    "completion": 6.3e-08
+  },
+  "director": {
+    "model": "nousresearch/hermes-3-llama-3.1-405b",
+    "prompt": 1e-06,
+    "completion": 1e-06
+  },
+  "worldsmith": {
+    "model": "nousresearch/hermes-3-llama-3.1-405b",
+    "prompt": 1e-06,
+    "completion": 1e-06
+  },
+  "weaver": {
+    "model": "nousresearch/hermes-3-llama-3.1-405b",
+    "prompt": 1e-06,
+    "completion": 1e-06
+  },
+  "lawgiver": {
+    "model": "nousresearch/hermes-3-llama-3.1-405b",
+    "prompt": 1e-06,
+    "completion": 1e-06
+  },
+  "engineer": {
+    "model": "nousresearch/hermes-3-llama-3.1-405b",
+    "prompt": 1e-06,
+    "completion": 1e-06
+  },
+  "artisan": {
+    "model": "openai/gpt-4o:batch",
+    "prompt": 1.25e-06,
+    "completion": 5e-06
+  },
+  "judge": {
+    "model": "x-ai/grok-build-0.1",
+    "prompt": 1e-06,
+    "completion": 2e-06
+  },
+  "chronicler": {
+    "model": "openai/gpt-5",
+    "prompt": 1.25e-06,
+    "completion": 1e-05
+  }
 }
