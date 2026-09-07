@@ -215,3 +215,4 @@
 {"completion_tokens":500,"cost":0.00012427,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":1309,"role":"citizen:reflect","source":"server","ts":1788806529}
 {"completion_tokens":671,"cost":0.000196,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":2731,"role":"citizen:chat","source":"server","ts":1788806571}
 {"ts": 1788806579, "month": "2026-09", "source": "overseer", "role": "chronicler", "model": "openai/gpt-oss-120b", "prompt_tokens": 6324, "completion_tokens": 1156, "cost": 0.0006052}
+{"ts": 1788807588, "month": "2026-09", "source": "overseer", "role": "director", "model": "anthropic/claude-sonnet-5", "category": "overseers", "prompt_tokens": 9280, "completion_tokens": 7381, "cost": 0.09237}

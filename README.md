@@ -72,18 +72,23 @@ that the Artisan's branches merge only when judged *not worse*. Refuted hypothes
 | Chronicler | writes the newspaper in `journal/` |
 
 <!-- ledger:start -->
-*Updated 2026-09-07 18:43 UTC by the overseer runner.*
+*Updated 2026-09-07 18:59 UTC by the overseer runner.*
 
-**Spend this month (2026-09):** $0.07 of $75 across 217 calls (459,580 prompt / 180,333 completion tokens).
+**Spend this month (2026-09):** $0.16 of $400 across 218 calls (468,860 prompt / 187,714 completion tokens).
+
+**By category:** overseers: $0.12 of $200 · citizens: $0.04 of $100 · visitor: $0.00 of $20 · art: $0.00 of $40 · judge: $0.00 of $40
 
 | Role | Model | Spent |
 |---|---|---|
 | citizen | `openai/gpt-oss-120b` | $0.04 |
 | steward | `deepseek/deepseek-v4-flash-0731` | $0.00 |
-| worldsmith | `deepseek/deepseek-v4-flash-0731` | $0.01 |
-| weaver | `deepseek/deepseek-v4-flash-0731` | $0.00 |
-| lawgiver | `deepseek/deepseek-v4-flash-0731` | $0.01 |
-| judge | `google/gemini-2.5-flash-lite` | $0.00 |
+| director | `anthropic/claude-sonnet-5` | $0.09 |
+| worldsmith | `anthropic/claude-sonnet-5` | $0.01 |
+| weaver | `anthropic/claude-sonnet-5` | $0.00 |
+| lawgiver | `anthropic/claude-sonnet-5` | $0.01 |
+| engineer | `anthropic/claude-sonnet-5` | $0.00 |
+| artisan | `anthropic/claude-sonnet-5` | $0.00 |
+| judge | `openai/gpt-5.4` | $0.00 |
 | chronicler | `openai/gpt-oss-120b` | $0.00 |
 <!-- ledger:end -->
 
