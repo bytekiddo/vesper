@@ -72,18 +72,17 @@ that the Artisan's branches merge only when judged *not worse*. Refuted hypothes
 | Chronicler | writes the newspaper in `journal/` |
 
 <!-- ledger:start -->
-*Updated 2026-09-07 19:02 UTC by the overseer runner.*
+*Updated 2026-09-08 06:36 UTC by the overseer runner.*
 
-**Spend this month (2026-09):** $0.16 of $400 across 221 calls (483,153 prompt / 191,010 completion tokens).
+**Spend this month (2026-09):** $0.09 of $400 across 281 calls (673,880 prompt / 227,263 completion tokens).
 
-**Spend this month (2026-09):** $0.09 of $75 across 281 calls (673,880 prompt / 227,263 completion tokens).
-**By category:** overseers: $0.12 of $200 · citizens: $0.04 of $100 · visitor: $0.00 of $20 · art: $0.00 of $40 · judge: $0.00 of $40
+**By category:** overseers: $0.03 of $200 · citizens: $0.06 of $100 · visitor: $0.00 of $20 · art: $0.00 of $40 · judge: $0.00 of $40
 
 | Role | Model | Spent |
 |---|---|---|
-| citizen | `mistralai/mistral-nemo` | $0.04 |
+| citizen | `mistralai/mistral-nemo` | $0.06 |
 | steward | `inclusionai/ling-3.0-flash` | $0.00 |
-| director | `nousresearch/hermes-3-llama-3.1-405b` | $0.09 |
+| director | `nousresearch/hermes-3-llama-3.1-405b` | $0.00 |
 | worldsmith | `nousresearch/hermes-3-llama-3.1-405b` | $0.01 |
 | weaver | `nousresearch/hermes-3-llama-3.1-405b` | $0.00 |
 | lawgiver | `nousresearch/hermes-3-llama-3.1-405b` | $0.01 |
