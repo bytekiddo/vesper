@@ -215,3 +215,67 @@
 {"completion_tokens":500,"cost":0.00012427,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":1309,"role":"citizen:reflect","source":"server","ts":1788806529}
 {"completion_tokens":671,"cost":0.000196,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":2731,"role":"citizen:chat","source":"server","ts":1788806571}
 {"ts": 1788806579, "month": "2026-09", "source": "overseer", "role": "chronicler", "model": "openai/gpt-oss-120b", "prompt_tokens": 6324, "completion_tokens": 1156, "cost": 0.0006052}
+{"completion_tokens":600,"cost":0.00034731,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":1459,"role":"citizen:plan","source":"server","ts":1788810483}
+{"completion_tokens":576,"cost":0.00016011,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":2073,"role":"citizen:plan","source":"server","ts":1788810490}
+{"completion_tokens":165,"cost":0.00020775,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":2670,"role":"citizen:plan","source":"server","ts":1788810493}
+{"completion_tokens":587,"cost":0.00013171,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":1064,"role":"citizen:plan","source":"server","ts":1788810493}
+{"completion_tokens":600,"cost":0.00013944,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":1248,"role":"citizen:plan","source":"server","ts":1788810531}
+{"completion_tokens":700,"cost":0.00020153,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":2751,"role":"citizen:chat","source":"server","ts":1788810874}
+{"completion_tokens":605,"cost":0.000336061,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":6303,"role":"citizen:chat","source":"server","ts":1788810898}
+{"completion_tokens":499,"cost":0.0005826,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":1888,"role":"citizen:chat","source":"server","ts":1788811207}
+{"completion_tokens":500,"cost":0.0001219,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":1230,"role":"citizen:reflect","source":"server","ts":1788811392}
+{"completion_tokens":700,"cost":0.00019991,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":2697,"role":"citizen:chat","source":"server","ts":1788811612}
+{"completion_tokens":650,"cost":0.0008496,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":3064,"role":"citizen:chat","source":"server","ts":1788811957}
+{"completion_tokens":537,"cost":0.0002043,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":3767,"role":"citizen:chat","source":"server","ts":1788812322}
+{"completion_tokens":700,"cost":0.00083055,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":2737,"role":"citizen:chat","source":"server","ts":1788812324}
+{"completion_tokens":482,"cost":0.00026374,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":6060,"role":"citizen:chat","source":"server","ts":1788812380}
+{"completion_tokens":606,"cost":0.00015882,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":1860,"role":"citizen:chat","source":"server","ts":1788812711}
+{"completion_tokens":700,"cost":0.0004131,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":1790,"role":"citizen:chat","source":"server","ts":1788812861}
+{"completion_tokens":262,"cost":0.00018265,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":1295,"role":"citizen:reflect","source":"server","ts":1788813065}
+{"completion_tokens":500,"cost":0.000132471,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":1283,"role":"citizen:reflect","source":"server","ts":1788813209}
+{"completion_tokens":643,"cost":0.00048,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":3170,"role":"citizen:chat","source":"server","ts":1788813395}
+{"completion_tokens":564,"cost":0.000384332,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":7796,"role":"citizen:chat","source":"server","ts":1788813779}
+{"completion_tokens":700,"cost":0.00020201,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":2767,"role":"citizen:chat","source":"server","ts":1788813779}
+{"completion_tokens":94,"cost":0.00020905,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":3335,"role":"citizen:chat","source":"server","ts":1788814135}
+{"completion_tokens":586,"cost":0.00072045,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":5661,"role":"citizen:chat","source":"server","ts":1788814826}
+{"completion_tokens":500,"cost":0.00051272,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":1406,"role":"citizen:reflect","source":"server","ts":1788815163}
+{"completion_tokens":524,"cost":0.000199895,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":2995,"role":"citizen:chat","source":"server","ts":1788815186}
+{"completion_tokens":512,"cost":0.00015826,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":2374,"role":"citizen:chat","source":"server","ts":1788815226}
+{"completion_tokens":503,"cost":0.000374221,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":7803,"role":"citizen:chat","source":"server","ts":1788815555}
+{"completion_tokens":660,"cost":0.00018954,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":2578,"role":"citizen:chat","source":"server","ts":1788815625}
+{"completion_tokens":685,"cost":0.000435,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":1859,"role":"citizen:chat","source":"server","ts":1788815945}
+{"completion_tokens":600,"cost":0.00019644,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":3148,"role":"citizen:plan","source":"server","ts":1788819130}
+{"completion_tokens":600,"cost":0.000219697,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":3181,"role":"citizen:plan","source":"server","ts":1788819132}
+{"completion_tokens":600,"cost":0.0001464,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":1480,"role":"citizen:plan","source":"server","ts":1788819134}
+{"completion_tokens":600,"cost":0.00021235,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":1247,"role":"citizen:plan","source":"server","ts":1788819143}
+{"completion_tokens":700,"cost":0.00020297,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":2799,"role":"citizen:chat","source":"server","ts":1788819507}
+{"completion_tokens":514,"cost":0.00014489,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":1917,"role":"citizen:chat","source":"server","ts":1788819859}
+{"completion_tokens":500,"cost":0.000190524,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":2852,"role":"citizen:reflect","source":"server","ts":1788820062}
+{"completion_tokens":660,"cost":0.000227196,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":3108,"role":"citizen:chat","source":"server","ts":1788820231}
+{"completion_tokens":576,"cost":0.000384633,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":7749,"role":"citizen:chat","source":"server","ts":1788820789}
+{"completion_tokens":675,"cost":0.00021054,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":3193,"role":"citizen:chat","source":"server","ts":1788820958}
+{"completion_tokens":456,"cost":0.000209388,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":3564,"role":"citizen:chat","source":"server","ts":1788821498}
+{"completion_tokens":647,"cost":0.00016465,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":1822,"role":"citizen:chat","source":"server","ts":1788821572}
+{"completion_tokens":700,"cost":0.00021407,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":3169,"role":"citizen:chat","source":"server","ts":1788821695}
+{"completion_tokens":500,"cost":0.00012478,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":1326,"role":"citizen:reflect","source":"server","ts":1788822018}
+{"completion_tokens":419,"cost":0.00032194,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":8357,"role":"citizen:chat","source":"server","ts":1788822258}
+{"completion_tokens":576,"cost":0.00018456,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":2888,"role":"citizen:chat","source":"server","ts":1788822426}
+{"completion_tokens":596,"cost":0.00018808,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":2892,"role":"citizen:chat","source":"server","ts":1788823148}
+{"completion_tokens":615,"cost":0.00021516,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":3687,"role":"citizen:chat","source":"server","ts":1788823476}
+{"completion_tokens":624,"cost":0.00061092,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":4292,"role":"citizen:chat","source":"server","ts":1788823679}
+{"completion_tokens":594,"cost":0.00027525,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":5809,"role":"citizen:chat","source":"server","ts":1788823720}
+{"completion_tokens":500,"cost":0.00012316,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":1272,"role":"citizen:reflect","source":"server","ts":1788823728}
+{"completion_tokens":446,"cost":0.00011347,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":1255,"role":"citizen:reflect","source":"server","ts":1788823815}
+{"completion_tokens":691,"cost":0.00114885,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":2462,"role":"citizen:chat","source":"server","ts":1788823861}
+{"completion_tokens":565,"cost":0.00020942,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":3779,"role":"citizen:chat","source":"server","ts":1788824040}
+{"completion_tokens":652,"cost":0.00068842,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":2023,"role":"citizen:chat","source":"server","ts":1788824591}
+{"ts": 1788827502, "month": "2026-09", "source": "overseer", "role": "steward", "model": "deepseek/deepseek-v4-flash-0731", "prompt_tokens": 4049, "completion_tokens": 400, "cost": 0.00026645}
+{"ts": 1788827525, "month": "2026-09", "source": "overseer", "role": "worldsmith", "model": "deepseek/deepseek-v4-flash-0731", "prompt_tokens": 4123, "completion_tokens": 399, "cost": 0.00026999}
+{"ts": 1788827600, "month": "2026-09", "source": "overseer", "role": "worldsmith", "model": "deepseek/deepseek-v4-flash-0731", "prompt_tokens": 12998, "completion_tokens": 4000, "cost": 0.00293972}
+{"ts": 1788827707, "month": "2026-09", "source": "overseer", "role": "weaver", "model": "deepseek/deepseek-v4-flash-0731", "prompt_tokens": 4117, "completion_tokens": 4000, "cost": 0.001337343532}
+{"completion_tokens":540,"cost":0.000146079,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":1467,"role":"citizen:plan","source":"server","ts":1788827769}
+{"completion_tokens":600,"cost":0.0002152,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":1304,"role":"citizen:plan","source":"server","ts":1788827769}
+{"completion_tokens":600,"cost":0.000217699,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":3127,"role":"citizen:plan","source":"server","ts":1788827771}
+{"completion_tokens":600,"cost":0.00021468,"model":"openai/gpt-oss-120b","month":"2026-09","prompt_tokens":3756,"role":"citizen:plan","source":"server","ts":1788827811}
+{"ts": 1788827827, "month": "2026-09", "source": "overseer", "role": "lawgiver", "model": "deepseek/deepseek-v4-flash-0731", "prompt_tokens": 6607, "completion_tokens": 4000, "cost": 0.001536533572}
+{"ts": 1788827836, "month": "2026-09", "source": "overseer", "role": "chronicler", "model": "openai/gpt-oss-120b", "prompt_tokens": 6498, "completion_tokens": 1245, "cost": 0.000945}
