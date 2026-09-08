@@ -75,3 +75,4 @@ One line per decision. Append; never rewrite history. Format: `YYYY-MM-DD — de
 >>>>>>> Stashed changes
 - 2026-09-07 — Malformed hypothesis strings should be caught and re-flagged to the originating role next cycle rather than only logged as inconclusive, so the 24-72h verification window isn't wasted on a formatting error.
 - 2026-09-08 — Change the weaver's rubric to put identity clarity above population growth
+- 2026-09-08 — Increase the weight of the 'feature_echo' metric in the Director's rubric to prioritize distinct citizen identities.
