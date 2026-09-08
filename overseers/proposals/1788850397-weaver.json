@@ -1,0 +1,49 @@
+[
+ {
+  "op": "depart",
+  "id": 101,
+  "reason": "Sable Tide (101) left to find the source of the mysterious light at sea, leaving her old life behind."
+ },
+ {
+  "op": "add_citizen",
+  "citizen": {
+   "name": "Sable Tide",
+   "age": 27,
+   "pronouns": "she/her",
+   "occupation": "lighthouse keeper",
+   "innate": "methodical, quietly stubborn",
+   "learned": "Sable arrived in Vesper a year ago, seeking a quiet life away from her past. She found purpose in maintaining the lighthouse and ensuring the safety of the coastal town.",
+   "lifestyle": "Early riser, dedicated to her work at the lighthouse. Spends evenings studying nautical maps and charts.",
+   "currently": "Concerned about the recent sightings of mysterious lights at sea, Sable is determined to uncover their origin.",
+   "routine": "keeper",
+   "home": 1,
+   "work": 1
+  },
+  "relationships": [
+   [
+    4,
+    "colleague",
+    0.5,
+    "Sable and Cassius work together to ensure the smooth operation of the ferry and lighthouse."
+   ],
+   [
+    6,
+    "acquaintance",
+    0.2,
+    "Sable occasionally mentors Juno, sharing her knowledge of the tides and navigation."
+   ],
+   [
+    7,
+    "friend",
+    0.6,
+    "Sable and Emmet often share stories of their experiences at sea."
+   ],
+   [
+    8,
+    "acquaintance",
+    0.3,
+    "Sable visits Halcyon for regular check-ups, but keeps their interactions professional."
+   ]
+  ]
+ }
+]
