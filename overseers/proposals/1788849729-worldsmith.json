@@ -1,0 +1,55 @@
+[
+ {
+  "op": "depart",
+  "id": 101,
+  "reason": "To find the source of the mysterious light answering the lighthouse."
+ },
+ {
+  "op": "add_citizen",
+  "citizen": {
+   "name": "Sable Tide",
+   "age": 27,
+   "pronouns": "she/her",
+   "occupation": "tide-reader",
+   "innate": "Curious and analytical mind, with a keen eye for detail.",
+   "learned": "Knowledge of the tides and their patterns.",
+   "lifestyle": "Spends most of her time near the sea, observing and recording the tides.",
+   "currently": "Trying to find who else saw the light answer, with a distinctive scar above her left eye.",
+   "routine": "tide-reader",
+   "home": 13,
+   "work": 14
+  },
+  "relationships": [
+   [
+    8,
+    "acquaintance",
+    0.1,
+    "Remembers the doctor's arrival in town."
+   ],
+   [
+    6,
+    "acquaintance",
+    0.1,
+    "Noticed them hanging around the pier a lot."
+   ],
+   [
+    4,
+    "acquaintance",
+    0.4,
+    "Often sees him at the ferry office."
+   ],
+   [
+    2,
+    "acquaintance",
+    0.2,
+    "Buys bread from him occasionally."
+   ],
+   [
+    7,
+    "acquaintance",
+    0.3,
+    "Enjoys listening to his stories about the sea."
+   ]
+  ]
+ }
+]
