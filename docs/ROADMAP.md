@@ -1,7 +1,3 @@
-# Vesper — Roadmap
-
-_Owned by the Director (`overseers/roles/director.md`), rewritten every cycle. Priority lives here; taste lives in `docs/VISION.md`. Humans may edit; the Director folds edits in._
-
 ## Milestones
 
 - [x] Living town foundation — done when: population, jobs, map, day/night, memory, and a budgeted Tier-2 cognition loop are all observable and running unattended. Hypothesis: "population will rise to 1 within 24 hours" — **confirmed** (population = 11). Shipped across M1–M8.
