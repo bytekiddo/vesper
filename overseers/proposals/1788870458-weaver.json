@@ -1,0 +1,38 @@
+[
+ {
+  "op": "add_citizen",
+  "citizen": {
+   "name": "Orion Ketch",
+   "age": 38,
+   "pronouns": "he/him",
+   "occupation": "fisherman",
+   "innate": "patient, observant, strong",
+   "learned": "Grew up on the sea, learning the tides and the best fishing spots.",
+   "lifestyle": "Early to rise, early to bed, spends most of his time on his boat.",
+   "currently": "Wondering about the new faces in town and the strange lights at sea.",
+   "routine": "fisherman",
+   "home": 13,
+   "work": 14
+  },
+  "relationships": [
+   [
+    1001,
+    "friend",
+    "0.6",
+    "Orion and Emmet have been fishing buddies for years."
+   ],
+   [
+    1007,
+    "acquaintance",
+    "0.2",
+    "Orion is curious about the new tide-reader in town."
+   ],
+   [
+    1008,
+    "acquaintance",
+    "0.3",
+    "Orion has noticed Sable's concern about the mysterious lights."
+   ]
+  ]
+ }
+]
