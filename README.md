@@ -76,6 +76,7 @@ that the Artisan's branches merge only when judged *not worse*. Refuted hypothes
 
 **Spend this month (2026-09):** $0.16 of $400 across 221 calls (483,153 prompt / 191,010 completion tokens).
 
+**Spend this month (2026-09):** $0.09 of $75 across 281 calls (673,880 prompt / 227,263 completion tokens).
 **By category:** overseers: $0.12 of $200 · citizens: $0.04 of $100 · visitor: $0.00 of $20 · art: $0.00 of $40 · judge: $0.00 of $40
 
 | Role | Model | Spent |

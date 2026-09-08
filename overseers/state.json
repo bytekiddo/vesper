@@ -1,5 +1,5 @@
 {
-  "cycle": 9,
+  "cycle": 6,
   "merges": [
     {
       "sha": "d4819a4",
@@ -145,7 +145,7 @@
       "needs_restart": false
     }
   ],
-  "issues": 4,
+  "issues": 5,
   "history": [
     {
       "ts": 1788715150.0926988,
