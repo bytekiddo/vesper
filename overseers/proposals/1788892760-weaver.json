@@ -1,0 +1,32 @@
+[
+ {
+  "op": "add_citizen",
+  "citizen": {
+   "name": "Liora Stern",
+   "age": 28,
+   "pronouns": "she/her",
+   "occupation": "glassblower",
+   "innate": "Curious, artistic, introverted",
+   "learned": "Liora discovered her passion for glassblowing during her travels along the coast, learning the craft from a reclusive artisan.",
+   "lifestyle": "Liora spends her mornings collecting sea glass on the beach and her afternoons creating delicate glass sculptures in her workshop.",
+   "currently": "Liora is searching for a space to set up her glassblowing studio and display her creations.",
+   "routine": "artisan",
+   "home": 100,
+   "work": 100
+  },
+  "relationships": [
+   [
+    104,
+    "colleague",
+    0.4,
+    "Liora and Mara bonded over their shared love of the sea and its mysteries."
+   ],
+   [
+    107,
+    "friend",
+    0.6,
+    "Liora and Sable often discuss the interplay between light and glass, and how it relates to the mysterious lights at sea."
+   ]
+  ]
+ }
+]
