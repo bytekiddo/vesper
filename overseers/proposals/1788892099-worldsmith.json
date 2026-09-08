@@ -1,0 +1,14 @@
+[
+ {
+  "op": "add_building",
+  "building": {
+   "name": "The Beacon House",
+   "kind": "house",
+   "w": 3,
+   "h": 2,
+   "capacity": 3,
+   "open": false,
+   "note": "A cozy home for the lighthouse keeper, with a view of the sea."
+  }
+ }
+]
