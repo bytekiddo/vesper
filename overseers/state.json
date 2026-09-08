@@ -1,41 +1,6 @@
 {
-  "cycle": 8,
+  "cycle": 9,
   "merges": [
-    {
-      "sha": "d4819a4",
-      "ts": 1788763383.6981263,
-      "role": "lawgiver",
-      "hypothesis": "Lowering the conversation base_chance from 0.06 to 0.04 and raising the friend_bonus from 0.10 to 0.14 should reduce repetitive small-talk between acquaintances while making established friendships th",
-      "baseline": {
-        "boot_count": 156,
-        "catching_up": false,
-        "caught_up": true,
-        "drift_ms_max": 58.3980083465576,
-        "drift_ms_max_window": 0.0,
-        "llm": {
-          "allowance_today": 2.2128,
-          "budget": 75.0,
-          "citizen_spent_month": 0.0111,
-          "errors": 0,
-          "est_cost_per_call": 0.00013,
-          "model": "openai/gpt-oss-120b",
-          "pending": 0,
-          "spent_today": 0.0019,
-          "stub": false
-        },
-        "memory_mb": 26.7,
-        "population": 11,
-        "quarantine_today": 0,
-        "tick": 24180,
-        "ticks": 1975,
-        "ts": 1788763380,
-        "viewers": 0
-      },
-      "files": [
-        "world/rules.json"
-      ],
-      "needs_restart": true
-    },
     {
       "sha": "ef90da6",
       "ts": 1788850349.8366728,
@@ -200,6 +165,61 @@
         "overseers/proposals/1788851380-engineer.json"
       ],
       "needs_restart": false
+    },
+    {
+      "sha": "eaebe04",
+      "ts": 1788871086.4534633,
+      "role": "weaver",
+      "hypothesis": "population will rise to 12 within 24 hours",
+      "milestone": "Legible citizens (no duplicate identities)",
+      "baseline": {
+        "activity_diversity": 1.0,
+        "boot_count": 158,
+        "building_visits_per_day": 60,
+        "catching_up": false,
+        "caught_up": true,
+        "conversations_per_day": 29,
+        "drift_ms_max": 75.8180618286133,
+        "drift_ms_max_window": 10.7929706573486,
+        "feature_echo": 10,
+        "jobs": {
+          "apprentice": 1,
+          "baker": 1,
+          "doctor": 1,
+          "ferry clerk": 1,
+          "lighthouse keeper": 2,
+          "net-mender": 1,
+          "retired fisher": 1,
+          "shopkeeper": 1,
+          "tide-reader": 1,
+          "town clerk": 1
+        },
+        "llm": {
+          "allowance_today": 4.447,
+          "budget": 400.0,
+          "citizen_spent_month": 0.0606,
+          "errors": 0,
+          "est_cost_per_call": 4e-05,
+          "model": "mistralai/mistral-nemo",
+          "pending": 0,
+          "spent_today": 0.0044,
+          "stub": false
+        },
+        "mean_mood": 0.1,
+        "memory_mb": 31.5,
+        "month_total": 0.2631,
+        "population": 11,
+        "quarantine_today": 0,
+        "recent_features": 2,
+        "tick": 131880,
+        "ticks": 21546,
+        "ts": 1788871080,
+        "viewers": 0
+      },
+      "files": [
+        "overseers/proposals/1788870458-weaver.json"
+      ],
+      "needs_restart": false
     }
   ],
   "issues": 5,
@@ -276,6 +296,16 @@
       "result": "merged",
       "sha": "cb0382b",
       "advice": "Proposal file adds valid depart op for fictional citizen.",
+      "score": null
+    },
+    {
+      "ts": 1788871086.4537165,
+      "role": "weaver",
+      "hypothesis": "population will rise to 12 within 24 hours",
+      "milestone": "Legible citizens (no duplicate identities)",
+      "result": "merged",
+      "sha": "eaebe04",
+      "advice": "Data-driven citizen addition matches policy.",
       "score": null
     }
   ],
@@ -492,16 +522,67 @@
         "ts": 1788852000,
         "viewers": 1
       }
+    },
+    {
+      "ts": 1788871086.4537253,
+      "sha": "eaebe04",
+      "role": "weaver",
+      "milestone": "Legible citizens (no duplicate identities)",
+      "hypothesis": "population will rise to 12 within 24 hours",
+      "baseline": {
+        "activity_diversity": 1.0,
+        "boot_count": 158,
+        "building_visits_per_day": 60,
+        "catching_up": false,
+        "caught_up": true,
+        "conversations_per_day": 29,
+        "drift_ms_max": 75.8180618286133,
+        "drift_ms_max_window": 10.7929706573486,
+        "feature_echo": 10,
+        "jobs": {
+          "apprentice": 1,
+          "baker": 1,
+          "doctor": 1,
+          "ferry clerk": 1,
+          "lighthouse keeper": 2,
+          "net-mender": 1,
+          "retired fisher": 1,
+          "shopkeeper": 1,
+          "tide-reader": 1,
+          "town clerk": 1
+        },
+        "llm": {
+          "allowance_today": 4.447,
+          "budget": 400.0,
+          "citizen_spent_month": 0.0606,
+          "errors": 0,
+          "est_cost_per_call": 4e-05,
+          "model": "mistralai/mistral-nemo",
+          "pending": 0,
+          "spent_today": 0.0044,
+          "stub": false
+        },
+        "mean_mood": 0.1,
+        "memory_mb": 31.5,
+        "month_total": 0.2631,
+        "population": 11,
+        "quarantine_today": 0,
+        "recent_features": 2,
+        "tick": 131880,
+        "ticks": 21546,
+        "ts": 1788871080,
+        "viewers": 0
+      }
     }
   ],
   "director": {
-    "ts": 1788849680.3981159,
+    "ts": 1788870357.953968,
     "focus": "Fix the duplicate Sable Tide identity",
     "milestone": "Legible citizens (no duplicate identities)",
     "assignments": {
-      "worldsmith": "Add a distinctive physical feature to one Sable Tide to help tell them apart",
-      "weaver": "Give the two Sable Tides contrasting personalities and story arcs",
-      "lawgiver": "Prevent duplicate full names in world generation"
+      "worldsmith": "Monitor metrics and revert if duplicate identities return",
+      "weaver": "Add new fictional adult citizen, no romance",
+      "lawgiver": "Update rules to prevent duplicate identities from re-occurring"
     }
   },
   "last_retrospective": 1788807588.2625449

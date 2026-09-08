@@ -72,24 +72,24 @@ that the Artisan's branches merge only when judged *not worse*. Refuted hypothes
 | Chronicler | writes the newspaper in `journal/` |
 
 <!-- ledger:start -->
-*Updated 2026-09-08 07:21 UTC by the overseer runner.*
+*Updated 2026-09-08 12:47 UTC by the overseer runner.*
 
-**Spend this month (2026-09):** $0.26 of $400 across 306 calls (829,373 prompt / 244,591 completion tokens).
+**Spend this month (2026-09):** $0.40 of $400 across 376 calls (1,114,746 prompt / 267,744 completion tokens).
 
-**By category:** overseers: $0.19 of $200 · citizens: $0.06 of $100 · visitor: $0.00 of $20 · art: $0.00 of $40 · judge: $0.01 of $40
+**By category:** overseers: $0.32 of $200 · citizens: $0.06 of $100 · visitor: $0.00 of $20 · art: $0.00 of $40 · judge: $0.02 of $40
 
 | Role | Model | Spent |
 |---|---|---|
 | citizen | `mistralai/mistral-nemo` | $0.06 |
 | steward | `inclusionai/ling-3.0-flash` | $0.00 |
-| director | `nousresearch/hermes-3-llama-3.1-405b` | $0.01 |
-| worldsmith | `nousresearch/hermes-3-llama-3.1-405b` | $0.02 |
-| weaver | `nousresearch/hermes-3-llama-3.1-405b` | $0.03 |
-| lawgiver | `nousresearch/hermes-3-llama-3.1-405b` | $0.05 |
-| engineer | `nousresearch/hermes-3-llama-3.1-405b` | $0.04 |
+| director | `nousresearch/hermes-3-llama-3.1-405b` | $0.02 |
+| worldsmith | `nousresearch/hermes-3-llama-3.1-405b` | $0.03 |
+| weaver | `nousresearch/hermes-3-llama-3.1-405b` | $0.04 |
+| lawgiver | `nousresearch/hermes-3-llama-3.1-405b` | $0.09 |
+| engineer | `nousresearch/hermes-3-llama-3.1-405b` | $0.07 |
 | artisan | `openai/gpt-4o:batch` | $0.00 |
-| judge | `x-ai/grok-build-0.1` | $0.01 |
-| chronicler | `openai/gpt-5` | $0.04 |
+| judge | `x-ai/grok-build-0.1` | $0.02 |
+| chronicler | `openai/gpt-5` | $0.07 |
 <!-- ledger:end -->
 
 The runner rewrites the block above every cycle, including spend per category. The newspaper: [`journal/`](journal/) (also served at `/journal/`
