@@ -1,0 +1,55 @@
+[
+ {
+  "op": "depart",
+  "id": 108,
+  "reason": "Sable Tide the lighthouse keeper left to uncover the origin of the mysterious lights at sea, leaving only one Sable Tide in town."
+ },
+ {
+  "op": "add_citizen",
+  "citizen": {
+   "name": "Mara Kettle",
+   "age": 34,
+   "pronouns": "she/her",
+   "occupation": "net-mender",
+   "innate": "prone to wandering off",
+   "learned": "has been at sea",
+   "lifestyle": "keeps a journal of tides",
+   "currently": "Looking for a dry place to work and a kettle of tea; she heard Vesper has a lighthouse that answers lights at sea.",
+   "routine": "default",
+   "home": 9,
+   "work": 2
+  },
+  "relationships": [
+   [
+    "Emmet Sallow",
+    "old friend",
+    0.7,
+    "knows him from before Vesper"
+   ],
+   [
+    "Juno Farrow",
+    "friend",
+    0.5,
+    "met on the first day in town"
+   ],
+   [
+    "Ines Marlowe",
+    "acquaintance",
+    0.3,
+    "recognizes from the lighthouse"
+   ],
+   [
+    "Sable Tide",
+    "acquaintance",
+    0.9,
+    "wondering about the scar"
+   ],
+   [
+    "Cassius Ode",
+    "acquaintance",
+    0.6,
+    "talked to at the pier"
+   ]
+  ]
+ }
+]
