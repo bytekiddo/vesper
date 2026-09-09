@@ -1,0 +1,38 @@
+[
+ {
+  "op": "add_citizen",
+  "citizen": {
+   "name": "Mira Cove",
+   "age": 27,
+   "pronouns": "she/her",
+   "occupation": "fisher",
+   "innate": "patient, observant",
+   "learned": "Mira learned to read the tides and weather from her father, a skilled fisherman.",
+   "lifestyle": "Mira rises early to check her nets and spends her evenings mending them by the fire.",
+   "currently": "Mira is curious about the new faces in town and hopes to make some new friends.",
+   "routine": "fisher",
+   "home": 13,
+   "work": 4
+  },
+  "relationships": [
+   [
+    7,
+    "friend",
+    "0.6",
+    "Mira and Emmet often share stories of their catches."
+   ],
+   [
+    1,
+    "acquaintance",
+    "0.3",
+    "Mira admires Ines's dedication to keeping the lighthouse running smoothly."
+   ],
+   [
+    12,
+    "acquaintance",
+    "0.2",
+    "Mira sometimes sells her catch to Wren's shop."
+   ]
+  ]
+ }
+]
