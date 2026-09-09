@@ -1,0 +1,55 @@
+[
+ {
+  "op": "depart",
+  "id": 108,
+  "reason": "Sable Tide the lighthouse keeper left to investigate the mysterious lights at sea, leaving only one Sable Tide in town."
+ },
+ {
+  "op": "add_citizen",
+  "citizen": {
+   "name": "Coral Drift",
+   "age": 31,
+   "pronouns": "she/her",
+   "occupation": "lighthouse keeper",
+   "innate": "Coral is a dedicated and skilled lighthouse keeper.",
+   "learned": "She has learned to navigate the rocky shores around Vesper.",
+   "lifestyle": "Coral lives a solitary life, focused on maintaining the lighthouse.",
+   "currently": "Coral is concerned about the recent sightings of mysterious lights at sea and is determined to uncover their origin.",
+   "routine": "keeper",
+   "home": 1,
+   "work": 1
+  },
+  "relationships": [
+   [
+    "Ines Marlowe",
+    "colleague",
+    1,
+    "The two lighthouse keepers work closely together."
+   ],
+   [
+    "Emmet Sallow",
+    "friend",
+    0.8,
+    "Coral and Emmet have been friends for years."
+   ],
+   [
+    "Halcyon Brisk",
+    "acquaintance",
+    0.3,
+    "Coral occasionally visits Halcyon's clinic for check-ups."
+   ],
+   [
+    "Juno Farrow",
+    "acquaintance",
+    0.2,
+    "Coral sometimes buys supplies from Juno's store."
+   ],
+   [
+    "Cassius Ode",
+    "colleague",
+    0.6,
+    "Coral and Cassius often discuss the comings and goings at the ferry."
+   ]
+  ]
+ }
+]
