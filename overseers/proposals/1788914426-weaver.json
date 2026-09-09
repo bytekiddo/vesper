@@ -1,0 +1,44 @@
+[
+ {
+  "op": "add_citizen",
+  "citizen": {
+   "name": "Rune Underhill",
+   "age": 25,
+   "pronouns": "he/him",
+   "occupation": "gardener",
+   "innate": "patient, quietly stubborn",
+   "learned": "Rune grew up in a small coastal village and moved to Vesper to take care of his elderly grandmother.",
+   "lifestyle": "Rune spends his days tending to the gardens around town and his evenings reading books on botany.",
+   "currently": "Rune is worried about the recent changes in the tides and how they might affect the gardens.",
+   "routine": "default",
+   "home": 9,
+   "work": 3
+  },
+  "relationships": [
+   [
+    2,
+    "neighbour",
+    0.4,
+    "Rune and Tobiah often chat about the weather and its effects on their respective crafts."
+   ],
+   [
+    3,
+    "acquaintance",
+    0.2,
+    "Rune buys supplies from Wren for his gardening work."
+   ],
+   [
+    5,
+    "acquaintance",
+    0.3,
+    "Rune and Petra often discuss the latest town news and gossip."
+   ],
+   [
+    7,
+    "friend",
+    0.6,
+    "Rune and Emmet have a shared love of the sea and often go fishing together."
+   ]
+  ]
+ }
+]
