@@ -1,0 +1,14 @@
+[
+ {
+  "op": "add_building",
+  "building": {
+   "name": "The Tide House",
+   "kind": "house",
+   "w": 3,
+   "h": 2,
+   "capacity": 3,
+   "open": false,
+   "note": "A cozy home with a view of the sea, where Sable Tide the tide-reader lives."
+  }
+ }
+]
