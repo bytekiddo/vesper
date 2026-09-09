@@ -9,3 +9,4 @@ One line per verdict, written by the verifier 24–72 h after a merge. Refuted i
 - 2026-09-09 — **inconclusive** — weaver (Legible citizens (no duplicate identities), 2c0713c): citizen_departures will rise to 1 within 1 hour — metric 'citizen_departures' is not in state/metrics.json
 - 2026-09-09 — **inconclusive** — engineer (Legible citizens (no duplicate identities), cb0382b): Number of citizens with duplicate identities will fall to 0 within 1 hour — metric 'number_of_citizens_with_duplicate_identities' is not in state/metrics.json
 - 2026-09-09 — **inconclusive** — lawgiver (Legible citizens (no duplicate identities), 0352ae9): The number of citizens will remain at 14 within the next 24 hours — not in the form '<metric> will <rise|fall> to <value> within <N> hours'
+- 2026-09-09 — **confirmed** — weaver (Legible citizens (no duplicate identities), eaebe04): population will rise to 12 within 24 hours — population = 16, target >= 12
