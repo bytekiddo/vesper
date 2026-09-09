@@ -1,5 +1,5 @@
 {
-  "cycle": 10,
+  "cycle": 11,
   "merges": [
     {
       "sha": "ef90da6",
@@ -332,6 +332,120 @@
         "overseers/proposals/1788892760-weaver.json"
       ],
       "needs_restart": false
+    },
+    {
+      "sha": "d2b6a61",
+      "ts": 1788914369.385746,
+      "role": "worldsmith",
+      "hypothesis": "Citizen identity collisions will fall to 0 within 24 hours",
+      "milestone": "Legible citizens (no duplicate identities)",
+      "baseline": {
+        "activity_diversity": 1.0,
+        "boot_count": 158,
+        "building_visits_per_day": 60,
+        "catching_up": false,
+        "caught_up": true,
+        "conversations_per_day": 30,
+        "drift_ms_max": 24.5070457458496,
+        "drift_ms_max_window": 0.0,
+        "feature_echo": 10,
+        "jobs": {
+          "apprentice": 1,
+          "baker": 1,
+          "doctor": 1,
+          "ferry clerk": 1,
+          "fisherman": 1,
+          "glassblower": 1,
+          "lighthouse keeper": 2,
+          "net-mender": 1,
+          "retired fisher": 1,
+          "shopkeeper": 1,
+          "tide-reader": 1,
+          "town clerk": 1
+        },
+        "llm": {
+          "allowance_today": 4.5478,
+          "budget": 400.0,
+          "citizen_spent_month": 0.071,
+          "errors": 20,
+          "est_cost_per_call": 4e-05,
+          "model": "mistralai/mistral-nemo",
+          "pending": 0,
+          "spent_today": 0.0005,
+          "stub": false
+        },
+        "mean_mood": 0.131,
+        "memory_mb": 32.2,
+        "month_total": 0.2631,
+        "population": 13,
+        "quarantine_today": 0,
+        "recent_features": 3,
+        "tick": 175140,
+        "ticks": 64806,
+        "ts": 1788914340,
+        "viewers": 0
+      },
+      "files": [
+        "overseers/proposals/1788913747-worldsmith.json"
+      ],
+      "needs_restart": false
+    },
+    {
+      "sha": "d100cc9",
+      "ts": 1788915049.6574817,
+      "role": "weaver",
+      "hypothesis": "The number of distinct citizen identities will rise to 13 within 24 hours",
+      "milestone": "Legible citizens (no duplicate identities)",
+      "baseline": {
+        "activity_diversity": 0.615,
+        "boot_count": 158,
+        "building_visits_per_day": 60,
+        "catching_up": false,
+        "caught_up": true,
+        "conversations_per_day": 30,
+        "drift_ms_max": 30.3969383239746,
+        "drift_ms_max_window": 9.35506820678711,
+        "feature_echo": 10,
+        "jobs": {
+          "apprentice": 1,
+          "baker": 1,
+          "doctor": 1,
+          "ferry clerk": 1,
+          "fisherman": 1,
+          "glassblower": 1,
+          "lighthouse keeper": 2,
+          "net-mender": 1,
+          "retired fisher": 1,
+          "shopkeeper": 1,
+          "tide-reader": 1,
+          "town clerk": 1
+        },
+        "llm": {
+          "allowance_today": 4.5494,
+          "budget": 400.0,
+          "citizen_spent_month": 0.0712,
+          "errors": 20,
+          "est_cost_per_call": 4e-05,
+          "model": "mistralai/mistral-nemo",
+          "pending": 0,
+          "spent_today": 0.0008,
+          "stub": false
+        },
+        "mean_mood": 0.131,
+        "memory_mb": 32.3,
+        "month_total": 0.2631,
+        "population": 13,
+        "quarantine_today": 0,
+        "recent_features": 4,
+        "tick": 175800,
+        "ticks": 65466,
+        "ts": 1788915000,
+        "viewers": 0
+      },
+      "files": [
+        "overseers/proposals/1788914426-weaver.json"
+      ],
+      "needs_restart": false
     }
   ],
   "issues": 5,
@@ -438,6 +552,26 @@
       "result": "merged",
       "sha": "92f8eff",
       "advice": "Data-driven citizen addition preferred; verify building 100 exists post-merge.",
+      "score": null
+    },
+    {
+      "ts": 1788914369.386046,
+      "role": "worldsmith",
+      "hypothesis": "Citizen identity collisions will fall to 0 within 24 hours",
+      "milestone": "Legible citizens (no duplicate identities)",
+      "result": "merged",
+      "sha": "d2b6a61",
+      "advice": "Proposal adds house for fictional tide-reader; verify citizen integration in next milestone.",
+      "score": null
+    },
+    {
+      "ts": 1788915049.6577046,
+      "role": "weaver",
+      "hypothesis": "The number of distinct citizen identities will rise to 13 within 24 hours",
+      "milestone": "Legible citizens (no duplicate identities)",
+      "result": "merged",
+      "sha": "d100cc9",
+      "advice": "Citizen addition keeps town small and data-driven.",
       "score": null
     }
   ],
@@ -757,16 +891,122 @@
         "ts": 1788893340,
         "viewers": 0
       }
+    },
+    {
+      "ts": 1788914369.3860734,
+      "sha": "d2b6a61",
+      "role": "worldsmith",
+      "milestone": "Legible citizens (no duplicate identities)",
+      "hypothesis": "Citizen identity collisions will fall to 0 within 24 hours",
+      "baseline": {
+        "activity_diversity": 1.0,
+        "boot_count": 158,
+        "building_visits_per_day": 60,
+        "catching_up": false,
+        "caught_up": true,
+        "conversations_per_day": 30,
+        "drift_ms_max": 24.5070457458496,
+        "drift_ms_max_window": 0.0,
+        "feature_echo": 10,
+        "jobs": {
+          "apprentice": 1,
+          "baker": 1,
+          "doctor": 1,
+          "ferry clerk": 1,
+          "fisherman": 1,
+          "glassblower": 1,
+          "lighthouse keeper": 2,
+          "net-mender": 1,
+          "retired fisher": 1,
+          "shopkeeper": 1,
+          "tide-reader": 1,
+          "town clerk": 1
+        },
+        "llm": {
+          "allowance_today": 4.5478,
+          "budget": 400.0,
+          "citizen_spent_month": 0.071,
+          "errors": 20,
+          "est_cost_per_call": 4e-05,
+          "model": "mistralai/mistral-nemo",
+          "pending": 0,
+          "spent_today": 0.0005,
+          "stub": false
+        },
+        "mean_mood": 0.131,
+        "memory_mb": 32.2,
+        "month_total": 0.2631,
+        "population": 13,
+        "quarantine_today": 0,
+        "recent_features": 3,
+        "tick": 175140,
+        "ticks": 64806,
+        "ts": 1788914340,
+        "viewers": 0
+      }
+    },
+    {
+      "ts": 1788915049.6577268,
+      "sha": "d100cc9",
+      "role": "weaver",
+      "milestone": "Legible citizens (no duplicate identities)",
+      "hypothesis": "The number of distinct citizen identities will rise to 13 within 24 hours",
+      "baseline": {
+        "activity_diversity": 0.615,
+        "boot_count": 158,
+        "building_visits_per_day": 60,
+        "catching_up": false,
+        "caught_up": true,
+        "conversations_per_day": 30,
+        "drift_ms_max": 30.3969383239746,
+        "drift_ms_max_window": 9.35506820678711,
+        "feature_echo": 10,
+        "jobs": {
+          "apprentice": 1,
+          "baker": 1,
+          "doctor": 1,
+          "ferry clerk": 1,
+          "fisherman": 1,
+          "glassblower": 1,
+          "lighthouse keeper": 2,
+          "net-mender": 1,
+          "retired fisher": 1,
+          "shopkeeper": 1,
+          "tide-reader": 1,
+          "town clerk": 1
+        },
+        "llm": {
+          "allowance_today": 4.5494,
+          "budget": 400.0,
+          "citizen_spent_month": 0.0712,
+          "errors": 20,
+          "est_cost_per_call": 4e-05,
+          "model": "mistralai/mistral-nemo",
+          "pending": 0,
+          "spent_today": 0.0008,
+          "stub": false
+        },
+        "mean_mood": 0.131,
+        "memory_mb": 32.3,
+        "month_total": 0.2631,
+        "population": 13,
+        "quarantine_today": 0,
+        "recent_features": 4,
+        "tick": 175800,
+        "ticks": 65466,
+        "ts": 1788915000,
+        "viewers": 0
+      }
     }
   ],
   "director": {
-    "ts": 1788892061.151144,
+    "ts": 1788913712.7497165,
     "focus": "Legible citizens (no duplicate identities)",
     "milestone": "Legible citizens (no duplicate identities)",
     "assignments": {
-      "worldsmith": "Add a new building to give one of the duplicate citizens a new role and home.",
-      "weaver": "Create a distinct identity for the new citizen, including name, appearance, and relationships.",
-      "lawgiver": "Update the rules to prevent duplicate citizens in the future."
+      "worldsmith": "Add a new home for Sable Tide so a stranger can tell the two apart",
+      "weaver": "The number of distinct citizen identities will rise to 13 within 24 hours",
+      "lawgiver": "Duplicate citizens will fall to 0 within 1 hour"
     }
   },
   "last_retrospective": 1788807588.2625449
