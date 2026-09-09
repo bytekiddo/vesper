@@ -1,0 +1,38 @@
+[
+ {
+  "op": "add_citizen",
+  "citizen": {
+   "name": "Caspian Flux",
+   "age": 32,
+   "pronouns": "he/him",
+   "occupation": "tide-reader",
+   "innate": "patient, observant, analytical",
+   "learned": "Caspian learned to read the tides from his father, a fisherman who knew the sea's moods.",
+   "lifestyle": "Caspian spends his days studying the ebb and flow of the tides, recording his observations in a worn leather journal.",
+   "currently": "Caspian is concerned about the recent changes in the tidal patterns and is determined to understand their cause.",
+   "routine": "tide-reader",
+   "home": 13,
+   "work": 103
+  },
+  "relationships": [
+   [
+    107,
+    "colleague",
+    0.5,
+    "Caspian and Sable often compare notes on their tidal observations."
+   ],
+   [
+    109,
+    "friend",
+    0.7,
+    "Caspian and Orion have been friends since childhood and often fish together."
+   ],
+   [
+    7,
+    "acquaintance",
+    0.4,
+    "Caspian respects Emmet's knowledge of the sea and often seeks his advice."
+   ]
+  ]
+ }
+]
