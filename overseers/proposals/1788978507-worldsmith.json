@@ -1,0 +1,14 @@
+[
+ {
+  "op": "add_building",
+  "building": {
+   "name": "The Crow's Nest",
+   "kind": "landmark",
+   "w": 2,
+   "h": 2,
+   "capacity": 10,
+   "open": true,
+   "note": "A distinctive lookout point where citizens can gather and observe the sea, the lighthouse, and the mysterious lights that sometimes appear on the horizon."
+  }
+ }
+]
