@@ -1,0 +1,38 @@
+[
+ {
+  "op": "add_citizen",
+  "citizen": {
+   "name": "Lena Loom",
+   "age": 45,
+   "pronouns": "she/her",
+   "occupation": "weaver",
+   "innate": "patient, creative",
+   "learned": "Lena learned the art of weaving from her grandmother and has been perfecting her craft ever since.",
+   "lifestyle": "Lena spends her days weaving intricate tapestries and teaching others the skill.",
+   "currently": "Lena is searching for a suitable space to open a weaving studio and shop.",
+   "routine": "default",
+   "home": 110,
+   "work": 3
+  },
+  "relationships": [
+   [
+    2,
+    "neighbour",
+    0.6,
+    "Lena and Tobiah are neighbors who often chat about their respective crafts."
+   ],
+   [
+    7,
+    "friend",
+    0.8,
+    "Lena and Emmet have been friends for years and often share stories about their lives."
+   ],
+   [
+    5,
+    "acquaintance",
+    0.4,
+    "Lena and Petra have had a few conversations about the town's history."
+   ]
+  ]
+ }
+]
