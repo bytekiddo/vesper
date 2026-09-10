@@ -1,0 +1,73 @@
+[
+ {
+  "op": "depart",
+  "id": 116,
+  "reason": "Mara Kettle the net-mender left to find a better place to work, leaving only one Mara Kettle in town."
+ },
+ {
+  "op": "add_citizen",
+  "citizen": {
+   "name": "Sable Flux",
+   "age": 24,
+   "pronouns": "they/them",
+   "occupation": "tide-reader",
+   "innate": "curious about everything, prone to wandering off",
+   "learned": "Sable grew up in a coastal village where they learned to read the tides and predict the weather.",
+   "lifestyle": "Sable spends most of their time near the water, observing the ebb and flow of the tides.",
+   "currently": "Sable is curious about the recent changes in the tidal patterns and is determined to understand their cause."
+  },
+  "relationships": [
+   [
+    117,
+    "colleague",
+    0.7,
+    "Sable and Caspian often discuss their tide readings and theories."
+   ]
+  ]
+ },
+ {
+  "op": "add_citizen",
+  "citizen": {
+   "name": "Lena Loom",
+   "age": 45,
+   "pronouns": "she/her",
+   "occupation": "weaver",
+   "innate": "methodical, tidy-minded",
+   "learned": "Lena learned weaving from her grandmother and has been perfecting her craft ever since.",
+   "lifestyle": "Lena spends most of her time in her weaving studio, creating beautiful textiles.",
+   "currently": "Lena is searching for a suitable space to open a weaving studio and shop."
+  },
+  "relationships": [
+   [
+    2,
+    "neighbour",
+    0.6,
+    "Lena and Tobiah are neighbors and often chat about their respective crafts."
+   ],
+   [
+    8,
+    "friend",
+    0.8,
+    "Lena and Emmet have become close friends since she arrived in Vesper."
+   ],
+   [
+    5,
+    "acquaintance",
+    0.4,
+    "Lena and Petra have had a few conversations about the town's history."
+   ],
+   [
+    13,
+    "acquaintance",
+    0.5,
+    "Lena and Rune have discussed the possibility of collaborating on a project."
+   ],
+   [
+    15,
+    "acquaintance",
+    0.2,
+    "Lena and Mira have chatted a few times at the Salt Kettle."
+   ]
+  ]
+ }
+]
