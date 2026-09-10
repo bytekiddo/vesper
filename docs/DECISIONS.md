@@ -77,3 +77,4 @@ One line per decision. Append; never rewrite history. Format: `YYYY-MM-DD — de
 - 2026-09-08 — Change the weaver's rubric to put identity clarity above population growth
 - 2026-09-08 — Increase the weight of the 'feature_echo' metric in the Director's rubric to prioritize distinct citizen identities.
 - 2026-09-09 — Chose to rename and update the second Sable Tide citizen to maintain diversity among the citizens while preserving the existing relationships and memories.
+- 2026-09-10 — Chose to remove the most recently added duplicates to maintain continuity for longer-standing citizens
