@@ -1,0 +1,39 @@
+[
+ {
+  "op": "depart",
+  "id": 121,
+  "reason": "Sable Flux the tide-reader left to find a quieter town with fewer mysterious happenings."
+ },
+ {
+  "op": "depart",
+  "id": 122,
+  "reason": "Lena Loom the weaver left to open her weaving studio in a town with more space."
+ },
+ {
+  "op": "add_citizen",
+  "citizen": {
+   "name": "Zeph Tide",
+   "age": 28,
+   "pronouns": "he/him",
+   "occupation": "tide-reader",
+   "innate": "patient, quietly stubborn",
+   "learned": "Zeph grew up in a coastal village and learned to read the tides from his grandmother.",
+   "lifestyle": "Zeph spends most of his time near the water, studying the ebb and flow of the tides.",
+   "currently": "Zeph is curious about the recent changes in the tidal patterns and is determined to understand their cause."
+  },
+  "relationships": [
+   [
+    114,
+    "colleague",
+    0.5,
+    "Zeph and Coral often discuss the tides and share their observations."
+   ],
+   [
+    117,
+    "friend",
+    0.7,
+    "Zeph and Caspian have been friends since childhood and often work together."
+   ]
+  ]
+ }
+]
