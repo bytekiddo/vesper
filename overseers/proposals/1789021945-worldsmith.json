@@ -1,0 +1,14 @@
+[
+ {
+  "op": "add_building",
+  "building": {
+   "name": "The Tide Watch",
+   "kind": "house",
+   "w": 3,
+   "h": 2,
+   "capacity": 3,
+   "open": false,
+   "note": "A cozy home for the tide-reader, with a clear view of the sea."
+  }
+ }
+]
