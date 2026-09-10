@@ -1,0 +1,14 @@
+[
+ {
+  "op": "add_building",
+  "building": {
+   "name": "The Mermaid's Tear",
+   "kind": "cafe",
+   "w": 4,
+   "h": 3,
+   "capacity": 12,
+   "open": true,
+   "note": "A cozy seaside cafe known for its warm atmosphere and the mermaid tear-shaped pendant that adorns the front door."
+  }
+ }
+]
