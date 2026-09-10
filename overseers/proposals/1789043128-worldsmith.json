@@ -1,0 +1,14 @@
+[
+ {
+  "op": "add_building",
+  "building": {
+   "name": "The Ebb House",
+   "kind": "house",
+   "w": 3,
+   "h": 2,
+   "capacity": 3,
+   "open": false,
+   "note": "A quaint house with a view of the sea, perfect for a tide-reader."
+  }
+ }
+]
