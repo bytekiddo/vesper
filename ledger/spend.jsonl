@@ -1455,3 +1455,99 @@
 {"ts": 1789067241, "month": "2026-09", "source": "overseer", "role": "engineer", "model": "nousresearch/hermes-3-llama-3.1-405b", "category": "overseers", "prompt_tokens": 20962, "completion_tokens": 15, "cost": 0.020977}
 {"ts": 1789067334, "month": "2026-09", "source": "overseer", "role": "engineer", "model": "nousresearch/hermes-3-llama-3.1-405b", "category": "overseers", "prompt_tokens": 19953, "completion_tokens": 2082, "cost": 0.022035}
 {"ts": 1789067427, "month": "2026-09", "source": "overseer", "role": "chronicler", "model": "openai/gpt-5", "category": "overseers", "prompt_tokens": 8431, "completion_tokens": 2496, "cost": 0.03549875}
+{"category":"citizens","completion_tokens":136,"cost":0.000032713,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":1507,"role":"citizen:plan","source":"server","ts":1789069685}
+{"category":"citizens","completion_tokens":219,"cost":0.000100069,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":4921,"role":"citizen:plan","source":"server","ts":1789069688}
+{"category":"citizens","completion_tokens":229,"cost":0.000051444,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2346,"role":"citizen:plan","source":"server","ts":1789069691}
+{"category":"citizens","completion_tokens":215,"cost":0.000036451,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":1579,"role":"citizen:plan","source":"server","ts":1789069692}
+{"category":"citizens","completion_tokens":192,"cost":0.000046458,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2142,"role":"citizen:chat","source":"server","ts":1789070048}
+{"category":"citizens","completion_tokens":151,"cost":0.000052733,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2537,"role":"citizen:chat","source":"server","ts":1789070058}
+{"category":"citizens","completion_tokens":222,"cost":0.00004542,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2040,"role":"citizen:chat","source":"server","ts":1789070595}
+{"category":"citizens","completion_tokens":194,"cost":0.000062611,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2989,"role":"citizen:chat","source":"server","ts":1789070794}
+{"category":"citizens","completion_tokens":128,"cost":0.000064127,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":3173,"role":"citizen:chat","source":"server","ts":1789070971}
+{"category":"citizens","completion_tokens":221,"cost":0.000047955,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2175,"role":"citizen:chat","source":"server","ts":1789071316}
+{"category":"citizens","completion_tokens":232,"cost":0.000046537,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2083,"role":"citizen:chat","source":"server","ts":1789071318}
+{"category":"citizens","completion_tokens":188,"cost":0.000046433,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2147,"role":"citizen:chat","source":"server","ts":1789071502}
+{"category":"citizens","completion_tokens":166,"cost":0.000114629,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":5771,"role":"citizen:chat","source":"server","ts":1789071526}
+{"category":"citizens","completion_tokens":155,"cost":0.000050972,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2438,"role":"citizen:chat","source":"server","ts":1789072039}
+{"category":"citizens","completion_tokens":217,"cost":0.000062674,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2956,"role":"citizen:chat","source":"server","ts":1789072039}
+{"category":"citizens","completion_tokens":175,"cost":0.000053966,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2564,"role":"citizen:chat","source":"server","ts":1789072039}
+{"category":"citizens","completion_tokens":247,"cost":0.00005067,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":1442,"role":"citizen:chat","source":"server","ts":1789072042}
+{"category":"citizens","completion_tokens":52,"cost":0.000039598,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2002,"role":"citizen:reflect","source":"server","ts":1789072053}
+{"category":"citizens","completion_tokens":192,"cost":0.00014256,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":7200,"role":"citizen:chat","source":"server","ts":1789072225}
+{"category":"citizens","completion_tokens":151,"cost":0.000084596,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":4214,"role":"citizen:chat","source":"server","ts":1789072758}
+{"category":"citizens","completion_tokens":193,"cost":0.000047115,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2175,"role":"citizen:chat","source":"server","ts":1789072766}
+{"category":"citizens","completion_tokens":156,"cost":0.00011621,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":5870,"role":"citizen:chat","source":"server","ts":1789072984}
+{"category":"citizens","completion_tokens":96,"cost":0.000036909,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":1791,"role":"citizen:reflect","source":"server","ts":1789072987}
+{"category":"citizens","completion_tokens":162,"cost":0.00004571,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2150,"role":"citizen:chat","source":"server","ts":1789073709}
+{"category":"citizens","completion_tokens":320,"cost":0.000149839,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":7381,"role":"citizen:chat","source":"server","ts":1789074024}
+{"category":"citizens","completion_tokens":156,"cost":0.000054555,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2625,"role":"citizen:chat","source":"server","ts":1789074033}
+{"category":"citizens","completion_tokens":175,"cost":0.000043687,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2023,"role":"citizen:chat","source":"server","ts":1789074044}
+{"category":"citizens","completion_tokens":135,"cost":0.000066351,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":3279,"role":"citizen:chat","source":"server","ts":1789074214}
+{"category":"citizens","completion_tokens":183,"cost":0.000064827,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":3123,"role":"citizen:chat","source":"server","ts":1789074225}
+{"category":"citizens","completion_tokens":181,"cost":0.000044095,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2035,"role":"citizen:chat","source":"server","ts":1789074737}
+{"category":"citizens","completion_tokens":176,"cost":0.00015188,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":3049,"role":"citizen:chat","source":"server","ts":1789074752}
+{"category":"citizens","completion_tokens":57,"cost":0.000046227,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2343,"role":"citizen:plan","source":"server","ts":1789078322}
+{"category":"citizens","completion_tokens":60,"cost":0.000030452,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":1508,"role":"citizen:plan","source":"server","ts":1789078322}
+{"category":"citizens","completion_tokens":53,"cost":0.000095222,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":4928,"role":"citizen:plan","source":"server","ts":1789078324}
+{"category":"citizens","completion_tokens":217,"cost":0.000033452,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":1418,"role":"citizen:plan","source":"server","ts":1789078326}
+{"category":"citizens","completion_tokens":193,"cost":0.000035411,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":1559,"role":"citizen:plan","source":"server","ts":1789078328}
+{"category":"citizens","completion_tokens":205,"cost":0.000057127,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2683,"role":"citizen:plan","source":"server","ts":1789078330}
+{"category":"citizens","completion_tokens":173,"cost":0.000132357,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":6693,"role":"citizen:plan","source":"server","ts":1789078331}
+{"category":"citizens","completion_tokens":203,"cost":0.000135043,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":6787,"role":"citizen:chat","source":"server","ts":1789078691}
+{"category":"citizens","completion_tokens":152,"cost":0.000067412,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":3308,"role":"citizen:chat","source":"server","ts":1789078693}
+{"category":"citizens","completion_tokens":161,"cost":0.000062305,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":3025,"role":"citizen:chat","source":"server","ts":1789078694}
+{"category":"citizens","completion_tokens":100,"cost":0.000031424,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":1496,"role":"citizen:reflect","source":"server","ts":1789079262}
+{"category":"citizens","completion_tokens":147,"cost":0.000066825,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":3285,"role":"citizen:chat","source":"server","ts":1789079422}
+{"category":"citizens","completion_tokens":185,"cost":0.000052404,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2466,"role":"citizen:chat","source":"server","ts":1789079800}
+{"category":"citizens","completion_tokens":212,"cost":0.000069497,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":3323,"role":"citizen:chat","source":"server","ts":1789079971}
+{"category":"citizens","completion_tokens":121,"cost":0.000114761,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":5849,"role":"citizen:chat","source":"server","ts":1789080140}
+{"category":"citizens","completion_tokens":127,"cost":0.000069778,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":3472,"role":"citizen:chat","source":"server","ts":1789080152}
+{"category":"citizens","completion_tokens":187,"cost":0.000066201,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":3189,"role":"citizen:chat","source":"server","ts":1789080679}
+{"category":"citizens","completion_tokens":270,"cost":0.000092251,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":4429,"role":"citizen:chat","source":"server","ts":1789080695}
+{"category":"citizens","completion_tokens":186,"cost":0.000136281,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":6879,"role":"citizen:chat","source":"server","ts":1789080701}
+{"category":"citizens","completion_tokens":133,"cost":0.00004712,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2270,"role":"citizen:chat","source":"server","ts":1789080715}
+{"category":"citizens","completion_tokens":97,"cost":0.000034431,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":1659,"role":"citizen:reflect","source":"server","ts":1789081204}
+{"category":"citizens","completion_tokens":159,"cost":0.000105356,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":5294,"role":"citizen:chat","source":"server","ts":1789081435}
+{"category":"citizens","completion_tokens":137,"cost":0.000045986,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2204,"role":"citizen:chat","source":"server","ts":1789081437}
+{"category":"citizens","completion_tokens":102,"cost":0.000054493,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2707,"role":"citizen:chat","source":"server","ts":1789081593}
+{"category":"citizens","completion_tokens":179,"cost":0.000070673,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":3437,"role":"citizen:chat","source":"server","ts":1789081791}
+{"category":"citizens","completion_tokens":181,"cost":0.000105408,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":5262,"role":"citizen:chat","source":"server","ts":1789082158}
+{"category":"citizens","completion_tokens":169,"cost":0.000048105,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2265,"role":"citizen:chat","source":"server","ts":1789082163}
+{"category":"citizens","completion_tokens":198,"cost":0.000051863,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2417,"role":"citizen:chat","source":"server","ts":1789082337}
+{"category":"citizens","completion_tokens":189,"cost":0.000071638,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":3472,"role":"citizen:chat","source":"server","ts":1789082513}
+{"category":"citizens","completion_tokens":102,"cost":0.000075925,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":3835,"role":"citizen:reflect","source":"server","ts":1789082645}
+{"category":"citizens","completion_tokens":160,"cost":0.000064422,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":3138,"role":"citizen:chat","source":"server","ts":1789082675}
+{"category":"citizens","completion_tokens":221,"cost":0.00016377,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":5238,"role":"citizen:chat","source":"server","ts":1789082687}
+{"category":"citizens","completion_tokens":232,"cost":0.000062269,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2911,"role":"citizen:chat","source":"server","ts":1789083045}
+{"category":"citizens","completion_tokens":206,"cost":0.000040209,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":1791,"role":"citizen:chat","source":"server","ts":1789083100}
+{"category":"citizens","completion_tokens":173,"cost":0.000096029,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":4781,"role":"citizen:chat","source":"server","ts":1789083398}
+{"category":"citizens","completion_tokens":90,"cost":0.000029566,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":1414,"role":"citizen:reflect","source":"server","ts":1789083544}
+{"category":"citizens","completion_tokens":92,"cost":0.000040475,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":1985,"role":"citizen:reflect","source":"server","ts":1789083771}
+{"category":"citizens","completion_tokens":199,"cost":0.000047713,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2197,"role":"citizen:chat","source":"server","ts":1789083960}
+{"ts": 1789086160, "month": "2026-09", "source": "overseer", "role": "steward", "model": "inclusionai/ling-3.0-flash", "category": "overseers", "prompt_tokens": 6080, "completion_tokens": 1500, "cost": 0.0006348}
+{"ts": 1789086207, "month": "2026-09", "source": "overseer", "role": "director", "model": "nousresearch/hermes-3-llama-3.1-405b", "category": "overseers", "prompt_tokens": 8884, "completion_tokens": 853, "cost": 0.009737}
+{"ts": 1789086241, "month": "2026-09", "source": "overseer", "role": "worldsmith", "model": "nousresearch/hermes-3-llama-3.1-405b", "category": "overseers", "prompt_tokens": 5951, "completion_tokens": 64, "cost": 0.006015}
+{"ts": 1789086245, "month": "2026-09", "source": "overseer", "role": "worldsmith", "model": "nousresearch/hermes-3-llama-3.1-405b", "category": "overseers", "prompt_tokens": 6039, "completion_tokens": 44, "cost": 0.006083}
+{"ts": 1789086868, "month": "2026-09", "source": "overseer", "role": "judge", "model": "x-ai/grok-build-0.1", "category": "judge", "prompt_tokens": 1705, "completion_tokens": 943, "cost": 0.0034886}
+{"ts": 1789086899, "month": "2026-09", "source": "overseer", "role": "weaver", "model": "nousresearch/hermes-3-llama-3.1-405b", "category": "overseers", "prompt_tokens": 5962, "completion_tokens": 12, "cost": 0.005974}
+{"category":"citizens","completion_tokens":57,"cost":0.000030514,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":1516,"role":"citizen:plan","source":"server","ts":1789086962}
+{"category":"citizens","completion_tokens":54,"cost":0.00004449,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":1429,"role":"citizen:plan","source":"server","ts":1789086962}
+{"category":"citizens","completion_tokens":49,"cost":0.000030616,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":1534,"role":"citizen:plan","source":"server","ts":1789086962}
+{"category":"citizens","completion_tokens":169,"cost":0.000049777,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2353,"role":"citizen:plan","source":"server","ts":1789086964}
+{"category":"citizens","completion_tokens":164,"cost":0.000034807,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":1573,"role":"citizen:plan","source":"server","ts":1789086966}
+{"category":"citizens","completion_tokens":211,"cost":0.000077865,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":3765,"role":"citizen:plan","source":"server","ts":1789086966}
+{"category":"citizens","completion_tokens":78,"cost":0.000034678,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":1702,"role":"citizen:plan","source":"server","ts":1789086966}
+{"category":"citizens","completion_tokens":163,"cost":0.00009267,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":4620,"role":"citizen:plan","source":"server","ts":1789086967}
+{"ts": 1789087068, "month": "2026-09", "source": "overseer", "role": "weaver", "model": "nousresearch/hermes-3-llama-3.1-405b", "category": "overseers", "prompt_tokens": 8958, "completion_tokens": 3550, "cost": 0.012508}
+{"ts": 1789087079, "month": "2026-09", "source": "overseer", "role": "weaver", "model": "nousresearch/hermes-3-llama-3.1-405b", "category": "overseers", "prompt_tokens": 12533, "completion_tokens": 206, "cost": 0.012739}
+{"ts": 1789087085, "month": "2026-09", "source": "overseer", "role": "weaver", "model": "nousresearch/hermes-3-llama-3.1-405b", "category": "overseers", "prompt_tokens": 12763, "completion_tokens": 83, "cost": 0.012846}
+{"category":"citizens","completion_tokens":185,"cost":0.000047483,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2207,"role":"citizen:chat","source":"server","ts":1789087337}
+{"category":"citizens","completion_tokens":186,"cost":0.000061421,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2939,"role":"citizen:chat","source":"server","ts":1789087337}
+{"category":"citizens","completion_tokens":176,"cost":0.000097107,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":4833,"role":"citizen:chat","source":"server","ts":1789087353}
+{"ts": 1789087706, "month": "2026-09", "source": "overseer", "role": "judge", "model": "x-ai/grok-build-0.1", "category": "judge", "prompt_tokens": 2213, "completion_tokens": 1088, "cost": 0.0042866}
+{"ts": 1789087738, "month": "2026-09", "source": "overseer", "role": "lawgiver", "model": "nousresearch/hermes-3-llama-3.1-405b", "category": "overseers", "prompt_tokens": 9107, "completion_tokens": 12, "cost": 0.009119}
+{"category":"citizens","completion_tokens":140,"cost":0.000060687,"model":"mistralai/mistral-nemo","month":"2026-09","prompt_tokens":2973,"role":"citizen:chat","source":"server","ts":1789087881}
+{"ts": 1789087918, "month": "2026-09", "source": "overseer", "role": "lawgiver", "model": "nousresearch/hermes-3-llama-3.1-405b", "category": "overseers", "prompt_tokens": 12300, "completion_tokens": 3550, "cost": 0.01585}
+{"ts": 1789087921, "month": "2026-09", "source": "overseer", "role": "lawgiver", "model": "nousresearch/hermes-3-llama-3.1-405b", "category": "overseers", "prompt_tokens": 15875, "completion_tokens": 42, "cost": 0.015917}
+{"ts": 1789087953, "month": "2026-09", "source": "overseer", "role": "engineer", "model": "nousresearch/hermes-3-llama-3.1-405b", "category": "overseers", "prompt_tokens": 5983, "completion_tokens": 52, "cost": 0.006035}
+{"ts": 1789088060, "month": "2026-09", "source": "overseer", "role": "chronicler", "model": "openai/gpt-5", "category": "overseers", "prompt_tokens": 8623, "completion_tokens": 2496, "cost": 0.03573875}
