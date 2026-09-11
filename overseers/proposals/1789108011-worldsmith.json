@@ -1,0 +1,14 @@
+[
+ {
+  "op": "add_building",
+  "building": {
+   "name": "The Eddy House",
+   "kind": "house",
+   "w": 3,
+   "h": 2,
+   "capacity": 3,
+   "open": false,
+   "note": "A cozy house with a view of the sea, perfect for a small family."
+  }
+ }
+]
