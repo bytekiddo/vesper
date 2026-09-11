@@ -1,0 +1,38 @@
+[
+ {
+  "op": "add_citizen",
+  "citizen": {
+   "name": "Sable Tide",
+   "age": 33,
+   "pronouns": "she/her",
+   "occupation": "fisher",
+   "innate": "patient, quietly stubborn",
+   "learned": "Sable grew up in a coastal village and learned to navigate the sea from a young age.",
+   "lifestyle": "Sable spends her days fishing and her evenings mending nets or socializing with other fishers.",
+   "currently": "Sable is concerned about the recent changes in the tides and their impact on her livelihood.",
+   "routine": "fisher",
+   "home": 13,
+   "work": 14
+  },
+  "relationships": [
+   [
+    104,
+    "colleague",
+    0.6,
+    "Sable and Mara often fish together and share their daily catch."
+   ],
+   [
+    109,
+    "friend",
+    0.8,
+    "Sable and Orion have been friends since childhood and often seek each other's advice."
+   ],
+   [
+    115,
+    "acquaintance",
+    0.4,
+    "Sable and Mira sometimes chat while mending their nets on the pier."
+   ]
+  ]
+ }
+]

@@ -91,6 +91,16 @@
       {"at": "16:30", "place": "square", "action": "sitting on the bench"},
       {"at": "19:00", "place": "home", "action": "having supper"},
       {"at": "21:30", "place": "home", "action": "sleeping"}
+    ],
+    "fisher": [
+      {"at": "05:30", "place": "work", "action": "preparing the nets"},
+      {"at": "07:00", "place": "pier", "action": "setting out to sea"},
+      {"at": "12:00", "place": "pier", "action": "returning with the catch"},
+      {"at": "13:00", "place": "home", "action": "having lunch"},
+      {"at": "14:30", "place": "pier", "action": "mending nets"},
+      {"at": "17:30", "place": "square", "action": "chatting with friends"},
+      {"at": "19:00", "place": "home", "action": "having supper"},
+      {"at": "21:30", "place": "home", "action": "sleeping"}
     ]
   },
 
