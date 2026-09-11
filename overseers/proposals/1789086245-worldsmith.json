@@ -1,0 +1,14 @@
+[
+ {
+  "op": "add_building",
+  "building": {
+   "name": "The Driftwood Inn",
+   "kind": "house",
+   "w": 4,
+   "h": 3,
+   "capacity": 8,
+   "open": false,
+   "note": "A cozy inn made of driftwood, offering a warm and inviting atmosphere for weary travelers."
+  }
+ }
+]
