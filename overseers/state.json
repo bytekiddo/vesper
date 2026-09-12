@@ -1,66 +1,6 @@
 {
-  "cycle": 24,
-  "merges": [
-    {
-      "sha": "709d84f",
-      "ts": 1789108636.9267824,
-      "role": "worldsmith",
-      "hypothesis": "homeless citizens will fall to 0 within 1 hour",
-      "milestone": "Legible citizens (no duplicate identities)",
-      "baseline": {
-        "activity_diversity": 0.471,
-        "boot_count": 159,
-        "building_visits_per_day": 75,
-        "catching_up": false,
-        "caught_up": true,
-        "conversations_per_day": 39,
-        "drift_ms_max": 221.086025238037,
-        "drift_ms_max_window": 0.0,
-        "feature_echo": 15,
-        "jobs": {
-          "apprentice": 1,
-          "baker": 1,
-          "doctor": 1,
-          "ferry clerk": 1,
-          "fisher": 2,
-          "fisherman": 1,
-          "gardener": 1,
-          "glassblower": 1,
-          "lighthouse keeper": 1,
-          "net-mender": 1,
-          "retired fisher": 1,
-          "shopkeeper": 1,
-          "tide-reader": 2,
-          "town clerk": 1,
-          "weaver": 1
-        },
-        "llm": {
-          "allowance_today": 5.0631,
-          "budget": 400.0,
-          "citizen_spent_month": 0.1334,
-          "errors": 0,
-          "est_cost_per_call": 4e-05,
-          "model": "mistralai/mistral-nemo",
-          "pending": 0,
-          "spent_today": 0.0073,
-          "stub": false
-        },
-        "mean_mood": 0.012,
-        "memory_mb": 41.1,
-        "population": 17,
-        "quarantine_today": 0,
-        "recent_features": 3,
-        "tick": 369420,
-        "ticks": 20560,
-        "ts": 1789108620,
-        "viewers": 0
-      },
-      "files": [
-        "overseers/proposals/1789108011-worldsmith.json"
-      ],
-      "needs_restart": false
-    }
-  ],
+  "cycle": 25,
+  "merges": [],
   "issues": 5,
   "history": [
     {
@@ -452,63 +392,7 @@
       "reason": "brands:OpenAI"
     }
   ],
-  "hypotheses": [
-    {
-      "ts": 1789108636.9271114,
-      "sha": "709d84f",
-      "role": "worldsmith",
-      "milestone": "Legible citizens (no duplicate identities)",
-      "hypothesis": "homeless citizens will fall to 0 within 1 hour",
-      "baseline": {
-        "activity_diversity": 0.471,
-        "boot_count": 159,
-        "building_visits_per_day": 75,
-        "catching_up": false,
-        "caught_up": true,
-        "conversations_per_day": 39,
-        "drift_ms_max": 221.086025238037,
-        "drift_ms_max_window": 0.0,
-        "feature_echo": 15,
-        "jobs": {
-          "apprentice": 1,
-          "baker": 1,
-          "doctor": 1,
-          "ferry clerk": 1,
-          "fisher": 2,
-          "fisherman": 1,
-          "gardener": 1,
-          "glassblower": 1,
-          "lighthouse keeper": 1,
-          "net-mender": 1,
-          "retired fisher": 1,
-          "shopkeeper": 1,
-          "tide-reader": 2,
-          "town clerk": 1,
-          "weaver": 1
-        },
-        "llm": {
-          "allowance_today": 5.0631,
-          "budget": 400.0,
-          "citizen_spent_month": 0.1334,
-          "errors": 0,
-          "est_cost_per_call": 4e-05,
-          "model": "mistralai/mistral-nemo",
-          "pending": 0,
-          "spent_today": 0.0073,
-          "stub": false
-        },
-        "mean_mood": 0.012,
-        "memory_mb": 41.1,
-        "population": 17,
-        "quarantine_today": 0,
-        "recent_features": 3,
-        "tick": 369420,
-        "ticks": 20560,
-        "ts": 1789108620,
-        "viewers": 0
-      }
-    }
-  ],
+  "hypotheses": [],
   "director": {
     "ts": 1789129947.4499576,
     "focus": "Legible citizens (no duplicate identities)",
