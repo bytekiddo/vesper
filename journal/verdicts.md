@@ -29,3 +29,4 @@ One line per verdict, written by the verifier 24–72 h after a merge. Refuted i
 - 2026-09-12 — **inconclusive** — weaver (Legible citizens (no duplicate identities), 8c74c47): Number of citizens with duplicate names or occupations will fall to 0 within 1 hour — metric 'number_of_citizens_with_duplicate_names_or_occupations' is not in state/metrics.json
 - 2026-09-12 — **refuted** — worldsmith (Legible citizens (no duplicate identities), bb6125d): Population will rise to 18 within 24 hours — population = 17, target >= 18
 - 2026-09-12 — **inconclusive** — weaver (Legible citizens (no duplicate identities), 3cb7d55): citizens with duplicate identities will fall to 0 within 1 hour — metric 'citizens_with_duplicate_identities' is not in state/metrics.json
+- 2026-09-12 — **inconclusive** — worldsmith (Legible citizens (no duplicate identities), 709d84f): homeless citizens will fall to 0 within 1 hour — metric 'homeless_citizens' is not in state/metrics.json
