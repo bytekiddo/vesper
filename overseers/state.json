@@ -1,66 +1,6 @@
 {
-  "cycle": 22,
+  "cycle": 23,
   "merges": [
-    {
-      "sha": "8c74c47",
-      "ts": 1789065862.1567175,
-      "role": "weaver",
-      "hypothesis": "Number of citizens with duplicate names or occupations will fall to 0 within 1 hour",
-      "milestone": "Legible citizens (no duplicate identities)",
-      "baseline": {
-        "activity_diversity": 0.235,
-        "boot_count": 159,
-        "building_visits_per_day": 80,
-        "catching_up": false,
-        "caught_up": true,
-        "conversations_per_day": 45,
-        "drift_ms_max": 88.8350009918213,
-        "drift_ms_max_window": 35.9199047088623,
-        "feature_echo": 0,
-        "jobs": {
-          "apprentice": 1,
-          "baker": 1,
-          "doctor": 1,
-          "ferry clerk": 1,
-          "fisher": 1,
-          "fisherman": 1,
-          "gardener": 1,
-          "glassblower": 1,
-          "lighthouse keeper": 1,
-          "net-mender": 1,
-          "retired fisher": 1,
-          "shopkeeper": 1,
-          "tide-reader": 2,
-          "town clerk": 1,
-          "weaver": 2
-        },
-        "llm": {
-          "allowance_today": 4.9398,
-          "budget": 400.0,
-          "citizen_spent_month": 0.1204,
-          "errors": 46,
-          "est_cost_per_call": 4e-05,
-          "model": "mistralai/mistral-nemo",
-          "pending": 0,
-          "spent_today": 0.0254,
-          "stub": false
-        },
-        "mean_mood": 0.018,
-        "memory_mb": 37.7,
-        "month_total": 0.7051,
-        "population": 17,
-        "quarantine_today": 0,
-        "recent_features": 2,
-        "tick": 326640,
-        "ticks": 216306,
-        "ts": 1789065840,
-        "viewers": 0
-      },
-      "files": [
-        "overseers/proposals/1789065240-weaver.json"
-      ],
-      "needs_restart": false
-    },
     {
       "sha": "bb6125d",
       "ts": 1789086868.392461,
@@ -634,62 +574,6 @@
     }
   ],
   "hypotheses": [
-    {
-      "ts": 1789065862.15691,
-      "sha": "8c74c47",
-      "role": "weaver",
-      "milestone": "Legible citizens (no duplicate identities)",
-      "hypothesis": "Number of citizens with duplicate names or occupations will fall to 0 within 1 hour",
-      "baseline": {
-        "activity_diversity": 0.235,
-        "boot_count": 158,
-        "building_visits_per_day": 80,
-        "catching_up": false,
-        "caught_up": true,
-        "conversations_per_day": 45,
-        "drift_ms_max": 88.8350009918213,
-        "drift_ms_max_window": 35.9199047088623,
-        "feature_echo": 0,
-        "jobs": {
-          "apprentice": 1,
-          "baker": 1,
-          "doctor": 1,
-          "ferry clerk": 1,
-          "fisher": 1,
-          "fisherman": 1,
-          "gardener": 1,
-          "glassblower": 1,
-          "lighthouse keeper": 1,
-          "net-mender": 1,
-          "retired fisher": 1,
-          "shopkeeper": 1,
-          "tide-reader": 2,
-          "town clerk": 1,
-          "weaver": 2
-        },
-        "llm": {
-          "allowance_today": 4.9398,
-          "budget": 400.0,
-          "citizen_spent_month": 0.1204,
-          "errors": 46,
-          "est_cost_per_call": 4e-05,
-          "model": "mistralai/mistral-nemo",
-          "pending": 0,
-          "spent_today": 0.0254,
-          "stub": false
-        },
-        "mean_mood": 0.018,
-        "memory_mb": 37.7,
-        "month_total": 0.7051,
-        "population": 17,
-        "quarantine_today": 0,
-        "recent_features": 2,
-        "tick": 326640,
-        "ticks": 216306,
-        "ts": 1789065840,
-        "viewers": 0
-      }
-    },
     {
       "ts": 1789086868.392703,
       "sha": "bb6125d",
